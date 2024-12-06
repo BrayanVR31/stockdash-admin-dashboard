@@ -1,5 +1,7 @@
+import { SignIn } from "./pages";
+
 function App() {
-  return <div>React app</div>;
+  return <SignIn />;
 }
 
 export default App;
