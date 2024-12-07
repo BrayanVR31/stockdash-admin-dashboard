@@ -1,10 +1,16 @@
-import express from "express";
-const app = express();
+import "module-alias/register";
+import "dotenv/config";
+import { database } from "@config";
+import { startServer } from "./app";
 
-app.get("*", function (request, response) {
-  response.json({ message: "Express server is ready and you can get started" });
-});
+async function main() {
+  try {
+    await database.initDBConnection();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    startServer();
+  }
+}
 
-app.listen(4000, function () {
-  console.log("Server is ready at: http://localhost:4000");
-});
+main();
