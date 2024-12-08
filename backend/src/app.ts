@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import api from "@routes/api";
 import { authorization } from "@middlewares";
 const app = express();
@@ -10,6 +11,7 @@ const { APP_HOST: hostname, APP_PORT: port } = process.env;
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 app.use(api);
 app.get(

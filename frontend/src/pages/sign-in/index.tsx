@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router";
 import { UserForm } from "./components";
 
 export function SignIn() {
+  // React router
+  const navigate = useNavigate();
   return (
     <div>
       <main className="max-w-5xl mx-auto min-h-screen flex flex-col justify-center px-8">
@@ -12,7 +15,11 @@ export function SignIn() {
           configuraciones y reportes.
         </p>
         {/** User form data */}
-        <UserForm />
+        <UserForm
+          onSuccess={() => {
+            navigate("/dashboard");
+          }}
+        />
       </main>
     </div>
   );

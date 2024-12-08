@@ -24,7 +24,9 @@
     "paths": {
       "@lib": ["./src/lib/index.ts"],
       "@lib/*": ["./src/lib/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@routes": ["./src/routes/index.ts"],
+      "@pages": ["./src/pages/index.ts"]
     }
   },
   "include": ["vite.config.ts"]

@@ -12,6 +12,16 @@ export async function verifyCredentials(
 ) {
   try {
     const { email, password } = request.body;
+
+    // TODO: create an intial trigger to register admin user (mongodb)
+    const users = await User.find();
+    if (users.length === 0) {
+      const user = new User();
+      user.email = email;
+      user.password = password;
+      await user.save();
+    }
+
     const user = await User.findOne({ email });
     // Verfify email and password
     if (!user)

@@ -1,7 +1,12 @@
-import { SignIn } from "./pages";
+import { BrowserRouter } from "react-router";
+import { Router } from "@routes";
 
 function App() {
-  return <SignIn />;
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  );
 }
 
 export default App;
