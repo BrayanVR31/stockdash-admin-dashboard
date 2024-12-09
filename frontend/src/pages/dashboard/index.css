@@ -1,0 +1,23 @@
+.dashboard-app,
+[data-dashboard-layout] {
+  --columns: var(--sidebar-w, 25%) 1fr;
+  display: grid;
+  grid-template-columns: var(--columns);
+  grid-template-areas: "main-sidebar main-content";
+  transition: grid-template-columns 310ms linear;
+}
+
+.main-content,
+[data-dashboard-content] {
+  grid-area: main-content;
+}
+
+.main-sidebar,
+[data-dashboard-sidebar] {
+  grid-area: main-sidebar;
+  scrollbar-gutter: stable both-edges;
+}
+
+[data-dashboard-layout]:has(* [data-collapse-btn]:checked) {
+  --sidebar-w: 80px !important;
+}
