@@ -4,11 +4,7 @@ import { LuStore } from "react-icons/lu";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { TiShoppingCart } from "react-icons/ti";
 import { FaRegRectangleList } from "react-icons/fa6";
-import {
-  MdGroups2,
-  MdOutlineChevronLeft,
-  MdOutlineAccountCircle,
-} from "react-icons/md";
+import { MdGroups2, MdOutlineChevronLeft } from "react-icons/md";
 import { BiPurchaseTagAlt } from "react-icons/bi";
 import { FiSettings } from "react-icons/fi";
 import { TbCapture } from "react-icons/tb";
@@ -20,10 +16,10 @@ export function Sidebar() {
   return (
     <aside
       data-dashboard-sidebar
-      className={`bg-slate-100 sticky top-0 left-0 overflow-x-hidden max-h-screen w-full`}
+      className={`sticky top-0 left-0 overflow-x-hidden max-h-screen w-full shadow-md shadow-slate-500/20`}
     >
       <div className="h-full p-5">
-        <div className=" h-14 flex items-center justify-between mb-8">
+        <div className="h-14 flex items-center justify-between mb-8">
           <Logo />
           <label className="cursor-pointer rounded-full flex items-center justify-center w-6 h-6 border border-slate-400">
             <input
@@ -67,7 +63,7 @@ export function Sidebar() {
                     className={({ isActive }) =>
                       `${getLinkClassName(isActive)}`
                     }
-                    to="./products"
+                    to="./products/create"
                   >
                     <AiOutlineFileAdd className="text-lg" />
                     <span className="text-sm">Crear</span>
@@ -76,7 +72,7 @@ export function Sidebar() {
                     className={({ isActive }) =>
                       `${getLinkClassName(isActive)}`
                     }
-                    to="./products/create"
+                    to="./products"
                   >
                     <FaRegRectangleList className="text-lg" />
                     <span className="text-sm">Listar</span>

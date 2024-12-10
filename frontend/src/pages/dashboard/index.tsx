@@ -1,6 +1,7 @@
 import { CSSProperties } from "react";
+import { Outlet } from "react-router";
 import "./index.css";
-import { Sidebar } from "./components";
+import { Sidebar, Navbar } from "./components";
 
 // Types
 interface CSSStyles extends CSSProperties {
@@ -20,7 +21,12 @@ export function Dashboard() {
     >
       <Sidebar />
       <div data-dashboard-content className="w-full">
-        <h1>Dashboard page</h1>
+        <main data-dashboard-page className="bg-slate-200/45 min-h-screen">
+          <Navbar />
+          <div className="px-10 py-12">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   );
