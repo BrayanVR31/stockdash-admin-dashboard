@@ -1,7 +1,13 @@
 import { Response, Request, NextFunction } from "express";
 
-export type Controller = (
-  request: Request,
-  response: Response,
+// Types
+interface Params {
+  id: string;
+  [key: string]: any;
+}
+
+export type Controller<JSONRes = any> = (
+  request: Request<Params>,
+  response: Response<JSONRes>,
   next: NextFunction,
 ) => Promise<Response | void>;

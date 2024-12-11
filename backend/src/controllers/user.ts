@@ -1,5 +1,5 @@
 import { Controller, ServerError } from "@types";
-import { HTTP_ERROR_TYPES, HTTP_ERROR_CODES } from "@enums";
+import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
 
 // Get all resources
 export const home: Controller = async (request, response, next) => {
@@ -8,8 +8,8 @@ export const home: Controller = async (request, response, next) => {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
-    serverError.message = HTTP_ERROR_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_ERROR_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
     serverError.jsonKey = "error";
     return next(serverError);
   }
@@ -22,8 +22,8 @@ export const create: Controller = async (request, response, next) => {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
-    serverError.message = HTTP_ERROR_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_ERROR_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
     serverError.jsonKey = "error";
     return next(serverError);
   }
@@ -36,8 +36,8 @@ export const edit: Controller = async (request, response, next) => {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
-    serverError.message = HTTP_ERROR_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_ERROR_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
     serverError.jsonKey = "error";
     return next(serverError);
   }
@@ -50,8 +50,8 @@ export const update: Controller = async (request, response, next) => {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
-    serverError.message = HTTP_ERROR_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_ERROR_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
     serverError.jsonKey = "error";
     return next(serverError);
   }
@@ -64,8 +64,8 @@ export const destroy: Controller = async (request, response, next) => {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
-    serverError.message = HTTP_ERROR_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_ERROR_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
     serverError.jsonKey = "error";
     return next(serverError);
   }

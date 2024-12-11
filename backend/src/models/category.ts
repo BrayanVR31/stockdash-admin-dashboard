@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, InferRawDocType } from "mongoose";
 
 // Types
 export interface ICategory {
