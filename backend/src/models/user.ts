@@ -7,26 +7,76 @@ interface IUser {
   username?: string;
   email: string;
   password: string;
-  profile?: {
-    name: string;
-    lastName: string;
-    avatar?: string;
-    phoneNumber?: string;
-    address?: {
-      street: string;
-      city: string;
-      state: string;
-      zipCode: number;
-      country: string;
-    };
-  };
+  profile?: Profile;
   sessions?: ISession[];
   roles: string[] | Schema.Types.ObjectId[];
   status?: boolean;
   deletedAt?: Date;
 }
 
+interface Profile {
+  name: string;
+  lastName: string;
+  avatar?: string;
+  phoneNumber?: string;
+  address?: Address;
+}
+
+interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: number;
+  country: string;
+}
+
 // Schema
+const addressSchema = new Schema<Address>(
+  {
+    street: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    zipCode: {
+      type: Number,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+  },
+  { versionKey: false, timestamps: false, _id: false },
+);
+
+const profileSchema = new Schema<Profile>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    avatar: String,
+    phoneNumber: String,
+    address: {
+      type: addressSchema,
+      required: false,
+    },
+  },
+  { timestamps: false, versionKey: false, _id: false },
+);
+
 const userSchema = new Schema<IUser>(
   {
     email: {
@@ -42,44 +92,8 @@ const userSchema = new Schema<IUser>(
       required: false,
     },
     profile: {
-      name: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
-      },
-      avatar: {
-        type: String,
-        required: false,
-      },
-      phoneNumber: {
-        type: String,
-        required: false,
-      },
-      address: {
-        street: {
-          type: String,
-          required: true,
-        },
-        city: {
-          type: String,
-          required: true,
-        },
-        state: {
-          type: String,
-          required: true,
-        },
-        zipCode: {
-          type: Number,
-          required: true,
-        },
-        country: {
-          type: String,
-          required: true,
-        },
-      },
+      type: profileSchema,
+      default: null,
     },
     sessions: {
       type: [sessionSchema],
