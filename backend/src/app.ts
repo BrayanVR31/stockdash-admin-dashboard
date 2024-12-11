@@ -3,7 +3,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import api from "@routes/api";
-import { authorization } from "@middlewares";
+import { authorization, handleError } from "@middlewares";
 const app = express();
 const { APP_HOST: hostname, APP_PORT: port } = process.env;
 
@@ -23,6 +23,7 @@ app.get(
     });
   },
 );
+app.use(handleError);
 
 export const startServer = () => {
   if (!hostname || !port)
