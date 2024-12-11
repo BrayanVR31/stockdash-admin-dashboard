@@ -42,12 +42,10 @@ const supplierSchema = new Schema<ISupplier>(
         type: String,
         required: false,
       },
-      default: null,
     },
     contact: {
       phoneNumber: { type: String, required: false },
       email: { type: String, required: false },
-      default: null,
     },
     socialMedia: {
       type: [String],

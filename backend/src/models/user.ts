@@ -79,12 +79,10 @@ const userSchema = new Schema<IUser>(
           type: String,
           required: true,
         },
-        required: false,
       },
-      required: false,
     },
     sessions: {
-      type: sessionSchema,
+      type: [sessionSchema],
       required: false,
       default: null,
     },

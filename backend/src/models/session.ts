@@ -19,7 +19,7 @@ const sessionSchema = new Schema<ISession>(
     },
   },
   {
-    versionKey: true,
+    versionKey: false,
     timestamps: true,
   },
 );
