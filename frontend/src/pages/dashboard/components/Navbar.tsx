@@ -12,7 +12,7 @@ import {
 
 export function Navbar() {
   return (
-    <div className="bg-white px-10 shadow-md shadow-slate-500/15">
+    <div className="bg-white px-10 shadow-md shadow-slate-500/15 h-[calc(1.25rem+3.5rem)]">
       <nav className="flex items-center justify-between h-full">
         <div>
           <Field.Input type="search" placeholder="Busca aquí..." />

@@ -13,12 +13,43 @@ export interface ISupplier {
     phoneNumber?: string;
     email?: string;
   };
-  socialMedia?: string[];
+  socialMedia?: SocialMedia;
   image?: string;
   deletedAt: Date;
 }
 
+interface SocialMedia {
+  facebook?: string;
+  tiktok?: string;
+  twitter?: string;
+}
+
 // Schemas
+const socialMediaSchema = new Schema<SocialMedia>(
+  {
+    facebook: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    tiktok: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    twitter: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  {
+    versionKey: false,
+    timestamps: false,
+    _id: false,
+  },
+);
+
 const supplierSchema = new Schema<ISupplier>(
   {
     name: {
@@ -48,7 +79,7 @@ const supplierSchema = new Schema<ISupplier>(
       email: { type: String, required: false },
     },
     socialMedia: {
-      type: [String],
+      type: socialMediaSchema,
       required: false,
       default: null,
     },

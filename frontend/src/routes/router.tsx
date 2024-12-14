@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router";
-import { SignIn, Dashboard, Products } from "@pages";
+import { SignIn, Dashboard, Products, Suppliers } from "@pages";
 
 export function Router() {
   return (
@@ -18,8 +18,8 @@ export function Router() {
         </Route>
         {/** Suppliers route */}
         <Route path="suppliers">
-          <Route index element={<h2>Suppliers list</h2>} />
-          <Route path="create" element={<h2>Supplier create</h2>} />
+          <Route index element={<Suppliers.Home />} />
+          <Route path="create" element={<Suppliers.Create />} />
         </Route>
         {/** Sales route */}
         <Route path="sales">

@@ -20,8 +20,8 @@ export function Dashboard() {
       className="w-full min-h-screen"
     >
       <Sidebar />
-      <div data-dashboard-content className="w-full">
-        <main data-dashboard-page className="bg-slate-200/45 min-h-screen">
+      <div data-dashboard-content className="w-full overflow-x-hidden">
+        <main className="bg-slate-200/45 min-h-screen">
           <Navbar />
           <div className="px-10 py-12">
             <Outlet />
