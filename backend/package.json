@@ -16,7 +16,8 @@
     "@types": "src/types/index.ts",
     "@models": "src/models/index.ts",
     "@middlewares": "src/middlewares/index.ts",
-    "@enums": "src/enums/index.ts"
+    "@enums": "src/enums/index.ts",
+    "@utils": "./src/utils/index.ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

@@ -6,3 +6,4 @@ export * from "./DropdownMenu";
 export * from "./Table";
 export * from "./Badge";
 export * from "./Dialog";
+export * as Paginator from "./Pagination";

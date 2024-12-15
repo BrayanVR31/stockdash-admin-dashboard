@@ -1,19 +1,28 @@
 import { Supplier, ISupplier } from "@models";
 import { Controller, ServerError, JSONResponse } from "@types";
 import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
+import { paginateDocs } from "@utils";
 
-// Types
+//  Types
 type SupplierController = Controller<JSONResponse<ISupplier>>;
 
 // Get all resources
 export const home: SupplierController = async (request, response, next) => {
   try {
-    const results = await Supplier.find();
+    // Pagination configuration
+    const total = await Supplier.countDocuments();
+    const { per_page, page  } = request.query;
+    const { skipDocument, perPage } = paginateDocs(total, per_page, page);
+    const results = await Supplier.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
-      total: results.length,
+      total,
+      subtotal: results.length,
+      page: (per_page && !page) ? 1 : +page,
+      per_page: perPage
     });
   } catch (error) {
+    console.log(error);
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";

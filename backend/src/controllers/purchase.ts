@@ -1,6 +1,7 @@
 import { Purchase, IPurchase } from "@models";
 import { Controller, ServerError, JSONResponse } from "@types";
 import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
+import { paginateDocs } from "@utils";
 
 // Types
 type PurchaseController = Controller<JSONResponse<IPurchase>>;
@@ -8,11 +9,19 @@ type PurchaseController = Controller<JSONResponse<IPurchase>>;
 // Get all resources
 export const home: PurchaseController = async (request, response, next) => {
   try {
-    const results = await Purchase.find();
+    // Pagination configuration
+    const total = await Purchase.countDocuments();
+    const { per_page, page  } = request.query;
+    const { skipDocument, perPage } = paginateDocs(total, per_page, page);
+    const results = await Purchase.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
-      total: results.length,
+      total,
+      subtotal: results.length,
+      page: (per_page && !page) ? 1 : +page,
+      per_page: perPage
     });
+
   } catch (error) {
     const serverError = new Error("") as ServerError;
     // Default server error

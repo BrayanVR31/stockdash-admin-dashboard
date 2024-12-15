@@ -1,6 +1,7 @@
 import { Category, ICategory } from "@models";
 import { Controller, ServerError, JSONResponse } from "@types";
 import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@enums";
+import { paginateDocs } from "@utils";
 
 // Types
 type CategoryController = Controller<JSONResponse<ICategory>>;
@@ -8,10 +9,17 @@ type CategoryController = Controller<JSONResponse<ICategory>>;
 // Get all resources
 export const home: CategoryController = async (request, response, next) => {
   try {
-    const results = await Category.find();
+    // Pagination configuration
+    const total = await Category.countDocuments();
+    const { per_page, page  } = request.query;
+    const { skipDocument, perPage } = paginateDocs(total, per_page, page);
+    const results = await Category.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
-      total: results.length,
+      total,
+      subtotal: results.length,
+      page: (per_page && !page) ? 1 : +page,
+      per_page: perPage
     });
   } catch (error) {
     const serverError = new Error("") as ServerError;

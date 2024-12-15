@@ -1,6 +1,7 @@
 import { Product, IProduct } from "@models";
 import { Controller, ServerError, JSONResponse } from "@types";
 import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
+import { paginateDocs } from "@utils";
 
 // Types
 type ProductController = Controller<JSONResponse<IProduct>>;
@@ -8,12 +9,19 @@ type ProductController = Controller<JSONResponse<IProduct>>;
 // Get all resources
 export const home: ProductController = async (request, response, next) => {
   try {
-    const results = await Product.find();
+    // Pagination configuration
+    const total = await Product.countDocuments();
+    const { per_page, page  } = request.query;
+    const { skipDocument, perPage } = paginateDocs(total, per_page, page);
+    const results = await Product.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
-      total: results.length,
-    });
-  } catch (error) {
+      total,
+      subtotal: results.length,
+      page: (per_page && !page) ? 1 : +page,
+      per_page: perPage
+    }); 
+    } catch (error) {
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";

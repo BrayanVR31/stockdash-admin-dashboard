@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { MdOutlineAdd } from "react-icons/md";
-import { Btn, Badge } from "@shared/ui";
+import { Btn, Badge, Paginator } from "@shared/ui";
 import { getSuppliers } from "../services";
 import { SupplierList } from "./components";
 
-export function Home() {
+function SupplierPage() {
+  const { page } = Paginator.usePaginationCtx();
   // Router
   const navigate = useNavigate();
   // Queries
@@ -13,9 +15,12 @@ export function Home() {
     queryKey: ["suppliers"],
     queryFn: getSuppliers,
   });
+
+  return <Paginator.Pagination paginatorName="proveedores" total={35} perPage={5} />;
   if (isLoading) return <div>Data is loading...</div>;
   if (isError) return <div>Error to load data!</div>;
   return (
+
     <div className="bg-white rounded-md shadow-xl w-full">
       <header className="flex justify-between p-4 items-center">
         <div className="flex items-center gap-2">
@@ -34,5 +39,15 @@ export function Home() {
         <SupplierList data={data?.results || []} />
       </div>
     </div>
+  );
+}
+
+export function Home() {
+  const [page, setPage] = useState(1);
+
+  return (
+    <Paginator.PaginationProvider value={{ page, setPage }}>
+      <SupplierPage />
+    </Paginator.PaginationProvider>
   );
 }
