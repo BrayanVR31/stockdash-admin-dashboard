@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { MdOutlineAdd } from "react-icons/md";
@@ -7,21 +7,20 @@ import { getSuppliers } from "../services";
 import { SupplierList } from "./components";
 
 function SupplierPage() {
-  const { page } = Paginator.usePaginationCtx();
+  const { page, perPage } = Paginator.usePaginationCtx();
   // Router
   const navigate = useNavigate();
   // Queries
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["suppliers"],
-    queryFn: getSuppliers,
+    queryKey: ["suppliers", page, perPage],
+    queryFn: () => getSuppliers({ page, perPage }),
+    placeholderData: keepPreviousData,
   });
 
-  return <Paginator.Pagination paginatorName="proveedores" total={35} perPage={5} />;
   if (isLoading) return <div>Data is loading...</div>;
   if (isError) return <div>Error to load data!</div>;
   return (
-
-    <div className="bg-white rounded-md shadow-xl w-full">
+    <div className="bg-white rounded-md shadow-xl w-full p-8">
       <header className="flex justify-between p-4 items-center">
         <div className="flex items-center gap-2">
           <h4 className="font-semibold text-2xl">Proveedores</h4>
@@ -37,6 +36,7 @@ function SupplierPage() {
       </header>
       <div>
         <SupplierList data={data?.results || []} />
+        <Paginator.Pagination name="proveedores" total={data?.total || 0} />
       </div>
     </div>
   );
@@ -44,9 +44,12 @@ function SupplierPage() {
 
 export function Home() {
   const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
 
   return (
-    <Paginator.PaginationProvider value={{ page, setPage }}>
+    <Paginator.PaginationProvider
+      value={{ page, setPage, perPage, setPerPage }}
+    >
       <SupplierPage />
     </Paginator.PaginationProvider>
   );
