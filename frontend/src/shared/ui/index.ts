@@ -8,3 +8,7 @@ export * from "./Badge";
 export * from "./Dialog";
 export * as Paginator from "./pagination";
 export * from "./Select";
+export * from "./tabular-data";
+export * from "./FormHeader";
+export * from "./Textarea";
+export * from "./RegistryLayout";

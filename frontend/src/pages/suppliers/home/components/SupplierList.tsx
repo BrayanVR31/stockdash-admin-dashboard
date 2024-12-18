@@ -9,6 +9,7 @@ import {
   TableBody,
   TableCell,
   Btn,
+  TabularData,
 } from "@shared/ui";
 import { DialogSupplier } from "./DialogSupplier";
 import { Supplier, Address } from "../../types";
@@ -81,5 +82,7 @@ function addressFormat(address: Partial<Address> | undefined | null) {
   const street = (address.street && `c/ ${address.street}`) ?? "";
   const neighborhood = address.neighborhood && `col. ${address.neighborhood}`;
   const zipCode = (address.zipCode && `C.P. ${address.zipCode}`) ?? "";
-  return `${street}, ${neighborhood}, ${zipCode}`.replace(", ,", "").replace(/^,/, "");
+  return `${street}, ${neighborhood}, ${zipCode}`
+    .replace(", ,", "")
+    .replace(/^,/, "");
 }

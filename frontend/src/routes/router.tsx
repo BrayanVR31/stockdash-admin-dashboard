@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router";
-import { SignIn, Dashboard, Products, Suppliers } from "@pages";
+import { SignIn, Dashboard, Products, Suppliers, Purchases } from "@pages";
 
 export function Router() {
   return (
@@ -9,12 +9,12 @@ export function Router() {
         {/** Product route */}
         <Route path="products">
           <Route index element={<Products.Home />} />
-          <Route path="create" element={<h2>Product create</h2>} />
+          <Route path="create" element={<Products.Create />} />
         </Route>
         {/** Purchases route */}
         <Route path="purchases">
           <Route index element={<h2>Purchases list</h2>} />
-          <Route path="create" element={<h2>Purchase create</h2>} />
+          <Route path="create" element={<Purchases.Create />} />
         </Route>
         {/** Suppliers route */}
         <Route path="suppliers">
