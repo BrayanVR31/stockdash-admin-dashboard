@@ -1,20 +1,26 @@
+import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Field,
   Textarea,
   Btn,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectGroupLabel,
-  SelectItem,
+  SupplierSelect,
+  CategorySelect,
+  RadioGroup,
+  RadioGroupItem,
 } from "@shared/ui";
-import { useSuppliers, useCategories } from "@hooks";
+import { ProductInputs } from "@types";
 
 export function ProductForm() {
+  // Form state
+  const { register, handleSubmit } = useForm<ProductInputs>();
+  // Styles
+  const labelBaseClass = `text-sm font-semibold block mb-2 after:content-['*'] after:ml-1 after:text-red-600`;
+  // Event handlers
+  const onSubmit: SubmitHandler<ProductInputs> = (data) => {
+    console.log(data);
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {/** General information */}
       <div className="mb-6">
         <label
@@ -27,6 +33,7 @@ export function ProductForm() {
           type="text"
           id="name"
           placeholder="Escribe el nombre del producto"
+          {...register("name")}
         />
       </div>
       <div className="mb-6">
@@ -39,6 +46,7 @@ export function ProductForm() {
         <Textarea
           id="description"
           placeholder="Escribe una breve descripción acerca del producto..."
+          {...register("description")}
         />
       </div>
       {/** Management information */}
@@ -53,6 +61,7 @@ export function ProductForm() {
           <Field.Input
             id="purchase"
             placeholder="Escribe el precio de venta del producto"
+            {...register("price.purchase")}
           />
         </div>
         <div className="mb-6">
@@ -65,6 +74,7 @@ export function ProductForm() {
           <Field.Input
             id="sale"
             placeholder="Escribe el precio de compra del producto"
+            {...register("price.sale")}
           />
         </div>
       </div>
@@ -80,6 +90,7 @@ export function ProductForm() {
             type="text"
             id="quantity"
             placeholder="Escribe la cantidad del elementos del producto"
+            {...register("quantity")}
           />
         </div>
         <div className="mb-6">
@@ -89,76 +100,51 @@ export function ProductForm() {
           >
             Imagenes
           </label>
-          <Field.Input type="file" id="images" />
+          <Field.Input type="file" id="images" multiple />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-x-4">
-        <SupplierSelect />
-        <CategorySelect />
+      <div className="grid grid-cols-2 gap-x-4 mb-6">
+        <div>
+          <label className={`${labelBaseClass}`} htmlFor="suppliers">
+            Proveedor
+          </label>
+          <SupplierSelect {...register("suppliers")} />
+        </div>
+        <div>
+          <label className={`${labelBaseClass}`}>Categorías</label>
+          <CategorySelect />
+        </div>
+      </div>
+      <div>
+        <fieldset>
+          <legend className={`${labelBaseClass}`}>
+            Selecciona la disponibilidad del producto
+          </legend>
+          <RadioGroup {...register("status")}>
+            <div className="flex items-center gap-x-2 mb-1">
+              <RadioGroupItem value={"1"} id="status-active" />
+              <label
+                className="text-sm font-medium text-gray-800"
+                htmlFor="status-active"
+              >
+                Activo
+              </label>
+            </div>
+            <div className="flex items-center gap-x-2">
+              <RadioGroupItem value={"0"} id="status-no-active" />
+              <label
+                className="text-sm font-medium text-gray-800"
+                htmlFor="status-no-active"
+              >
+                No activo
+              </label>
+            </div>
+          </RadioGroup>
+        </fieldset>
       </div>
       <div className="mt-8">
         <Btn.Button type="submit">Crear producto</Btn.Button>
       </div>
     </form>
-  );
-}
-
-function CategorySelect() {
-  const { data } = useCategories();
-  return (
-    <div className="mb-6">
-      <label
-        htmlFor="categories"
-        className="text-sm font-semibold block mb-2 after:content-['*'] after:ml-1 after:text-red-600"
-      >
-        Categorías
-      </label>
-      <Select>
-        <SelectTrigger id="categories">
-          <SelectValue placeholder="Selecciona una categoría" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectGroupLabel>Lista de categorías</SelectGroupLabel>
-            {data?.results.map((item) => (
-              <SelectItem
-                key={item._id}
-                value={item._id}
-              >{`${item.name}`}</SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
-  );
-}
-
-function SupplierSelect() {
-  const { data } = useSuppliers();
-  return (
-    <div className="mb-6">
-      <label
-        htmlFor="suppliers"
-        className="text-sm font-semibold block mb-2 after:content-['*'] after:ml-1 after:text-red-600"
-      >
-        Proveedor
-      </label>
-      <Select>
-        <SelectTrigger id="suppliers">
-          <SelectValue placeholder="Selecciona un proveedor" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectGroupLabel>Lista de proveedores</SelectGroupLabel>
-            {data?.results.map((item) => (
-              <SelectItem
-                key={item._id}
-                value={item._id}
-              >{`${item.name}`}</SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
   );
 }
