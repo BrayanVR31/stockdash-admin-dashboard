@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { LuSettings } from "react-icons/lu";
 import {
   Field,
@@ -27,6 +28,7 @@ export function Navbar() {
 }
 
 function DropdownProfile() {
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,7 +51,9 @@ function DropdownProfile() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Salir de sesión</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/sign-in")}>
+            Salir de sesión
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

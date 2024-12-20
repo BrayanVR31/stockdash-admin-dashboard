@@ -3,21 +3,25 @@ import {
   Field,
   Textarea,
   Btn,
-  SupplierSelect,
   CategorySelect,
+  SupplierMultiSelect,
   RadioGroup,
   RadioGroupItem,
 } from "@shared/ui";
 import { ProductInputs } from "@types";
+import { useProducts } from "@hooks";
 
 export function ProductForm() {
+  // hooks
+  const { mutation } = useProducts();
   // Form state
-  const { register, handleSubmit } = useForm<ProductInputs>();
+  const { register, handleSubmit, setValue } = useForm<ProductInputs>();
   // Styles
   const labelBaseClass = `text-sm font-semibold block mb-2 after:content-['*'] after:ml-1 after:text-red-600`;
   // Event handlers
   const onSubmit: SubmitHandler<ProductInputs> = (data) => {
     console.log(data);
+    mutation.mutate(data);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -108,7 +112,10 @@ export function ProductForm() {
           <label className={`${labelBaseClass}`} htmlFor="suppliers">
             Proveedor
           </label>
-          <SupplierSelect {...register("suppliers")} />
+          <SupplierMultiSelect
+            onMultiSelect={(idSuppliers) => setValue("suppliers", idSuppliers)}
+          />
+          {/*<SupplierSelect {...register("suppliers")} />*/}
         </div>
         <div>
           <label className={`${labelBaseClass}`}>Categorías</label>

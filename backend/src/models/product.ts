@@ -77,6 +77,11 @@ const productSchema = new Schema<IProduct>(
 // Field aliases
 productSchema.alias("_id", "id");
 
+// Middlewares
+productSchema.post("save", function (document) {
+  console.log(document);
+});
+
 // Model
 const Product = model<IProduct>("Product", productSchema);
 

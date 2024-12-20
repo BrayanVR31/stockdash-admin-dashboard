@@ -18,14 +18,12 @@ export interface Product {
   deletedAt: Date | null;
 }
 
-export type ProductInputs = Pick<
+type BaseInputs = Pick<
   Product,
-  | "name"
-  | "description"
-  | "price"
-  | "quantity"
-  | "status"
-  | "images"
-  | "suppliers"
-  | "categories"
+  "name" | "description" | "price" | "quantity" | "status" | "images"
 >;
+
+export interface ProductInputs extends BaseInputs {
+  suppliers: string[];
+  categories: string[];
+}
