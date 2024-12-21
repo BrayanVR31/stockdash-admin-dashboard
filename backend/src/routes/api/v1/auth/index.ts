@@ -5,11 +5,7 @@ import { authorization } from "@middlewares";
 const router = Router();
 
 /** Auth endpoints */
-router.post(
-  "/sign-in",
-  authorization.verifyCredentials as RequestHandler,
-  auth.signIn as RequestHandler,
-);
+router.post("/sign-in", authorization.verifyCredentials as RequestHandler);
 router.get(
   "/log-out",
   authorization.destroySession as RequestHandler,

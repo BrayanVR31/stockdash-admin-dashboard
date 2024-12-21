@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "@models";
+import { ServerError } from "@types";
+import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@enums";
 const { JWT_SECRET_WORD: secretWord, JWT_EXPIRATION: expiresIn } = process.env;
 
 // Verify user credentials and generate access token
@@ -10,9 +12,9 @@ export async function verifyCredentials(
   response: Response,
   next: NextFunction,
 ) {
+  const serverError = new Error("") as ServerError;
   try {
     const { email, password } = request.body;
-
     // TODO: create an intial trigger to register admin user (mongodb)
     const users = await User.find();
     if (users.length === 0) {
@@ -24,30 +26,42 @@ export async function verifyCredentials(
 
     const user = await User.findOne({ email });
     // Verfify email and password
-    if (!user)
-      return next(
-        new Error("User isn't registered on the system or it's incorrect"),
-      );
+    if (!user) {
+      serverError.title = "Invalid credentials";
+      serverError.status = HTTP_STATUS_CODES.UNAUTHORIZED;
+      serverError.message = HTTP_STATUS_TYPES.UNAUTHORIZED;
+      serverError.jsonKey = "error";
+      return next(serverError);
+    }
     const isValidPass = await bcrypt.compare(password, user.password);
-    if (!isValidPass) return next(new Error("The password isn't valid"));
+    if (!isValidPass) {
+      serverError.title = "Invalid credentials";
+      serverError.status = HTTP_STATUS_CODES.UNAUTHORIZED;
+      serverError.message = HTTP_STATUS_TYPES.UNAUTHORIZED;
+      serverError.jsonKey = "error";
+      return next(serverError);
+    }
     // Generated token
     const token = jwt.sign({ id: user.id }, secretWord!, { expiresIn });
     // Setting token inside cookie
     response.cookie("access-token", token, { httpOnly: true });
-    return next();
-  } catch (error) {
-    console.log(error);
-    if (error instanceof jwt.JsonWebTokenError)
-      return response.status(401).json({
-        error: {
-          message: "The access token is required to access in the system.",
-        },
-      });
-    return response.status(500).json({
-      error: {
-        message: "The server detects am internal or potential error(s).",
-      },
+    return response.status(HTTP_STATUS_CODES.OK).json({
+      status: HTTP_STATUS_CODES.OK,
+      message: "The user was logged without any error and successfully.",
     });
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      serverError.title = "JWT error";
+      serverError.status = HTTP_STATUS_CODES.UNAUTHORIZED;
+      serverError.message = HTTP_STATUS_TYPES.JWT_ERROR;
+      serverError.jsonKey = "error";
+      return next(serverError);
+    }
+    serverError.title = "Internal server error";
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.jsonKey = "error";
+    return next(serverError);
   }
 }
 

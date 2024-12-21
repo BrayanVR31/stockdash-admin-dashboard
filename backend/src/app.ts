@@ -10,19 +10,11 @@ const { APP_HOST: hostname, APP_PORT: port } = process.env;
 // Express configurations
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
 app.use(api);
-app.get(
-  "*",
-  authorization.verifyAccess as express.RequestHandler,
-  function (request, response) {
-    response.json({
-      message: "Express server is ready and you can get started",
-    });
-  },
-);
 app.use(handleError);
 
 export const startServer = () => {

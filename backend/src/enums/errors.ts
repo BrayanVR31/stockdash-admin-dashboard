@@ -6,6 +6,7 @@ export enum HTTP_STATUS_TYPES {
   "BAD_REQUEST" = "The server won't be able to continue because of malformed or invalid client request.",
   "UNAUTHORIZED" = "Access is denied, the current user credentials are invalid, or the client isn't allowed access.",
   "FORBIDDEN" = "The server blocked the current request because of a lack of permission or the current resource isn't allowed to see.",
+  "JWT_ERROR" = "Error when the token was generated or it's impossible to access it.",
 }
 
 export enum HTTP_STATUS_CODES {
