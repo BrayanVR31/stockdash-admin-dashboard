@@ -1,17 +1,17 @@
-import { Schema, model } from "mongoose";
-import { ICategory, categorySchema, supplierSchema, ISupplier } from ".";
+import { Schema, model, Types } from "mongoose";
+import { ICategory } from ".";
 
 // Types
 export interface IProduct {
   name: string;
-  categories?: ICategory[];
+  categories?: Types.ObjectId[];
   price: {
     purchase: number;
     sale: number;
   };
   description?: string;
   quantity?: number;
-  suppliers: ISupplier[];
+  suppliers: Types.ObjectId[];
   images: string[];
   status: boolean;
   deletedAt?: Date;
@@ -25,9 +25,10 @@ const productSchema = new Schema<IProduct>(
       required: true,
     },
     categories: {
-      type: [categorySchema],
+      type: [Types.ObjectId],
       required: false,
       default: null,
+      ref: "Category",
     },
     price: {
       purchase: {
@@ -50,7 +51,8 @@ const productSchema = new Schema<IProduct>(
       default: 0,
     },
     suppliers: {
-      type: [supplierSchema],
+      type: [Types.ObjectId],
+      ref: "Supplier",
       required: true,
     },
     images: {
@@ -79,6 +81,7 @@ productSchema.alias("_id", "id");
 
 // Middlewares
 productSchema.post("save", function (document) {
+  console.log("post middleware is executing...");
   console.log(document);
 });
 

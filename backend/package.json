@@ -17,7 +17,8 @@
     "@models": "src/models/index.ts",
     "@middlewares": "src/middlewares/index.ts",
     "@enums": "src/enums/index.ts",
-    "@utils": "./src/utils/index.ts"
+    "@utils": "./src/utils/index.ts",
+    "@validations": "./src/validations/index.ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -40,6 +41,8 @@
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "mongoose": "^8.8.4",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "zod": "^3.24.1",
+    "zod-validation-error": "^3.4.0"
   }
 }

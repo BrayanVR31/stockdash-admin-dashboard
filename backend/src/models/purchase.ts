@@ -1,14 +1,13 @@
-import { Schema, model } from "mongoose";
-import { ISupplier, IProduct, supplierSchema, productSchema } from ".";
+import { Schema, model, Types, ObjectId } from "mongoose";
 
 // Types
 export interface IPurchase {
   name: string;
   totalPrice: number;
   totalQuantity: number;
-  supplier: ISupplier;
+  supplier: ObjectId;
   purchaseDate?: Date;
-  products: IProduct[];
+  products: Types.ObjectId[];
   ticketImages?: string[];
   deletedAt?: Date;
 }
@@ -29,7 +28,8 @@ const purchaseSchema = new Schema<IPurchase>(
       required: true,
     },
     supplier: {
-      type: supplierSchema,
+      type: Types.ObjectId,
+      ref: "Supplier",
       required: true,
     },
     purchaseDate: {
@@ -38,12 +38,13 @@ const purchaseSchema = new Schema<IPurchase>(
       default: null,
     },
     products: {
-      type: [productSchema],
+      type: [Types.ObjectId],
+      ref: "Product",
       required: true,
     },
     ticketImages: {
       type: [String],
-      require: false,
+      required: false,
       default: null,
     },
     deletedAt: {

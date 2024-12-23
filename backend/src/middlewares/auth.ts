@@ -101,15 +101,32 @@ export async function verifyAccess(
     return next();
   } catch (error) {
     console.log(error);
-    if (error instanceof jwt.JsonWebTokenError)
-      return response.status(401).json({
+    if (error instanceof jwt.JsonWebTokenError) {
+      return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {
-          message: "The access token is required to access in the system.",
+          title: "Error token generation",
+          message: HTTP_STATUS_TYPES.JWT_ERROR,
+          code: HTTP_STATUS_CODES.UNAUTHORIZED,
+          type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
         },
       });
-    return response.status(500).json({
+    }
+    if (error instanceof jwt.TokenExpiredError) {
+      return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
+        error: {
+          title: "Expiration token signature",
+          message: HTTP_STATUS_TYPES.JWT_EXPIRATION,
+          code: HTTP_STATUS_CODES.UNAUTHORIZED,
+          type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
+        },
+      });
+    }
+    return response.status(HTTP_STATUS_CODES.SERVER_ERROR).json({
       error: {
-        message: "The server detects am internal or potential error(s).",
+        title: "Internal server error",
+        message: HTTP_STATUS_TYPES.SERVER_ERROR,
+        code: HTTP_STATUS_CODES.SERVER_ERROR,
+        type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.SERVER_ERROR],
       },
     });
   }

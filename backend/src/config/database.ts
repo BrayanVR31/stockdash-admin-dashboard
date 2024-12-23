@@ -13,6 +13,7 @@ export async function initDBConnection() {
     const url = `mongodb://${hostname}:${port}/${database}`;
     const connection = await mongoose.connect(url, { user, pass });
     console.log("CONNECTION TO DATABASE WAS SUCCESSFULLY STABLISHED");
+    return connection;
   } catch (error) {
     console.log(error);
   }

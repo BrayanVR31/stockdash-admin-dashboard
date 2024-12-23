@@ -13,7 +13,10 @@ export const home: ProductController = async (request, response, next) => {
     const total = await Product.countDocuments();
     const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
-    const results = await Product.find().skip(skipDocument).limit(perPage);
+    const results = await Product.find()
+      .populate("suppliers")
+      .skip(skipDocument)
+      .limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,
@@ -22,6 +25,7 @@ export const home: ProductController = async (request, response, next) => {
       per_page: perPage,
     });
   } catch (error) {
+    console.log(error);
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
