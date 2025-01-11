@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@enums";
+import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@/enums";
 
 export const checkSchema = <T extends z.ZodTypeAny>(schema: T) => {
   return (async (request: Request, response: Response, next: NextFunction) => {

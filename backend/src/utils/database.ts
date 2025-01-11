@@ -1,5 +1,5 @@
 import { Types, isValidObjectId } from "mongoose";
-import { database as db } from "@config";
+import { database as db } from "@/config";
 
 /**
  *  Retrives an array of documents through reference's ObjectId (single or multiple)

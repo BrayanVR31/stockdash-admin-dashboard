@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { ServerError, ResponseError } from "@types";
-import { HTTP_STATUS_CODES } from "@enums";
+import { ServerError, ResponseError } from "@/types";
+import { HTTP_STATUS_CODES } from "@/enums";
 
 // Handle each server error such as database, validation, internal error, etc.
 export function handleError(

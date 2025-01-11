@@ -1,6 +1,6 @@
 import "module-alias/register";
 import "dotenv/config";
-import { database } from "@config";
+import { database } from "@/config";
 import { startServer } from "./app";
 
 async function main() {
@@ -12,5 +12,4 @@ async function main() {
     startServer();
   }
 }
-
 main();

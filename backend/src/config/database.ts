@@ -16,5 +16,6 @@ export async function initDBConnection() {
     return connection;
   } catch (error) {
     console.log(error);
+    //console.log("ERROR TO STABLISH DATABASE CONNECTION");
   }
 }

@@ -1,13 +1,13 @@
 import { Router, RequestHandler } from "express";
-import { category, supplier, product, sale, purchase } from "@controllers";
-import { validation } from "@middlewares";
+import { category, supplier, product, sale, purchase } from "@/controllers";
+import { validation } from "@/middlewares";
 import {
   categoryValid,
   supplierValid,
   productValid,
   purchaseValid,
   saleValid,
-} from "@validations";
+} from "@/validations";
 
 const router = Router();
 

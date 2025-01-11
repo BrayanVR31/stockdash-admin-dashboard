@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { formatMsg, VALID_MSG } from "@enums";
-import { validateRefInDB, transformRefList } from "@utils";
+import { formatMsg, VALID_MSG } from "@/enums";
+import { validateRefInDB, transformRefList } from "@/utils";
 
 const schema = z.object({
   name: z.string({

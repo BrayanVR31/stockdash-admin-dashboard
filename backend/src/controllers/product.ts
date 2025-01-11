@@ -1,7 +1,7 @@
-import { Product, IProduct } from "@models";
-import { Controller, ServerError, JSONResponse } from "@types";
-import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
-import { paginateDocs } from "@utils";
+import { Product, IProduct } from "@/models";
+import { Controller, ServerError, JSONResponse } from "@/types";
+import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
+import { paginateDocs } from "@/utils";
 
 // Types
 type ProductController = Controller<JSONResponse<IProduct>>;

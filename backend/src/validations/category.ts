@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { formatMsg, VALID_MSG } from "@enums";
+import { formatMsg, VALID_MSG } from "@/enums";
 
 export const schema = z.object({
   name: z

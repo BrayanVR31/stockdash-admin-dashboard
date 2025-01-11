@@ -1,7 +1,7 @@
 import { Router, RequestHandler } from "express";
 import auth from "./auth";
 import system from "./system";
-import { authorization } from "@middlewares";
+import { authorization } from "@/middlewares";
 
 const router = Router();
 const prefix = "/v1";

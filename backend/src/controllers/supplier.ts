@@ -1,7 +1,7 @@
-import { Supplier, ISupplier } from "@models";
-import { Controller, ServerError, JSONResponse } from "@types";
-import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
-import { paginateDocs } from "@utils";
+import { Supplier, ISupplier } from "@/models";
+import { Controller, ServerError, JSONResponse } from "@/types";
+import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
+import { paginateDocs } from "@/utils";
 
 //  Types
 type SupplierController = Controller<JSONResponse<ISupplier>>;
@@ -11,15 +11,15 @@ export const home: SupplierController = async (request, response, next) => {
   try {
     // Pagination configuration
     const total = await Supplier.countDocuments();
-    const { per_page, page  } = request.query;
+    const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
     const results = await Supplier.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,
       subtotal: results.length,
-      page: (per_page && !page) ? 1 : +page,
-      per_page: perPage
+      page: per_page && !page ? 1 : +page,
+      per_page: perPage,
     });
   } catch (error) {
     console.log(error);

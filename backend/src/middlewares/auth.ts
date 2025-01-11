@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "@models";
-import { ServerError } from "@types";
-import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@enums";
+import { User } from "@/models";
+import { ServerError } from "@/types";
+import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@/enums";
 const { JWT_SECRET_WORD: secretWord, JWT_EXPIRATION: expiresIn } = process.env;
 
 // Verify user credentials and generate access token
@@ -96,16 +96,28 @@ export async function verifyAccess(
   next: NextFunction,
 ) {
   try {
-    const token = request.cookies["access-token"];
-    jwt.verify(token, secretWord!);
+    // Token structure verification
+    const bearerToken = (request.headers.authorization ?? "").split("Bearer ");
+    const parsedToken = bearerToken.slice(1).join("");
+    if (!parsedToken)
+      return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
+        error: {
+          message: "You need to provide a token to access this resource",
+          title: "No token provided",
+          code: HTTP_STATUS_CODES.UNAUTHORIZED,
+          type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
+        },
+      });
+
+    // Token verification
+    jwt.verify(parsedToken, secretWord!);
     return next();
   } catch (error) {
-    console.log(error);
     if (error instanceof jwt.JsonWebTokenError) {
       return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {
-          title: "Error token generation",
-          message: HTTP_STATUS_TYPES.JWT_ERROR,
+          title: error.message,
+          message: "Invalid token signature",
           code: HTTP_STATUS_CODES.UNAUTHORIZED,
           type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
         },

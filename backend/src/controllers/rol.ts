@@ -1,5 +1,5 @@
-import { Controller, ServerError } from "@types";
-import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@enums";
+import { Controller, ServerError } from "@/types";
+import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
 
 // Get all resources
 export const home: Controller = async (request, response, next) => {

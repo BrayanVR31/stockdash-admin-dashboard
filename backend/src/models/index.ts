@@ -7,3 +7,4 @@ export * from "./purchase";
 export * from "./sale";
 export * from "./permission";
 export * from "./rol";
+export * from "./token";

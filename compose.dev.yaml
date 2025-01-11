@@ -1,0 +1,27 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: ./backend
+      target: build
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 4000:4000
+    command: npm run dev
+    restart: always
+  dashboard:
+    container_name: dashboard
+    build:
+      context: ./frontend
+      target: build
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5173:5173
+    depends_on:
+      - api
+    restart: always
+    command: npm run dev:local

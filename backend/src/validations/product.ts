@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { formatMsg, VALID_MSG } from "@enums";
-import { transformRefList, validateRefInDB, validateEmptyArray } from "@utils";
+import { formatMsg, VALID_MSG } from "@/enums";
+import { transformRefList, validateRefInDB, validateEmptyArray } from "@/utils";
 
 const priceSchema = z.object(
   {

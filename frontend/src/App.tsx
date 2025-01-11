@@ -1,10 +1,12 @@
-import { BrowserRouter } from "react-router";
-import { Router } from "@routes";
+import { BrowserRouter, Route, Routes } from "react-router";
+import { LoginPage } from "@/features/authentication";
 
 function App() {
   return (
     <BrowserRouter>
-      <Router />
+      <Routes>
+        <Route path="*" element={<LoginPage />} />
+      </Routes>
     </BrowserRouter>
   );
 }

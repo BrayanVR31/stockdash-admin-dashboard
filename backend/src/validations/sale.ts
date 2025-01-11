@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { transformRefList, validateRefInDB } from "@utils";
-import { formatMsg, VALID_MSG } from "@enums";
+import { transformRefList, validateRefInDB } from "@/utils";
+import { formatMsg, VALID_MSG } from "@/enums";
 
 const schema = z.object({
   products: z

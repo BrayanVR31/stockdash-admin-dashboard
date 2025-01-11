@@ -1,7 +1,7 @@
 import { z, RefinementCtx } from "zod";
 import { Types } from "mongoose";
-import { db } from "@utils";
-import { formatMsg, VALID_MSG } from "@enums";
+import { db } from "@/utils";
+import { formatMsg, VALID_MSG } from "@/enums";
 
 /**
  * Transform each id reference into valid objectId
