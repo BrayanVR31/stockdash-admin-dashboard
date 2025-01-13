@@ -8,7 +8,7 @@ type Props = React.DetailedHTMLProps<
 function Label({ children, ...props }: Props) {
   return (
     <label
-      className="font-bold text-sm text-stone-900 peer-required/input:after:content-['*'] peer-required/input:after:text-red-600 peer-required/input:after:ml-1"
+      className="font-bold text-sm text-neutral-800/95 peer-required/input:after:content-['*'] peer-required/input:after:text-red-600 peer-required/input:after:ml-1 dark:text-neutral-200"
       {...props}
     >
       {children}

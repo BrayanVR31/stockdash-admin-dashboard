@@ -1,11 +1,11 @@
 # Building stage
-FROM node:22.12.0-alpine AS build
+FROM node:22-bullseye-slim AS build
 
 WORKDIR /usr/src/app
 
-COPY package*.json .
+COPY package*.json ./
 
-RUN npm install
+RUN npm ci --include=dev
 
 COPY . .
 
