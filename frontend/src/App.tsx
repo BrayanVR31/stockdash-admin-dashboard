@@ -7,7 +7,10 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <Routes>
-          <Route path="*" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard">
+            <Route index element={<div>Dashboard</div>} />
+          </Route>
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

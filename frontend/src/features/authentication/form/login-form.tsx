@@ -1,12 +1,11 @@
 import { LogIn } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { UserInputs, userSchema } from "./user-schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label, InputGroup, ValidationError } from "../components";
-import { login } from "./login-service";
+import { useAuth } from "./use-auth";
 
 function LoginForm() {
   const {
@@ -17,15 +16,11 @@ function LoginForm() {
     resolver: zodResolver(userSchema),
     defaultValues: { email: "", password: "" },
   });
-  const { mutate } = useMutation({
-    mutationFn: login,
-    onError: (response) => console.log(response),
-    onSuccess: (res) => console.log(res),
-  });
+  const { authMutation } = useAuth();
   // Event handlers
   const onSubmit: SubmitHandler<UserInputs> = (user) => {
     console.log(user);
-    mutate(user);
+    authMutation.mutate(user);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
  */
 function useLocalStorage<T>(key: string, defaultValue?: T) {
   const [storageValue, changeStorageValue] = useState<T>(
-    () => initLocalStorage(key) ?? defaultValue,
+    () => initLocalStorage(key) ?? (defaultValue || null),
   );
   // Side-effects
   useEffect(() => {
@@ -18,7 +18,8 @@ function useLocalStorage<T>(key: string, defaultValue?: T) {
 
 function initLocalStorage(storageKey: string) {
   const key = window.localStorage.getItem(storageKey);
-  return key ? JSON.parse(key) : null;
+  if (!key) return null;
+  return JSON.parse(key);
 }
 
 export { useLocalStorage };
