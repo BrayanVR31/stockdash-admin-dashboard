@@ -1,19 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { createPortal } from "react-dom";
 import { ThemeProvider } from "@/components/theme";
-import { LoginPage } from "@/features/authentication";
+import { AppRouter } from "@/routes";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard">
-            <Route index element={<div>Dashboard</div>} />
-          </Route>
-        </Routes>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <AppRouter />
+      {createPortal(<ToastContainer />, document.querySelector("body")!)}
+    </ThemeProvider>
   );
 }
 

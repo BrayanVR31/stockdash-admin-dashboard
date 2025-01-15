@@ -17,49 +17,52 @@ function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
   const { authMutation } = useAuth();
+
   // Event handlers
   const onSubmit: SubmitHandler<UserInputs> = (user) => {
     console.log(user);
     authMutation.mutate(user);
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <InputGroup>
-        <Input
-          className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.email))}`}
-          required
-          type="email"
-          id="email"
-          placeholder="nombre@dominio.com"
-          {...register("email")}
-        />
-        <Label htmlFor="email">Email</Label>
-        {errors.email && (
-          <ValidationError>{errors.email.message}</ValidationError>
-        )}
-      </InputGroup>
-      <InputGroup>
-        <Input
-          className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.password))}`}
-          required
-          type="password"
-          id="password"
-          min={8}
-          placeholder="........."
-          {...register("password")}
-        />
-        <Label htmlFor="password">Contraseña</Label>
-        {errors.password && (
-          <ValidationError>{errors.password.message}</ValidationError>
-        )}
-      </InputGroup>
-      <div className="grid mt-12">
-        <Button className="hover:bg-blue-800/85 bg-blue-800 font-semibold py-6 transition-all duration-500 dark:text-white hover:translate-y-1">
-          <LogIn />
-          <span>Iniciar sesión</span>
-        </Button>
-      </div>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <InputGroup>
+          <Input
+            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.email))}`}
+            required
+            type="email"
+            id="email"
+            placeholder="nombre@dominio.com"
+            {...register("email")}
+          />
+          <Label htmlFor="email">Email</Label>
+          {errors.email && (
+            <ValidationError>{errors.email.message}</ValidationError>
+          )}
+        </InputGroup>
+        <InputGroup>
+          <Input
+            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.password))}`}
+            required
+            type="password"
+            id="password"
+            min={8}
+            placeholder="........."
+            {...register("password")}
+          />
+          <Label htmlFor="password">Contraseña</Label>
+          {errors.password && (
+            <ValidationError>{errors.password.message}</ValidationError>
+          )}
+        </InputGroup>
+        <div className="grid mt-12">
+          <Button className="hover:bg-blue-800/85 bg-blue-800 font-semibold py-6 transition-all duration-500 dark:text-white hover:translate-y-1">
+            <LogIn />
+            <span>Iniciar sesión</span>
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }
 
