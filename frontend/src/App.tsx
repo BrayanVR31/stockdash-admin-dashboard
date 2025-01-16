@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
+import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@/components/theme";
 import { AppRouter } from "@/routes";
-import { ToastContainer } from "react-toastify";
 
 function App() {
   return (

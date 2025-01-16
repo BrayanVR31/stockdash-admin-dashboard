@@ -23,7 +23,7 @@ export const signIn: Controller<ResponseError | any> = async (
           message: error.message,
           code: error.statusCode,
           title: "Authentication error",
-          type: "AUTHENTICATION_FAILED",
+          type: error.type,
         },
       });
     }

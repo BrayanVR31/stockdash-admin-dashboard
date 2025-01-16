@@ -12,6 +12,7 @@ interface Credentials {
 interface AuthError {
   message: string;
   statusCode: number;
+  type?: string;
 }
 
 interface AuthResult {
@@ -33,12 +34,20 @@ const verifyCredentials: VerifyAuth = async ({
     // Return error if user not found or invalid email
     if (!authUser)
       return {
-        error: { message: "User not found or invalid email", statusCode: 401 },
+        error: {
+          message: "User not found or invalid email",
+          statusCode: 401,
+          type: "INVALID_EMAIL",
+        },
       };
     // Return error if password is invalid
     if (!(await bcrypt.compare(password, authUser.password)))
       return {
-        error: { message: "Invalid password", statusCode: 401 },
+        error: {
+          message: "Invalid password",
+          statusCode: 401,
+          type: "INVALID_PASSWORD",
+        },
       };
     const userRef = authUser._id.toHexString();
     return { error: null, userRef };

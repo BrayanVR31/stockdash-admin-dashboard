@@ -1,11 +1,16 @@
 import { LogIn } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserInputs, userSchema } from "./user-schema";
+import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label, InputGroup, ValidationError } from "../components";
 import { useAuth } from "./use-auth";
+import { toast } from "react-toastify";
+import { Notification } from "@/lib";
+import { AuthMessage } from "../components";
 
 function LoginForm() {
   const {
@@ -17,11 +22,39 @@ function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
   const { authMutation } = useAuth();
-
+  const navigate = useNavigate();
   // Event handlers
-  const onSubmit: SubmitHandler<UserInputs> = (user) => {
-    console.log(user);
-    authMutation.mutate(user);
+  const onSubmit: SubmitHandler<UserInputs> = async (user) => {
+    await toast.promise(
+      Notification.delayedMutation({ promise: authMutation.mutateAsync(user) }),
+      {
+        error: {
+          render: () => <AuthMessage variation="auth-error" />,
+          icon: false,
+          autoClose: 1000,
+        },
+        success: {
+          render: () => <AuthMessage variation="auth-success" />,
+          icon: false,
+          onClose: () => navigate("/dashboard"),
+          autoClose: 1000,
+        },
+        pending: { render: () => <AuthMessage variation="auth-info" /> },
+      },
+      {
+        className:
+          "relative border bg-white dark:bg-slate-900 dark:border-gray-400/85 overflow-hidden",
+        toastId: "auth-message",
+        closeButton: (props) => (
+          <button
+            onClick={() => props.closeToast(true)}
+            className="absolute right-4 top-4 text-gray-400"
+          >
+            <X size={18.5} />
+          </button>
+        ),
+      },
+    );
   };
   return (
     <>
