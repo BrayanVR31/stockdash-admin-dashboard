@@ -8,7 +8,9 @@ interface AuthRes {
   status: number;
 }
 
-const login = async (user: User) =>
-  (await axiosInstance.post<AuthRes>("/sign-in", user)).data;
+const login = async (user: User) => {
+  const response = await axiosInstance.post<AuthRes>("/sign-in", user);
+  return response;
+};
 
 export { login };

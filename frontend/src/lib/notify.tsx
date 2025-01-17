@@ -2,9 +2,9 @@
  * This function simulate an artificial delay
  * in a promise
  */
-function delayPromise(time: number = 1000) {
+const delayPromise = (time: number = 1000) => {
   return new Promise((resolve) => setTimeout(resolve, time));
-}
+};
 
 /**
  * This function add some delay

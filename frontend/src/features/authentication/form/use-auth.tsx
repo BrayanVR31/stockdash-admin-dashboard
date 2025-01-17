@@ -7,9 +7,11 @@ function useAuth() {
   const authMutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      const { token } = response;
-      setToken(token);
-      console.log({ token });
+      console.log("success", response?.data?.token);
+      //setToken(token as string);
+    },
+    onError: () => {
+      console.log("login error");
     },
   });
   return { authMutation };

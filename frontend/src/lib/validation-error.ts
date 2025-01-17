@@ -8,8 +8,12 @@ type ValidationError = GenericError<string>;
  * transform on custom error provided by
  * object key.
  */
-function getValidationError() {
+function getErrorKey(key: string) {
   const errors: ValidationError = {
-    AUTHENTICATION_FAILED: "",
+    INVALID_PASSWORD: "La contraseña de usuario es inválida.",
+    INVALID_EMAIL: "El correo electrónico no existe.",
   };
+  return errors[key] || "Ha ocurrido un problema inesperado.";
 }
+
+export { getErrorKey };

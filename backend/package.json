@@ -47,6 +47,6 @@
     "zod-validation-error": "^3.4.0"
   },
   "_moduleAliases": {
-    "@": "./dist"
+    "@": "./src"
   }
 }

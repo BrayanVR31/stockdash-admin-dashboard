@@ -1,6 +1,7 @@
 import { LogIn } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserInputs, userSchema } from "./user-schema";
 import { X } from "lucide-react";
@@ -23,8 +24,10 @@ function LoginForm() {
   });
   const { authMutation } = useAuth();
   const navigate = useNavigate();
+  const [artificialDisabled, setArtificialDisabled] = useState(false);
   // Event handlers
   const onSubmit: SubmitHandler<UserInputs> = async (user) => {
+    setArtificialDisabled(true);
     await toast.promise(
       Notification.delayedMutation({ promise: authMutation.mutateAsync(user) }),
       {
@@ -32,18 +35,26 @@ function LoginForm() {
           render: () => <AuthMessage variation="auth-error" />,
           icon: false,
           autoClose: 1000,
+          hideProgressBar: true,
+          onClose: () => setArtificialDisabled(false),
         },
         success: {
           render: () => <AuthMessage variation="auth-success" />,
           icon: false,
-          onClose: () => navigate("/dashboard"),
           autoClose: 1000,
+          onClose: () => {
+            setArtificialDisabled(false);
+            navigate("/dashboard");
+          },
         },
-        pending: { render: () => <AuthMessage variation="auth-info" /> },
+        pending: {
+          render: () => <AuthMessage variation="auth-info" />,
+          icon: false,
+        },
       },
       {
         className:
-          "relative border bg-white dark:bg-slate-900 dark:border-gray-400/85 overflow-hidden",
+          "relative border bg-white dark:bg-slate-900 dark:border-gray-400/85 overflow-hidden font-sans",
         toastId: "auth-message",
         closeButton: (props) => (
           <button
@@ -89,7 +100,10 @@ function LoginForm() {
           )}
         </InputGroup>
         <div className="grid mt-12">
-          <Button className="hover:bg-blue-800/85 bg-blue-800 font-semibold py-6 transition-all duration-500 dark:text-white hover:translate-y-1">
+          <Button
+            disabled={artificialDisabled}
+            className="hover:bg-blue-800/85 bg-blue-800 font-semibold py-6 transition-all duration-500 dark:text-white hover:translate-y-1"
+          >
             <LogIn />
             <span>Iniciar sesión</span>
           </Button>

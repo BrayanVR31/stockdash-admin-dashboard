@@ -1,10 +1,30 @@
+ARG NODE_VERSION=22
+
+# Development image stage
+FROM node:${NODE_VERSION}-bullseye-slim AS development
+
+ENV NODE_ENV development
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm i
+
+COPY . ./
+
+EXPOSE 4000
+
+CMD ["npm", "run", "dev"]
+
+# Building image stage
 FROM node:22-bullseye-slim AS build
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm ci --include=dev
+RUN npm install
 
 COPY . .
 

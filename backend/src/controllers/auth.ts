@@ -15,7 +15,6 @@ export const signIn: Controller<ResponseError | any> = async (
       email,
       password,
     });
-
     // Return error when the email and password doesn't match
     if (error) {
       return response.status(401).json({
