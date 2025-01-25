@@ -83,3 +83,20 @@ export const refreshToken: Controller = async (request, response) => {
     });
   }
 };
+
+/**
+ * Get all user information by reference account (id)
+ */
+export const getProfile: Controller = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const user = await User.findById(id).select({
+      password: 0,
+      deletedAt: 0,
+      sessions: 0,
+    });
+    return response.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+  }
+};

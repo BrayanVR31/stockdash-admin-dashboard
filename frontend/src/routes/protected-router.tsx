@@ -1,9 +1,19 @@
 import { Outlet, Navigate } from "react-router";
-import { useLocalStorage } from "@/hooks";
+import { useLocalStore } from "@/hooks";
+import { Layout } from "@/features";
 
 function ProtectedRouter() {
-  const { storageValue: token } = useLocalStorage<string>("token");
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  const { value: token } = useLocalStore<string>({
+    key: "token",
+    isEncripted: true,
+  });
+  return token ? (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ) : (
+    <Navigate to="/login" />
+  );
 }
 
 export { ProtectedRouter };

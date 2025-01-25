@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useEffect, useContext } from "react";
-import { useLocalStorage } from "@/hooks";
+import { useLocalStore } from "@/hooks";
 
 // Types
 type Theme = "dark" | "light" | "system";
@@ -31,8 +31,10 @@ export function ThemeProvider({
   storageKey = "dashboard-ui-theme",
   ...props
 }: Props) {
-  const { storageValue: theme, changeStorageValue: setTheme } =
-    useLocalStorage<Theme>(storageKey, defaultTheme);
+  const { value: theme, setValue: setTheme } = useLocalStore<Theme>({
+    initValue: defaultTheme,
+    key: storageKey,
+  });
   // Side effects
   useEffect(() => {
     const root = window.document.documentElement;
@@ -48,11 +50,11 @@ export function ThemeProvider({
       return;
     }
 
-    root.classList.add(theme);
+    root.classList.add(theme!);
   }, [theme]);
 
   const value = {
-    theme,
+    theme: theme!,
     setTheme: (theme: Theme) => {
       setTheme(theme);
     },

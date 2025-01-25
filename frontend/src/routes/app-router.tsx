@@ -1,14 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import { LoginPage } from "@/features/authentication";
+import { AuthRoute } from "./auth-route";
 import { ProtectedRouter } from "./protected-router";
+import { Profile } from "@/features";
 
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<AuthRoute />} />
         <Route path="/dashboard" element={<ProtectedRouter />}>
           <Route index element={<div>Dashboard</div>} />
+          <Route path="account/profile" element={<Profile.Home />} />
         </Route>
       </Routes>
     </BrowserRouter>

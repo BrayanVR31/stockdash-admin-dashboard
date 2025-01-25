@@ -12,5 +12,6 @@ router.get(
   authorization.destroySession as RequestHandler,
   auth.logOut as RequestHandler,
 );
+router.get("/profile/:id", auth.getProfile as RequestHandler);
 
 export default router;
