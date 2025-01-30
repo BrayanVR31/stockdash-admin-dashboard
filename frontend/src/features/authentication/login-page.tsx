@@ -1,6 +1,6 @@
-import { Layers } from "lucide-react";
 import { LoginForm } from "./form";
 import { ThemeToggle } from "./components";
+import { Logo } from "@/components/ui/Logo";
 
 function LoginPage() {
   return (
@@ -8,9 +8,7 @@ function LoginPage() {
       <main className="min-h-svh grid items-center content-center justify-items-center gap-y-6">
         {/** Login section */}
         <div className="flex items-center justify-center gap-x-2 ">
-          <div className="w-12 h-12 flex items-center justify-center text-sky-100 rounded-full bg-gradient-to-r from-sky-500 to-blue-700">
-            <Layers size={24.5} />
-          </div>
+          <Logo />
           <span className="font-bold text-blue-700 text-lg dark:text-blue-50">
             stockdash
           </span>

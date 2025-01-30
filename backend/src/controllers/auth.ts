@@ -7,7 +7,7 @@ import { auth } from "@/utils";
 export const signIn: Controller<ResponseError | any> = async (
   request,
   response,
-  next,
+  next
 ) => {
   try {
     const { email, password } = request.body;

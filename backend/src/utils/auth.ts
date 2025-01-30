@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User, Token } from "@/models";
-import { spec } from "node:test/reporters";
 
 // Types
 interface Credentials {
@@ -40,8 +39,11 @@ const verifyCredentials: VerifyAuth = async ({
           type: "INVALID_EMAIL",
         },
       };
+
     // Return error if password is invalid
-    if (!(await bcrypt.compare(password, authUser.password)))
+    const dbPass = authUser.password;
+    const hasValidPassword = await bcrypt.compare(password, dbPass);
+    if (!hasValidPassword)
       return {
         error: {
           message: "Invalid password",
@@ -99,7 +101,7 @@ const restoreAuthToken = async (cookieToken: string) => {
       secretWord,
       {
         expiresIn: 15 * 60, // 15 minutes
-      },
+      }
     );
     return accessToken;
   } catch (error) {

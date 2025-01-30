@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { useLocalStore, useProfile } from "@/hooks";
 import { TokenPayload } from "@/models";
 import { useProfileStore } from "@/store";
+import { Navbar } from "@/components/ui/dashboard-navbar";
 
 interface Props {
   children: ReactNode;
@@ -23,10 +24,11 @@ function Layout({ children }: Props) {
     if (query.isSuccess) updateProfile(query.data);
   }, [query.isSuccess]);
   return (
-    <div className="bg-neutral-300/50 min-h-svh">
-      <h2 className="text-5xl font-semibold mb-5">Main base template</h2>
-      {query.isSuccess && JSON.stringify(profile)}
-      {children}
+    <div className="bg-neutral-800/75 w-full grid grid-rows-[81px_minmax(calc(100vh-81px),1fr)]">
+      <Navbar />
+      <div className="w-full">
+        <div className="w-[95%] mx-auto">{children}</div>
+      </div>
     </div>
   );
 }

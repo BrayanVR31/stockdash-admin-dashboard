@@ -54,7 +54,7 @@ const addressSchema = new Schema<Address>(
       required: true,
     },
   },
-  { versionKey: false, timestamps: false, _id: false },
+  { versionKey: false, timestamps: false, _id: false }
 );
 
 const profileSchema = new Schema<Profile>(
@@ -74,7 +74,7 @@ const profileSchema = new Schema<Profile>(
       required: false,
     },
   },
-  { timestamps: false, versionKey: false, _id: false },
+  { timestamps: false, versionKey: false, _id: false }
 );
 
 const userSchema = new Schema<IUser>(
@@ -118,7 +118,7 @@ const userSchema = new Schema<IUser>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Alias fields

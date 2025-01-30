@@ -8,6 +8,7 @@ function App() {
     <ThemeProvider>
       <AppRouter />
       {createPortal(<ToastContainer />, document.querySelector("body")!)}
+
     </ThemeProvider>
   );
 }

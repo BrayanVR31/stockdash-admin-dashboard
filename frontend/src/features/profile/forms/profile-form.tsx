@@ -1,6 +1,9 @@
 import { Input } from "@/components/ui/input";
+import { useAppSelector } from "@/hooks";
 
 function ProfileForm() {
+  const profile = useAppSelector((state) => state.profile);
+  console.log({ profile });
   return (
     <form>
       <div className="mb-6 flex gap-x-8">

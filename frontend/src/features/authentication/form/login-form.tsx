@@ -28,6 +28,7 @@ function LoginForm() {
   // Event handlers
   const onSubmit: SubmitHandler<UserInputs> = async (user) => {
     setArtificialDisabled(true);
+    console.log(user);
     await toast.promise(
       Notification.delayedMutation({ promise: authMutation.mutateAsync(user) }),
       {
@@ -64,7 +65,7 @@ function LoginForm() {
             <X size={18.5} />
           </button>
         ),
-      },
+      }
     );
   };
   return (
@@ -72,7 +73,9 @@ function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <InputGroup>
           <Input
-            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.email))}`}
+            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(
+              Boolean(errors?.email)
+            )}`}
             required
             type="email"
             id="email"
@@ -86,7 +89,9 @@ function LoginForm() {
         </InputGroup>
         <InputGroup>
           <Input
-            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(Boolean(errors?.password))}`}
+            className={`peer/input focus-visible:ring-blue-500 dark:border-neutral-50 dark:placeholder:text-neutral-200 ${getInputErrorClass(
+              Boolean(errors?.password)
+            )}`}
             required
             type="password"
             id="password"
