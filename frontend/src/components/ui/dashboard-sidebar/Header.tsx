@@ -1,9 +1,4 @@
-import { PanelRightOpen } from "lucide-react";
-import {
-  SidebarMenuItem,
-  SidebarMenu,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarMenuItem, SidebarMenu } from "@/components/ui/sidebar";
 import { Logo } from "@/components/ui/Logo";
 
 function Header() {
@@ -16,9 +11,6 @@ function Header() {
             Stockdash panel
           </h3>
         </div>
-        <SidebarTrigger>
-          <PanelRightOpen size={16} />
-        </SidebarTrigger>
       </SidebarMenuItem>
     </SidebarMenu>
   );
