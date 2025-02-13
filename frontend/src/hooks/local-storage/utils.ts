@@ -10,7 +10,7 @@ type IGetStorageItem = Pick<ISetStorageItem, "key" | "isEncripted">;
  */
 function setEncryptedItem(value: string) {
   const secretWord = "This is the encryption mode";
-  return CryptoJS.AES.encrypt(value, secretWord).toString();
+  return CryptoJS.AES.encrypt(JSON.stringify(value), secretWord).toString();
 }
 
 /**
@@ -18,8 +18,9 @@ function setEncryptedItem(value: string) {
  * using encryption mode or not.
  */
 function setStorageItem({ key, value, isEncripted }: ISetStorageItem) {
+  console.log("throw an error...");
   if (isEncripted) {
-    const encryptedValue = setEncryptedItem(value);
+    const encryptedValue = setEncryptedItem(JSON.stringify(value));
     window.localStorage.setItem(key, encryptedValue);
     return;
   }
@@ -39,7 +40,7 @@ function getStorageItem<Parsed>({
   if (isEncripted) {
     const secretWord = "This is the encryption mode";
     const bytes = CryptoJS.AES.decrypt(value, secretWord);
-    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8)) as Parsed;
+    return JSON.parse(bytes.toString()) as Parsed;
   }
   return JSON.parse(value) as Parsed;
 }

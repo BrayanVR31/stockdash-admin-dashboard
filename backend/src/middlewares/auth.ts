@@ -99,6 +99,7 @@ export async function verifyAccess(
     // Token structure verification
     const bearerToken = (request.headers.authorization ?? "").split("Bearer ");
     const parsedToken = bearerToken.slice(1).join("");
+    console.log({ parsedToken });
     if (!parsedToken)
       return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {
@@ -113,21 +114,24 @@ export async function verifyAccess(
     jwt.verify(parsedToken, secretWord!);
     return next();
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
-        error: {
-          title: error.message,
-          message: "Invalid token signature",
-          code: HTTP_STATUS_CODES.UNAUTHORIZED,
-          type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
-        },
-      });
-    }
+    console.log(error);
+
     if (error instanceof jwt.TokenExpiredError) {
       return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {
           title: "Expiration token signature",
           message: HTTP_STATUS_TYPES.JWT_EXPIRATION,
+          code: HTTP_STATUS_CODES.UNAUTHORIZED,
+          type: "TOKEN_EXPIRATION",
+        },
+      });
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
+        error: {
+          title: error.message,
+          message: "Invalid token signature",
           code: HTTP_STATUS_CODES.UNAUTHORIZED,
           type: HTTP_STATUS_CODES[HTTP_STATUS_CODES.UNAUTHORIZED],
         },

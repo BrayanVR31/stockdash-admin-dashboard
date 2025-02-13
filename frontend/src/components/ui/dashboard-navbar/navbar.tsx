@@ -5,7 +5,7 @@ import { ThemeOpt, NotificationOpt, ProfileOpt, SearchBar } from "./sys-opts";
 
 function Navbar() {
   return (
-    <div className="sticky top-0 left-0 bg-neutral-900">
+    <div className="sticky top-0 left-0 dark:bg-neutral-900 bg-white z-40">
       <nav className="w-[95%] mx-auto flex h-full items-center justify-between">
         <div className="flex items-center gap-x-4">
           <SidebarTrigger>

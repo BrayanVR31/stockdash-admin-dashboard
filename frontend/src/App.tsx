@@ -1,14 +1,14 @@
 import { createPortal } from "react-dom";
+import { RouterProvider } from "react-router";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@/components/theme";
-import { AppRouter } from "@/routes";
+import { router } from "@/routes";
 
 function App() {
   return (
     <ThemeProvider>
-      <AppRouter />
+      <RouterProvider router={router} />
       {createPortal(<ToastContainer />, document.querySelector("body")!)}
-
     </ThemeProvider>
   );
 }

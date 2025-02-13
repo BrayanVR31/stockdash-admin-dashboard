@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-
-
     :root {
         --background: 0 0% 100%;
         --foreground: 240 10% 3.9%;
@@ -39,6 +37,10 @@
         --sidebar-accent-foreground: 240 5.9% 10%;
         --sidebar-border: 220 13% 91%;
         --sidebar-ring: 217.2 91.2% 59.8%;
+        /** Custom layout values */
+        --product-grid-cols: 1.5fr 2.5fr;
+        --product-grid-rows: repeat(auto-fill, minmax(30px, min-content));
+        --product-grid-auto-rows: minmax(30px, min-content);
     }
 
     .dark {
@@ -80,7 +82,8 @@
         font-family: "Outfit";
         font-style: normal;
         font-display: swap;
-        src: url(./assets/fonts/Outfit/Outfit-VariableFont_wght.ttf) format("truetype");
+        src: url(./assets/fonts/Outfit/Outfit-VariableFont_wght.ttf)
+            format("truetype");
     }
 
     * {

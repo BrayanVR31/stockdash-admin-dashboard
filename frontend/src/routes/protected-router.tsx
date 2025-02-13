@@ -1,25 +1,23 @@
 import { Outlet, Navigate } from "react-router";
-import { useLocalStore } from "@/hooks";
+import { useTokenStore } from "@/store";
 import { Layout } from "@/features";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/dashboard-sidebar";
 
 function ProtectedRouter() {
-  const { value: token } = useLocalStore<string>({
-    key: "token",
-    isEncripted: true,
-  });
-  return token ? (
+  const token = useTokenStore((state) => state.token);
+  return token ? <Panel /> : <Navigate to="/login" />;
+}
+
+function Panel() {
+  return (
     <SidebarProvider>
       <AppSidebar />
       <Layout>
         <Outlet />
       </Layout>
     </SidebarProvider>
-  ) : (
-    <Navigate to="/login" />
   );
 }
-
 
 export { ProtectedRouter };

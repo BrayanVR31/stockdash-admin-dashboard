@@ -8,7 +8,7 @@ const {
 
 const axiosInstance = axios.create({
   baseURL: `${url}:${port}/${path}`,
-  withCredentials: false,
+  withCredentials: true,
 });
 
 export { axiosInstance };

@@ -6,13 +6,14 @@ import { Provider } from "react-redux";
 import { store } from "@/app";
 import "./index.css";
 import App from "./App";
-import { handlingErrors } from "@/interceptors";
+import { handlingErrors, handlingToken } from "@/interceptors";
 
 // Query client
 const queryClient = new QueryClient();
 
 // Calling interceptors on each response and request
 handlingErrors();
+handlingToken();
 
 // Entry point of application
 createRoot(document.querySelector("#root")!).render(

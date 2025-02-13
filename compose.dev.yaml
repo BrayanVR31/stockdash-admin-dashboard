@@ -29,10 +29,9 @@ services:
     image: stockdash/dashboard
     build:
       context: ./frontend
-      target: build
+      target: dev
     volumes:
-      - ./frontend:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./frontend/src:/usr/src/app/src
     ports:
       - 5173:5173
     depends_on:

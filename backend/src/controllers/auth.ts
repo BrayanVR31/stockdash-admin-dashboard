@@ -7,7 +7,7 @@ import { auth } from "@/utils";
 export const signIn: Controller<ResponseError | any> = async (
   request,
   response,
-  next
+  next,
 ) => {
   try {
     const { email, password } = request.body;
@@ -67,6 +67,7 @@ export const logOut: Controller = async (request, response) => {
 export const refreshToken: Controller = async (request, response) => {
   try {
     const token = await auth.restoreAuthToken(request.cookies["refresh_token"]);
+    console.log("refreshed token: ", token);
     return response.status(200).json({
       message: "The token was successfully refreshed",
       token,

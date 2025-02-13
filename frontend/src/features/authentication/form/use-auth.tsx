@@ -1,19 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
-import { useLocalStore } from "@/hooks";
+import { useTokenStore } from "@/store";
 import { login } from "./login-service";
 
 function useAuth() {
-  const { setValue: setToken } = useLocalStore<string>({
-    key: "token",
-    isEncripted: true,
-  });
+  const updateToken = useTokenStore((state) => state.setToken);
   const authMutation = useMutation({
     mutationFn: login,
     onSuccess: (response) => {
-      setToken(response?.data?.token || null);
+      console.log(response);
+      updateToken(response?.data?.token || "");
     },
     onError: () => {
-      setToken(null);
+      //
     },
   });
   return { authMutation };
