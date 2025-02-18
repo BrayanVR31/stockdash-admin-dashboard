@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { User } from "@/models";
 import { Token } from "@/models/token";
 import { ServerError } from "@/types";
@@ -88,7 +88,6 @@ export async function destroySession(
       });
     return next();
   } catch (error) {
-    console.log(error);
     return response.status(500).json({
       error: {
         message: "The server detects am internal or potential error(s).",
@@ -104,7 +103,6 @@ export async function verifyAccess(
   next: NextFunction
 ) {
   try {
-    console.log("middleware - verifying jwt...");
     // Token structure verification
     const bearerToken = (request.headers.authorization ?? "").split("Bearer ");
     const parsedToken = bearerToken.slice(1).join("");

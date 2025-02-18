@@ -4,7 +4,8 @@ import { Schema, model } from "mongoose";
 export interface IPermission {
   name: string;
   description: string;
-  deletedAt?: Date;
+  resource: string;
+  type: string;
 }
 
 // Schemas
@@ -18,20 +19,25 @@ const permissionSchema = new Schema<IPermission>(
       type: String,
       required: true,
     },
-    deletedAt: {
-      type: Date,
-      required: false,
-      default: null,
+    resource: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ["create", "edit", "view", "delete"],
+      required: true,
     },
   },
   {
     versionKey: false,
-    timestamps: true,
-  },
+    timestamps: false,
+    _id: false,
+  }
 );
 
 // Field aliases
-permissionSchema.alias("_id", "id");
+// permissionSchema.alias("_id", "id");
 
 // Model
 const Permission = model<IPermission>("Permission", permissionSchema);
