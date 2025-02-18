@@ -4,11 +4,7 @@ interface Props {
 
 const Error = ({ message }: Props) => {
   if (!message) return null;
-  return (
-    <span className="absolute block -bottom-1 translate-y-full text-sm text-red-300/90">
-      {message}
-    </span>
-  );
+  return <span className="block mt-2 text-sm text-red-300/90">{message}</span>;
 };
 
 export { Error };

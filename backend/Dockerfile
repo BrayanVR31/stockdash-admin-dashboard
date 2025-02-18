@@ -1,47 +1,14 @@
-ARG NODE_VERSION=22
+ARG NODE_VERSION=22.13.1
 
-# Development image stage
-FROM node:${NODE_VERSION}-bullseye-slim AS development
-
-ENV NODE_ENV development
-
+FROM node:${NODE_VERSION}-alpine3.20 as base
 WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm i
-
-COPY . ./
-
 EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
-
-# Building image stage
-FROM node:22-bullseye-slim AS build
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install
+FROM base AS dev 
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
 
 COPY . .
-
-RUN npm run build
-
-FROM node:22-bullseye-slim AS production
-
-ENV NODE_ENV=production
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm ci --only=production
-
-USER node
-
-COPY --from=build /usr/src/app/dist ./dist
-
-CMD ["node", "dist/", "main.js"]
+CMD npm run dev

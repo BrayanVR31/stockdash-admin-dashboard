@@ -7,13 +7,16 @@ import {
 interface ButtonProps {
   children: ReactNode;
   render: () => JSX.Element;
+  className?: string;
 }
 
-function OptButton({ children, render }: ButtonProps) {
+function OptButton({ children, render, className = "" }: ButtonProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-md hover:bg-neutral-600/90 w-9 aspect-square flex items-center justify-center [&>svg]:w-5 transition-colors duration-500">
+        <button
+          className={`rounded-md hover:bg-neutral-600/90 xl:w-9 xl:aspect-square flex items-center justify-center [&>svg]:w-5 transition-colors duration-500 ${className}`}
+        >
           {children}
         </button>
       </DropdownMenuTrigger>

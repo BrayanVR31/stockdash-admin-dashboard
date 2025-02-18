@@ -47,12 +47,12 @@ const mainMenu: MenuSubItems[] = [
     subItems: [
       {
         title: "Listar",
-        url: "#",
+        url: "suppliers",
         icon: ListFilter,
       },
       {
         title: "Crear",
-        url: "#",
+        url: "suppliers/create",
         icon: ListFilterPlus,
       },
     ],

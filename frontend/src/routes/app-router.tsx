@@ -10,33 +10,8 @@ import { Profile, Product } from "@/features";
 import { ProductEdit } from "@/features/products/product-edit";
 import { prefetchProduct } from "@/hooks/use-product";
 import { prefetchSupplierList } from "@/hooks/use-supplier";
-
-/*
-function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<AuthRoute />} />
-        <Route path="/dashboard" element={<ProtectedRouter />}>
-          <Route index element={<div>Dashboard</div>} />
-          <Route path="account/profile" element={<Profile.Home />} />
-          <Route path="products">
-            <Route index element={<Product.HomePage />} />
-            <Route path="create" element={<Product.RegisterPage />} />
-            <Route
-              path=":id"
-              element={<ProductEdit />}
-              loader={async ({ params }) => {
-                console.log("loading query on /suppliers/", params);
-              }}
-            />
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-}
-*/
+import { SupplierPage } from "@/features/suppliers/supplier-list";
+import { SupplierAdd } from "@/features/suppliers/supplier-add";
 
 const router = createBrowserRouter([
   { path: "/login", element: <AuthRoute /> },
@@ -60,6 +35,13 @@ const router = createBrowserRouter([
               console.log("loading query on /suppliers/", params);
             },
           },
+        ],
+      },
+      {
+        path: "suppliers",
+        children: [
+          { index: true, element: <SupplierPage /> },
+          { path: "create", element: <SupplierAdd /> },
         ],
       },
     ],

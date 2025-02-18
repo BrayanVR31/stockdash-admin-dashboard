@@ -17,10 +17,10 @@ services:
     image: stockdash/api
     build:
       context: ./backend
-      target: development
+      target: dev
     volumes:
-      - ./backend:/usr/src/app
-      - api-node-modules:/usr/src/app/node_modules
+      - ./backend/src:/usr/src/app/src
+      - ./backend/public:/usr/src/app/public
     ports:
       - 4000:4000
     restart: always

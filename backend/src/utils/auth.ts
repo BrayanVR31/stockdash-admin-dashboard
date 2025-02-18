@@ -109,4 +109,27 @@ const restoreAuthToken = async (cookieToken: string) => {
   }
 };
 
-export { verifyCredentials, createAuthToken, restoreAuthToken };
+/** Destroy access token from db */
+const destroyAuthToken = async (token: string) => {
+  try {
+    const authToken = await Token.findOneAndDelete({ token });
+    if (!authToken) throw new Error("The token is invalid");
+    return { error: null };
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        error: {
+          type: "FAILED_SESSION_DESTRUCTION",
+          message: error.message,
+        },
+      };
+    }
+  }
+};
+
+export {
+  verifyCredentials,
+  createAuthToken,
+  restoreAuthToken,
+  destroyAuthToken,
+};

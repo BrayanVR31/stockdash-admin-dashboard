@@ -6,11 +6,9 @@ import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@/enums";
 export const checkSchema = <T extends z.ZodTypeAny>(schema: T) => {
   return (async (request: Request, response: Response, next: NextFunction) => {
     try {
-      console.log(request.body);
       await schema.parseAsync(request.body);
       return next();
     } catch (error) {
-      console.log("VALIDATION.....", error);
       const validationError = fromError(error);
       const errors = validationError.details.map((detail) => ({
         ...detail,

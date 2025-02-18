@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { User } from "@/models";
+import { Token } from "@/models/token";
 import { ServerError } from "@/types";
 import { HTTP_STATUS_CODES, HTTP_STATUS_TYPES } from "@/enums";
 const { JWT_SECRET_WORD: secretWord, JWT_EXPIRATION: expiresIn } = process.env;
@@ -10,7 +11,7 @@ const { JWT_SECRET_WORD: secretWord, JWT_EXPIRATION: expiresIn } = process.env;
 export async function verifyCredentials(
   request: Request,
   response: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   const serverError = new Error("") as ServerError;
   try {
@@ -42,7 +43,10 @@ export async function verifyCredentials(
       return next(serverError);
     }
     // Generated token
-    const token = jwt.sign({ id: user.id }, secretWord!, { expiresIn });
+    // const token = jwt.sign({ id: user.id }, secretWord, { expiresIn });
+    const token = jwt.sign({}, secretWord, {
+      expiresIn: expiresIn as jwt.SignOptions["expiresIn"],
+    });
     // Setting token inside cookie
     response.cookie("access-token", token, { httpOnly: true });
     return response.status(HTTP_STATUS_CODES.OK).json({
@@ -69,15 +73,19 @@ export async function verifyCredentials(
 export async function destroySession(
   request: Request,
   response: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   try {
-    const accessToken = request.cookies["access-token"];
-    if (!accessToken)
+    const accessToken = request.cookies;
+    if (!accessToken["refresh_token"])
       return response.status(400).json({
-        message: "Error, it's impossible to destroy your current session",
+        error: {
+          title: "Failed to destroy the session",
+          message: "Error, it's impossible to destroy your current session",
+          code: 400,
+          type: "IMPOSSIBLE_LOGOUT",
+        },
       });
-    response.clearCookie("access-token");
     return next();
   } catch (error) {
     console.log(error);
@@ -93,13 +101,13 @@ export async function destroySession(
 export async function verifyAccess(
   request: Request,
   response: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   try {
+    console.log("middleware - verifying jwt...");
     // Token structure verification
     const bearerToken = (request.headers.authorization ?? "").split("Bearer ");
     const parsedToken = bearerToken.slice(1).join("");
-    console.log({ parsedToken });
     if (!parsedToken)
       return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {
@@ -110,12 +118,24 @@ export async function verifyAccess(
         },
       });
 
+    // Check if the token are available on database from cookie session
+    const cookies = request.cookies;
+    const persistToken = await Token.findOne({
+      token: cookies["refresh_token"],
+    });
+    if (!persistToken)
+      return response.status(401).json({
+        error: {
+          message: "Your session was expired, please login again",
+          title: "Session expired",
+          code: 401,
+          type: "SESSION_EXPIRED",
+        },
+      });
     // Token verification
     jwt.verify(parsedToken, secretWord!);
     return next();
   } catch (error) {
-    console.log(error);
-
     if (error instanceof jwt.TokenExpiredError) {
       return response.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({
         error: {

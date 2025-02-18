@@ -12,7 +12,12 @@ import { useTheme } from "@/components/theme";
 type ThemeIcon = "system" | "dark" | "light";
 type MatchIcon = { [key in ThemeIcon]: ReactNode };
 
-function ThemeOpt() {
+interface Props {
+  fullDescription?: boolean;
+}
+
+function ThemeOpt({ fullDescription = false }: Props) {
+  const description = fullDescription ? <span>Cambiar el tema</span> : null;
   const { theme } = useTheme();
   const optIcon: MatchIcon = {
     system: <LaptopMinimal />,
@@ -20,7 +25,13 @@ function ThemeOpt() {
     dark: <Moon />,
   };
   return (
-    <OptButton render={() => <ThemeDropdown />}>{optIcon[theme]}</OptButton>
+    <OptButton
+      className="py-2 text-sm w-full aspect-auto gap-x-2"
+      render={() => <ThemeDropdown />}
+    >
+      {optIcon[theme]}
+      {description}
+    </OptButton>
   );
 }
 

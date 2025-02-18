@@ -1,10 +1,12 @@
 import { useSuspenseQuery, useQuery, QueryClient } from "@tanstack/react-query";
 import { getSuppliers } from "@/services";
+import { usePagination } from "@/context/pagination";
 
 export const useSupplier = () => {
+  const { pagination } = usePagination();
   const getList = useSuspenseQuery({
     queryKey: ["suppliers"],
-    queryFn: getSuppliers,
+    queryFn: () => getSuppliers({ pagination }),
   });
   return { getList };
 };
@@ -16,7 +18,7 @@ interface SupplierListOptions {
 const useSupplierList = ({ withReactSelect = false }: SupplierListOptions) => {
   const query = useQuery({
     queryKey: ["suppliers"],
-    queryFn: getSuppliers,
+    queryFn: () => getSuppliers({}),
     select: (data) => {
       if (!withReactSelect) return data;
       return data.results.map(({ _id, name }) => ({ value: _id, label: name }));
@@ -35,8 +37,16 @@ const prefetchSupplierList = () => {
   return () =>
     queryClient.prefetchQuery({
       queryKey: ["suppliers"],
-      queryFn: getSuppliers,
+      queryFn: () => getSuppliers({}),
     });
 };
 
-export { useSupplierList, prefetchSupplierList };
+const useSuspenseSupplierList = () => {
+  const { pagination } = usePagination();
+  return useSuspenseQuery({
+    queryKey: ["suppliers", pagination],
+    queryFn: () => getSuppliers({ pagination }),
+  });
+};
+
+export { useSupplierList, prefetchSupplierList, useSuspenseSupplierList };

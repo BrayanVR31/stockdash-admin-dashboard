@@ -8,6 +8,7 @@ import {
   purchaseValid,
   saleValid,
 } from "@/validations";
+import { imageRouter } from "@/routes/api/v1/upload";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ router.get(categoryPath, category.home as RequestHandler);
 router.post(
   categoryPath,
   validation.checkSchema(categoryValid.schema),
-  category.create as RequestHandler,
+  category.create as RequestHandler
 );
 router.get(`${categoryPath}/:id`, category.edit as RequestHandler);
 router.put(`${categoryPath}/:id`, category.update as RequestHandler);
@@ -29,7 +30,7 @@ router.get(supplierPath, supplier.home as RequestHandler);
 router.post(
   supplierPath,
   validation.checkSchema(supplierValid.schema),
-  supplier.create as RequestHandler,
+  supplier.create as RequestHandler
 );
 router.get(`${supplierPath}/:id`, supplier.edit as RequestHandler);
 router.patch(`${supplierPath}/:id`, supplier.update as RequestHandler);
@@ -41,7 +42,7 @@ router.get(productPath, product.home as RequestHandler);
 router.post(
   productPath,
   validation.checkSchema(productValid.schema),
-  product.create as RequestHandler,
+  product.create as RequestHandler
 );
 router.get(`${productPath}/:id`, product.edit as RequestHandler);
 router.patch(`${productPath}/:id`, product.update as RequestHandler);
@@ -53,7 +54,7 @@ router.get(salePath, sale.home as RequestHandler);
 router.post(
   salePath,
   validation.checkSchema(saleValid.schema),
-  sale.create as RequestHandler,
+  sale.create as RequestHandler
 );
 router.get(`${salePath}/:id`, sale.edit as RequestHandler);
 router.patch(`${salePath}/:id`, sale.update as RequestHandler);
@@ -65,10 +66,13 @@ router.get(purchasePath, purchase.home as RequestHandler);
 router.post(
   purchasePath,
   validation.checkSchema(purchaseValid.schema),
-  purchase.create as RequestHandler,
+  purchase.create as RequestHandler
 );
 router.get(`${purchasePath}/:id`, purchase.edit as RequestHandler);
 router.patch(`${purchasePath}/:id`, purchase.update as RequestHandler);
 router.delete(`${purchasePath}/:id`, purchase.destroy as RequestHandler);
+
+/** Upload files */
+router.use(imageRouter);
 
 export default router;

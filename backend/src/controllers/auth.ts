@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { Controller, ResponseError, ServerError } from "@/types";
 import { User, Token } from "@/models";
 import { auth } from "@/utils";
@@ -7,7 +6,7 @@ import { auth } from "@/utils";
 export const signIn: Controller<ResponseError | any> = async (
   request,
   response,
-  next,
+  next
 ) => {
   try {
     const { email, password } = request.body;
@@ -53,6 +52,10 @@ export const signIn: Controller<ResponseError | any> = async (
 /** Logout of the current user session */
 export const logOut: Controller = async (request, response) => {
   try {
+    const cookies = request.cookies;
+    const { error } = await auth.destroyAuthToken(cookies["refresh_token"]);
+    if (error) return response.status(401).json(error);
+    response.clearCookie("refresh_token");
     return response.status(200).json({
       status: 200,
       message:
