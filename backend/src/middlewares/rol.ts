@@ -1,20 +1,18 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { Controller } from "@/types/controller";
 import { Rol, IRol } from "@/models/rol";
-import { IPermission } from "@/models/permission";
+import { PermissionType } from "@/models/permission";
 import { User } from "@/models/user";
 
 interface JWTDecoded extends JwtPayload {
   id: string;
 }
 
-interface MatchResource {
-  [method: string]: string;
-}
+type HttpMethods = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-interface UserRoles extends IRol {
-  permissions: IPermission[];
-}
+type MatchResource = {
+  [key in HttpMethods]: PermissionType;
+};
 
 const matchedResource: MatchResource = {
   GET: "view",
@@ -27,43 +25,51 @@ const matchedResource: MatchResource = {
 const hasAuthorization =
   (...roles: string[]): Controller =>
   async (request, response, next) => {
-    // Match each permission depending on method request
-    const { method } = request;
-    const matchPermissionType = matchedResource[method];
-    const { path } = request;
+    try {
+      // Decoded payload from access token
+      const cookies = request.cookies;
+      const { id: _id } = jwtDecode(cookies["refresh_token"]) as JWTDecoded;
 
-    // Decoded payload from access token
-    const cookies = request.cookies;
-    const { id } = jwtDecode(cookies["refresh_token"]) as JWTDecoded;
-    // Rol based verification
-    const user = await User.findById(id).populate("roles");
-    const userRoles = user.roles as unknown as UserRoles[];
-    const rol = userRoles.find((rol) => roles.includes(rol.name));
+      // Rol based verification
+      const selectedRoles = await Rol.find({ name: { $in: roles } })
+        .select(
+          "_id -name -description -permissions -deletedAt -createdAt -updatedAt"
+        )
+        .lean();
+      const refRol = selectedRoles.map((rol) => rol._id);
+      const userRol = await User.findOne({ _id, rol: { $in: refRol } })
+        .populate("rol")
+        .select(
+          `
+            -_id -profile -sessions
+            -createdAt -updatedAt -deletedAt
+            -status -email -password
+          `
+        )
+        .lean();
 
-    const permission = rol.permissions.find((permission) => {
-      if (
-        permission.type === "all" &&
-        (permission.resource.includes("*") ||
-          path.includes(permission.resource))
-      )
-        return true;
-      return (
-        permission.type === matchPermissionType &&
-        (permission.resource.includes("*") ||
-          path.includes(permission.resource))
-      );
-    });
+      // Match each permission depending on method request
+      const { method, path } = request;
+      const resource = path.split("/").join("");
+      const permissions = (userRol.rol as unknown as IRol).permissions[
+        resource
+      ];
+      const operation =
+        permissions["all"] || permissions[matchedResource[method]];
 
-    if (!rol || !permission)
-      return response.status(403).json({
-        error: {
-          title: "Access denied",
-          message: "You don't have permission to access this resource",
-          type: "FORBIDDEN",
-          code: 403,
-        },
-      });
-    return next();
+      if (!permissions || !operation)
+        return response.status(403).json({
+          error: {
+            title: "Access denied",
+            message: "You don't have permission to access this resource",
+            type: "FORBIDDEN",
+            code: 403,
+          },
+        });
+      return next();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
 export { hasAuthorization };

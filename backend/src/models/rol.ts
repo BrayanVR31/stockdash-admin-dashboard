@@ -1,11 +1,17 @@
-import { Schema, model } from "mongoose";
-import { IPermission, permissionSchema } from ".";
+import { Schema, model, SchemaTypes } from "mongoose";
+import { IPermission, permissionSchema } from "@/models/permission";
 
 // Types
+export interface Permissions {
+  [key: string]: IPermission;
+}
+
+export type RolType = "admin" | "manager" | "employee";
+
 export interface IRol {
-  name: string;
+  name: RolType;
   description: string;
-  permissions: IPermission[];
+  permissions: Permissions;
   deletedAt?: Date;
 }
 
@@ -14,15 +20,17 @@ const rolSchema = new Schema<IRol>(
   {
     name: {
       type: String,
+      enum: ["admin", "employee", "manager"],
       required: true,
     },
     description: {
       type: String,
       required: true,
     },
+
     permissions: {
-      type: [permissionSchema],
-      required: true,
+      type: SchemaTypes.Map,
+      of: permissionSchema,
     },
     deletedAt: {
       type: Date,
@@ -33,7 +41,7 @@ const rolSchema = new Schema<IRol>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Field aliases

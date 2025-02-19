@@ -1,32 +1,32 @@
 import { Schema, model } from "mongoose";
 
 // Types
-export interface IPermission {
-  name: string;
-  description: string;
-  resource: string;
-  type: string;
-}
+export type PermissionType = "all" | "view" | "edit" | "delete" | "create";
+
+export type IPermission = { [key in PermissionType]: boolean };
 
 // Schemas
 const permissionSchema = new Schema<IPermission>(
   {
-    name: {
-      type: String,
-      required: true,
+    all: {
+      type: Boolean,
+      required: false,
     },
-    description: {
-      type: String,
-      required: true,
+    view: {
+      type: Boolean,
+      required: false,
     },
-    resource: {
-      type: String,
-      required: true,
+    edit: {
+      type: Boolean,
+      required: false,
     },
-    type: {
-      type: String,
-      enum: ["create", "edit", "view", "delete"],
-      required: true,
+    create: {
+      type: Boolean,
+      required: false,
+    },
+    delete: {
+      type: Boolean,
+      required: false,
     },
   },
   {

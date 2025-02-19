@@ -9,7 +9,7 @@ interface IUser {
   password: string;
   profile?: Profile;
   sessions?: ISession[];
-  roles: string[] | Schema.Types.ObjectId[];
+  rol: string | Schema.Types.ObjectId;
   status?: boolean;
   deletedAt?: Date;
 }
@@ -100,8 +100,8 @@ const userSchema = new Schema<IUser>(
       required: false,
       default: null,
     },
-    roles: {
-      type: [Schema.Types.ObjectId],
+    rol: {
+      type: Schema.Types.ObjectId,
       ref: "Rol",
     },
     status: {
