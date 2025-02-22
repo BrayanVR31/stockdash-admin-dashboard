@@ -26,6 +26,15 @@ const hasAuthorization =
   (...roles: string[]): Controller =>
   async (request, response, next) => {
     try {
+      const unauthorizedMessage = {
+        error: {
+          title: "Access denied",
+          message: "You don't have permission to access this resource",
+          type: "FORBIDDEN",
+          code: 403,
+        },
+      };
+
       // Decoded payload from access token
       const cookies = request.cookies;
       const { id: _id } = jwtDecode(cookies["refresh_token"]) as JWTDecoded;
@@ -33,7 +42,7 @@ const hasAuthorization =
       // Rol based verification
       const selectedRoles = await Rol.find({ name: { $in: roles } })
         .select(
-          "_id -name -description -permissions -deletedAt -createdAt -updatedAt"
+          "_id -name -description -permissions -deletedAt -createdAt -updatedAt",
         )
         .lean();
       const refRol = selectedRoles.map((rol) => rol._id);
@@ -44,9 +53,10 @@ const hasAuthorization =
             -_id -profile -sessions
             -createdAt -updatedAt -deletedAt
             -status -email -password
-          `
+          `,
         )
         .lean();
+      if (!userRol) return response.status(403).json(unauthorizedMessage);
 
       // Match each permission depending on method request
       const { method, path } = request;
@@ -58,17 +68,14 @@ const hasAuthorization =
         permissions["all"] || permissions[matchedResource[method]];
 
       if (!permissions || !operation)
-        return response.status(403).json({
-          error: {
-            title: "Access denied",
-            message: "You don't have permission to access this resource",
-            type: "FORBIDDEN",
-            code: 403,
-          },
-        });
+        return response.status(403).json(unauthorizedMessage);
       return next();
     } catch (error) {
-      console.log(error);
+      return response.status(500).json({
+        error: {
+          message: "Server error",
+        },
+      });
     }
   };
 
