@@ -1,0 +1,17 @@
+[
+  {
+    "email": "admin@gmail.com",
+    "password": "$2a$10$PZhHyoc3VjLKDikiJW5SFeJcEP20mc0yuA9rz3D1/2zF2CEBNJvFy",
+    "rol": "admin"
+  },
+  {
+    "email": "manager@gmail.com",
+    "password": "$2a$10$PZhHyoc3VjLKDikiJW5SFeJcEP20mc0yuA9rz3D1/2zF2CEBNJvFy",
+    "rol": "manager"
+  },
+  {
+    "email": "employee@gmail.com",
+    "password": "$2a$10$PZhHyoc3VjLKDikiJW5SFeJcEP20mc0yuA9rz3D1/2zF2CEBNJvFy",
+    "rol": "employee"
+  }
+]

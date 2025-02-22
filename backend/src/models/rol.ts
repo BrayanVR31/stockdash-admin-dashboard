@@ -41,13 +41,13 @@ const rolSchema = new Schema<IRol>(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 // Field aliases
 rolSchema.alias("_id", "id");
 
 // Model
-const Rol = model<IRol>("Rol", rolSchema);
+const Rol = model<IRol>("Rol", rolSchema, "roles");
 
 export { Rol, rolSchema };
