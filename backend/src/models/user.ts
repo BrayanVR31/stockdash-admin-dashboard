@@ -17,7 +17,7 @@ interface IUser {
 interface Profile {
   name: string;
   lastName: string;
-  avatar?: string;
+  avatar?: string | Schema.Types.ObjectId;
   phoneNumber?: string;
   address?: Address;
 }
@@ -54,7 +54,7 @@ const addressSchema = new Schema<Address>(
       required: true,
     },
   },
-  { versionKey: false, timestamps: false, _id: false }
+  { versionKey: false, timestamps: false, _id: false },
 );
 
 const profileSchema = new Schema<Profile>(
@@ -67,14 +67,18 @@ const profileSchema = new Schema<Profile>(
       type: String,
       required: true,
     },
-    avatar: String,
+    avatar: {
+      type: String,
+      required: false,
+      default: null,
+    },
     phoneNumber: String,
     address: {
       type: addressSchema,
       required: false,
     },
   },
-  { timestamps: false, versionKey: false, _id: false }
+  { timestamps: false, versionKey: false, _id: false },
 );
 
 const userSchema = new Schema<IUser>(
@@ -118,7 +122,7 @@ const userSchema = new Schema<IUser>(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 // Alias fields

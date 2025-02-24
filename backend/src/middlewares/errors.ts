@@ -9,13 +9,14 @@ export function handleError(
   response: Response<ResponseError>,
   next: NextFunction,
 ) {
-  const { status: code, message, title, jsonKey = "error" } = error;
+  const { status: code = 500, message, title, jsonKey = "error" } = error;
   return response.status(code).json({
     [jsonKey]: {
       title,
       message,
       code,
       type: HTTP_STATUS_CODES[code],
+      errors: error["custom"],
     },
   }) as unknown as void;
 }

@@ -25,7 +25,6 @@ export const home: ProductController = async (request, response, next) => {
       per_page: perPage,
     });
   } catch (error) {
-    console.log(error);
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";

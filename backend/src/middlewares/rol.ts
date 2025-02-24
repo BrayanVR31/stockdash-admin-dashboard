@@ -61,11 +61,16 @@ const hasAuthorization =
       // Match each permission depending on method request
       const { method, path } = request;
       const resource = path.split("/").join("");
+      // When the route has nested subpaths
+      const splittedResource = path.split(/\//).filter((resource) => resource);
+      const permissionKey =
+        splittedResource.length > 1 ? splittedResource.join(".") : resource;
       const permissions = (userRol.rol as unknown as IRol).permissions[
-        resource
+        permissionKey
       ];
+
       const operation =
-        permissions["all"] || permissions[matchedResource[method]];
+        permissions?.["all"] || permissions?.[matchedResource?.[method]];
 
       if (!permissions || !operation)
         return response.status(403).json(unauthorizedMessage);

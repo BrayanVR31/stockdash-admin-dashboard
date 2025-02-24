@@ -1,6 +1,8 @@
 import path from "path";
 import fs from "fs/promises";
 import { existsSync } from "fs";
+import { Request, Express } from "express";
+import { FileFilterCallback } from "multer";
 
 const getExtensionFile = (filename: string) => {
   const splittedFile = filename.split(".");
@@ -17,7 +19,7 @@ const removeFile = async (filename: string, subPath: string) => {
     "/public",
     "/assets",
     subPath,
-    filename
+    filename,
   );
 
   if (existsSync(defaultPath)) {
@@ -28,4 +30,23 @@ const removeFile = async (filename: string, subPath: string) => {
   }
 };
 
-export { getExtensionFile, removeFile };
+const imageFilter = (
+  request: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+) => {
+  console.log("files", file);
+  // File image extension verification
+  const [result] = [...file.mimetype.matchAll(/(?<=\/)png|jpg|jpeg$/g)];
+  const extension = result?.[0] || null;
+  if (!extension)
+    return cb(
+      new Error(
+        "The image must be have the following extensions png, jpg, jpeg.",
+      ),
+    );
+
+  cb(null, true);
+};
+
+export { getExtensionFile, removeFile, imageFilter };

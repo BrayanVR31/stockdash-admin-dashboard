@@ -1,24 +1,27 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
-const destinationPath = path.join(
+export const destinationPath = path.join(
   process.cwd(),
   "/public",
   "/assets",
-  "images"
+  "images",
 );
 
 console.log({ destinationPath });
 const storage = multer.diskStorage({
   destination: (request, file, cb) => {
+    if (!fs.existsSync(destinationPath))
+      cb(new Error("Failed to upload the file."), null);
     cb(null, destinationPath);
   },
   filename: (request, file, cb) => {
     const splittedName = file.originalname.split(".");
     cb(
       null,
-      `${uuidv4()}-${file.fieldname}.${splittedName[splittedName.length - 1]}`
+      `${uuidv4()}-${file.fieldname}.${splittedName[splittedName.length - 1]}`,
     );
   },
 });

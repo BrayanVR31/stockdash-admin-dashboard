@@ -3,18 +3,18 @@ services:
     image: "mongo:4.4.29-focal"
     container_name: mongodb
     restart: always
+    env_file:
+      - .env.dev
     ports:
       - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: stockdash
     volumes:
       # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - db-data:/data/db
       #- ./scripts:/docker-entrypoint-initdb.d
   mongo-seeder:
     image: stockdash/mongo-seeder
+    env_file:
+      - .env.dev
     build:
       context: ./
       target: dev
