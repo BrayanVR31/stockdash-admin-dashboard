@@ -5,6 +5,11 @@ import { imageFilter } from "@/utils/file";
 import { Controller } from "@/types/controller";
 import { Image, ImageExt, IImage } from "@/models/image";
 import { getExtensionFile, removeFile } from "@/utils/file";
+import { handleServerError } from "@/utils/error";
+import {
+  getServerError,
+  HTTP_STATUS_TYPES as STATUS_TYPES,
+} from "@/utils/statusCodes";
 
 const upload = multer({
   storage,
@@ -62,40 +67,25 @@ const uploadImage: Controller = async (request, response) => {
     await image.save();
     return response.status(201).json(image);
   } catch (error) {
-    return response.status(500).json({
-      error: {
-        message:
-          "An unexpected error occurred on the server. Please try again later.",
-        type: "INTERNAL_SERVER_ERROR",
-        code: 500,
-      },
-    });
+    const [status, errorResponse] = handleServerError(error);
+    return response.status(status).json(errorResponse);
   }
 };
 
 const destroyImage: Controller = async (request, response) => {
   try {
     const image = await Image.findByIdAndDelete(request.params.id);
-    if (!image)
-      return response.status(404).json({
-        error: {
-          message:
-            "The requested image does not exist or could not be located.",
-          type: "IMAGE_NOT_FOUND",
-          code: 404,
-        },
-      });
+    if (!image) {
+      const [status, errorResponse] = getServerError(
+        STATUS_TYPES.FILE_NOT_FOUND,
+      );
+      return response.status(status).json(errorResponse);
+    }
     await removeFile(image.path, "images");
     return response.status(204).end();
   } catch (error) {
-    return response.status(500).json({
-      error: {
-        message:
-          "An unexpected error occurred on the server. Please try again later.",
-        type: "INTERNAL_SERVER_ERROR",
-        code: 500,
-      },
-    });
+    const [status, errorResponse] = handleServerError(error);
+    return response.status(status).json(errorResponse);
   }
 };
 
@@ -114,14 +104,8 @@ const uploadMultiImages: Controller = async (request, response) => {
       .status(201)
       .json({ results, message: "All images were uploaded successfully" });
   } catch (error) {
-    return response.status(500).json({
-      error: {
-        message:
-          "An unexpected error occurred on the server. Please try again later.",
-        type: "INTERNAL_SERVER_ERROR",
-        code: 500,
-      },
-    });
+    const [status, errorResponse] = handleServerError(error);
+    return response.status(status).json(errorResponse);
   }
 };
 

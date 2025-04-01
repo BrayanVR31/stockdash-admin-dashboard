@@ -26,8 +26,8 @@ const authSchema = z
     if (!user) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "The email is not registered on the system",
-        path: ["invalid-credentials"],
+        message: "The email is not registered on the system(invalid email).",
+        path: ["email"],
       });
       return z.NEVER;
     }
@@ -37,8 +37,8 @@ const authSchema = z
     if (!matchedPassword) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "The password is wrong",
-        path: ["invalid-credentials"],
+        message: "The password is wrong(invalid password).",
+        path: ["password"],
       });
       return z.NEVER;
     }

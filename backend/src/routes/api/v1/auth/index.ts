@@ -7,12 +7,18 @@ import { authSchema } from "@/validations/auth";
 const router = Router();
 
 /** Auth endpoints */
-router.post("/sign-in", checkSchema(authSchema), auth.signIn as RequestHandler);
+router.post(
+  "/sign-in",
+  checkSchema(authSchema, {
+    response: { statusCode: 401 },
+  }),
+  auth.signIn as RequestHandler,
+);
 router.get("/refresh", auth.refreshToken as RequestHandler);
 router.get(
   "/log-out",
   authorization.destroySession as RequestHandler,
-  auth.logOut as RequestHandler
+  auth.logOut as RequestHandler,
 );
 router.get("/profile/:id", auth.getProfile as RequestHandler);
 

@@ -17,15 +17,42 @@ export const formatError = (error: any) => {
   };
 };
 
-export const checkSchema = <T extends z.ZodTypeAny>(schema: T) => {
+interface SchemaOptions {
+  response: {
+    statusCode?: number;
+    failedErrorType?: string;
+  };
+}
+
+export const checkSchema = <T extends z.ZodTypeAny>(
+  schema: T,
+  options?: SchemaOptions,
+) => {
   return (async (request: Request, response: Response, next: NextFunction) => {
     try {
       await schema.parseAsync(request.body);
       return next();
     } catch (error) {
-      return response
-        .status(HTTP_STATUS_CODES.BAD_REQUEST)
-        .json(formatError(error));
+      const {
+        statusCode = HTTP_STATUS_CODES.BAD_REQUEST,
+        failedErrorType = "VALIDATION_ERROR",
+      } = options?.response || {};
+      const validationErrors = formatError(error);
+      const emailType =
+        validationErrors.errors.some(
+          (error) => error.code === "custom" && error.path === "email",
+        ) && "INVALID_EMAIL";
+      const passType =
+        validationErrors.errors.some(
+          (error) => error.code === "custom" && error.path === "password",
+        ) && "INVALID_PASSWORD";
+      return response.status(statusCode).json({
+        error: {
+          ...validationErrors,
+          status: statusCode,
+          type: emailType || passType || failedErrorType,
+        },
+      });
     }
   }) as RequestHandler;
 };

@@ -1,29 +1,19 @@
-# Building stage
-#FROM node:22-bullseye-slim AS build
+ARG NODE_VERSION=22.14.0
+FROM node:${NODE_VERSION}-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-#WORKDIR /usr/src/app
-
-#COPY package*.json ./
-
-#RUN npm ci --include=dev
-
-#COPY . .
-
-#EXPOSE 5173
-
-#RUN npm run build
-
-ARG NODE_VERSION=22.13.1
-
-FROM node:${NODE_VERSION}-alpine3.20 as base
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /usr/src/app
-EXPOSE 5173
 
-FROM base as dev
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+FROM base as dev 
+WORKDIR /usr/src/app 
 COPY . .
-#USER node
-CMD npm run dev
+CMD ["pnpm", "dev"]
+
+
+FROM base 

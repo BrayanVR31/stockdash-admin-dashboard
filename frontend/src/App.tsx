@@ -1,16 +1,13 @@
-import { createPortal } from "react-dom";
-import { RouterProvider } from "react-router";
-import { ToastContainer } from "react-toastify";
-import { ThemeProvider } from "@/components/theme";
-import { router } from "@/routes";
+import { BrowserRouter } from "react-router";
+import Router from "@/routes/Router";
+import "./App.css";
 
-function App() {
+const App = () => {
   return (
-    <ThemeProvider>
-      <RouterProvider router={router} />
-      {createPortal(<ToastContainer />, document.querySelector("body")!)}
-    </ThemeProvider>
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

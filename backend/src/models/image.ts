@@ -14,7 +14,10 @@ export interface IImage {
 
 const imageSchema = new Schema<IImage>(
   {
-    path: { type: String, required: true },
+    path: {
+      type: String,
+      required: true,
+    },
     extension: { type: String, required: true },
     size: { type: Number, required: true },
   },

@@ -3,6 +3,7 @@ import { Controller } from "@/types/controller";
 import { Rol, IRol } from "@/models/rol";
 import { PermissionType } from "@/models/permission";
 import { User } from "@/models/user";
+import { handleServerError } from "@/utils/error";
 
 interface JWTDecoded extends JwtPayload {
   id: string;
@@ -46,6 +47,7 @@ const hasAuthorization =
         )
         .lean();
       const refRol = selectedRoles.map((rol) => rol._id);
+
       const userRol = await User.findOne({ _id, rol: { $in: refRol } })
         .populate("rol")
         .select(
@@ -56,15 +58,21 @@ const hasAuthorization =
           `,
         )
         .lean();
+
       if (!userRol) return response.status(403).json(unauthorizedMessage);
 
       // Match each permission depending on method request
-      const { method, path } = request;
-      const resource = path.split("/").join("");
+      const { method, path, params } = request;
+      const resource = path.replace(`/${params.id}`, "").split("/").join("");
+
       // When the route has nested subpaths
-      const splittedResource = path.split(/\//).filter((resource) => resource);
+      const splittedResource = path
+        .replace(`/${params.id}`, "")
+        .split(/\//)
+        .filter((resource) => resource);
+      console.log({ resource, splittedResource });
       const permissionKey =
-        splittedResource.length > 1 ? splittedResource.join(".") : resource;
+        +splittedResource.length > 1 ? splittedResource.join(".") : resource;
       const permissions = (userRol.rol as unknown as IRol).permissions[
         permissionKey
       ];
@@ -76,11 +84,9 @@ const hasAuthorization =
         return response.status(403).json(unauthorizedMessage);
       return next();
     } catch (error) {
-      return response.status(500).json({
-        error: {
-          message: "Server error",
-        },
-      });
+      console.log("error", error);
+      const [status, serverError] = handleServerError(error);
+      return response.status(status).json(serverError);
     }
   };
 

@@ -9,6 +9,7 @@ services:
       - 27017:27017
     volumes:
       # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - /etc/localtime:/etc/localtime:ro
       - db-data:/data/db
       #- ./scripts:/docker-entrypoint-initdb.d
   mongo-seeder:
@@ -29,6 +30,7 @@ services:
     volumes:
       - ./backend/src:/usr/src/app/src
       - ./backend/public:/usr/src/app/public
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - 4000:4000
     restart: always
@@ -45,7 +47,7 @@ services:
     depends_on:
       - api
     restart: always
-    command: npm run dev:local
+    command: pnpm run dev:local
 volumes:
   db-data:
   api-node-modules:
