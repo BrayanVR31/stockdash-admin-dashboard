@@ -2,6 +2,7 @@ import { Layers, LogOut, Menu, User } from "lucide-react";
 import { motion } from "motion/react";
 import { NavLink } from "react-router";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { useSplitRoute } from "@/hooks/useSplitRoute";
 import { menuItems } from "./menuItems";
 import { useSidebar } from "./SidebarProvider";
 
@@ -25,6 +26,7 @@ const Logo = ({ showTitle = false }: LogoProps) => {
 };
 
 const CollapsedMenu = () => {
+  const { joined } = useSplitRoute();
   const profileUrl =
     "https://external-preview.redd.it/TwdryA_T40CDW6pqOOChOhwkKLUlL3cMsLm7foSCrjw.gif?format=png8&s=50bebd0bb62019ca4507d4197c71508901620156";
   return (
@@ -39,7 +41,7 @@ const CollapsedMenu = () => {
                   <div
                     tabIndex={0}
                     role="button"
-                    className="btn btn-square border-none bg-transparent shadow-none text-gray-400 hover:text-white tooltip tooltip-secondary tooltip-right"
+                    className={`btn btn-square border-none bg-${item.parentUrl?.includes(joined) ? "primary" : "transparent"} shadow-none ${item.parentUrl?.includes(joined) ? "text-white" : "text-gray-400"} hover:text-white tooltip tooltip-secondary tooltip-right`}
                     data-tip={item.title}
                   >
                     <item.icon className="w-5" />
@@ -90,6 +92,7 @@ const CollapsedMenu = () => {
 };
 
 const SingleMenu = () => {
+  const { joined } = useSplitRoute();
   const profileUrl =
     "https://external-preview.redd.it/TwdryA_T40CDW6pqOOChOhwkKLUlL3cMsLm7foSCrjw.gif?format=png8&s=50bebd0bb62019ca4507d4197c71508901620156";
   return (
@@ -102,7 +105,9 @@ const SingleMenu = () => {
             <li key={item.title}>
               {item.subMenu ? (
                 <details>
-                  <summary className="hover:bg-gray-400/10">
+                  <summary
+                    className={` ${(item.parentUrl?.includes(joined) && "bg-primary") || "hover:bg-gray-400/10"}`}
+                  >
                     <item.icon className="w-4" />
                     <span>{item.title}</span>
                   </summary>

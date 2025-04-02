@@ -1,6 +1,10 @@
+import { lazy, Suspense } from "react";
 import { SquarePlus } from "lucide-react";
 import Header from "@/components/Header";
-import Table from "@/components/table";
+import { SkeletonTable } from "@/components/table";
+import delay from "@/utils/delay";
+
+const SupplierTable = lazy(() => delay(import("../components/SupplierTable")));
 
 const SuppliersList = () => {
   return (
@@ -17,27 +21,9 @@ const SuppliersList = () => {
           </>
         }
       />
-      <Table
-        headerCols={["Nombre", "Email", "Teléfono", "Dirección"]}
-        objectKeys={["name", "email", "phoneNumber", "address"]}
-        data={[
-          {
-            name: "xyz",
-            email: "xyx@gmail.com",
-            phoneNumber: "22262237",
-            address: "Street, 250 avenue",
-          },
-        ]}
-      />
-      <div className="flex justify-center mt-6">
-        <div className="join">
-          <button className="join-item btn">1</button>
-          <button className="join-item btn btn-primary">2</button>
-          <button className="join-item btn btn-disabled">...</button>
-          <button className="join-item btn">99</button>
-          <button className="join-item btn">100</button>
-        </div>
-      </div>
+      <Suspense fallback={<SkeletonTable rows={5} cols={4} />}>
+        <SupplierTable />
+      </Suspense>
     </main>
   );
 };

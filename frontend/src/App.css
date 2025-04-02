@@ -1,1 +1,43 @@
+@import "tailwindcss";
 
+.login-page {
+    @apply bg-gradient-to-t relative;
+}
+
+.login-form {
+    @apply mx-auto px-8 py-10 rounded-md w-full max-w-sm border shadow-xl;
+}
+
+/** Dark mode */
+[data-theme]:has(.theme-controller) .login-page {
+    @apply from-slate-950 to-blue-950/75 shadow-none z-10;
+}
+
+[data-theme]:has(.theme-controller) .login-form {
+    @apply bg-slate-800/45 border-gray-500/55;
+}
+
+[data-theme]:has(.theme-controller) .loading-bg {
+    @apply bg-slate-800/80;
+}
+
+/** Light mode */
+[data-theme]:has(.theme-controller:checked) .login-page {
+    @apply from-gray-400/65 to-gray-100 text-gray-800;
+}
+
+[data-theme]:has(.theme-controller:checked) .login-form {
+    @apply bg-white/80 border-gray-400/50 shadow-slate-400/55;
+}
+
+[data-theme]:has(.theme-controller:checked) .loading-bg {
+    @apply bg-gray-300;
+}
+
+/**
+bg-white  border-gray-400/25   shadow-gray-400/50 dark:bg-slate-900/40 dark:shadow-none dark:border-gray-300/45  z-10 dark:backdrop-blur-md
+*/
+
+/**
+bg-gradient-to-b from-blue-50 from-25% to-blue-500/85 dark:from-slate-900/90 dark:from-5% dark:via-slate-950 dark:via-50% dark:to-slate-900/75 dark:after:bg-sky-800/25
+*/

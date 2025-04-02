@@ -15,6 +15,7 @@ import useMediaQuery from "@/hooks/useMediaQuery";
 import { useSidebar, SidebarDrawer } from "@/components/sidebar";
 import { useEffect } from "react";
 import { useSystemStore } from "@/store/systemStore";
+import { useLogOut } from "@/hooks/useAuth";
 
 const MobileNavbar = () => {
   return (
@@ -31,6 +32,7 @@ const MobileNavbar = () => {
 };
 
 const DesktopNavbar = () => {
+  const logOut = useLogOut();
   const pageTitle = useSystemStore((state) => state.pageTitle);
   const profileUrl =
     "https://external-preview.redd.it/TwdryA_T40CDW6pqOOChOhwkKLUlL3cMsLm7foSCrjw.gif?format=png8&s=50bebd0bb62019ca4507d4197c71508901620156";
@@ -118,10 +120,13 @@ const DesktopNavbar = () => {
                 </a>
               </li>
               <li>
-                <a className="hover:bg-primary hover:text-white">
+                <button
+                  onClick={() => logOut()}
+                  className="hover:bg-primary hover:text-white"
+                >
                   <LogOut className="w-4" />
                   <span>Salir de sesión</span>
-                </a>
+                </button>
               </li>
             </ul>
           </div>

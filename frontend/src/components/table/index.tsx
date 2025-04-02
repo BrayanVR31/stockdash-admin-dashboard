@@ -1,5 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { getDeepValues, getDeepValueFromObj, GenericObject } from "./object";
+import { Fragment } from "react/jsx-runtime";
 
 interface Props<T> {
   objectKeys: string[];
@@ -46,6 +47,29 @@ const Table = <T,>({ objectKeys, headerCols, data }: Props<T[]>) => {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+};
+
+interface SkeletonTableProps {
+  rows: number;
+  cols: number;
+}
+
+export const SkeletonTable = ({ rows, cols }: SkeletonTableProps) => {
+  const records = Array(rows).fill(null);
+  const cells = Array(cols).fill(
+    <div className="skeleton h-4.5 w-full loading-bg" />,
+  );
+  return (
+    <div className="grid grid-rows-5 gap-1 min-h-[250px]">
+      {records.map((_, index) => (
+        <div className="flex gap-x-5" key={index + 1}>
+          {cells.map((cell, index) => (
+            <Fragment key={index}>{cell}</Fragment>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

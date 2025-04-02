@@ -6,10 +6,6 @@ interface SplitState {
   joined: string;
 }
 
-interface SplitConfig {
-  prefix?: string /** By default it will joined each route segment with prefix */;
-}
-
 export const useSplitRoute = () => {
   const [splitPathRef, setSplitPathRef] = useState<SplitState>({
     splitted: [],

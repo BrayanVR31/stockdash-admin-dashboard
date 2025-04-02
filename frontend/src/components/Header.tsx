@@ -13,7 +13,6 @@ interface Props {
 const Header = ({ title, leftSide, description = "" }: Props) => {
   const { joined, splitted } = useSplitRoute();
   const pageTitle = useSystemStore((state) => state.pageTitle);
-  console.log({ joined, splitted });
   return (
     <div>
       {/** Route tree links */}

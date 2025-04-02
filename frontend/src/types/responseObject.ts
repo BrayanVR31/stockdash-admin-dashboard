@@ -1,0 +1,14 @@
+export interface StockdashResponse<T> {
+  results: T[];
+  total: number;
+  subtotal: number;
+  page: number;
+  per_page: number;
+}
+
+export interface FetchParams {
+  pagination?: {
+    perPage: number;
+    page: number;
+  };
+}
