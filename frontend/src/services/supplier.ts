@@ -28,9 +28,6 @@ export const getSuppliers = async ({ pagination }: FetchParams) => {
   return response.data;
 };
 
-/*
-export const addSupplier = async (supplier: SupplierCreate) => {
+export const addSupplier = async <T>(supplier: T) => {
   return (await stockdashInstance.post("/suppliers", supplier)).data;
 };
-
-*/

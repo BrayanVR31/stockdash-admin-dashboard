@@ -1,6 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { getDeepValues, getDeepValueFromObj, GenericObject } from "./object";
 import { Fragment } from "react/jsx-runtime";
+import withPagination from "@/components/pagination";
 
 interface Props<T> {
   objectKeys: string[];
@@ -11,7 +12,7 @@ interface Props<T> {
 const Table = <T,>({ objectKeys, headerCols, data }: Props<T[]>) => {
   return (
     <div className="overflow-x-auto rounded-box border border-gray-500/80 bg-layer">
-      <table className="table">
+      <table className="table max-[820px]:table-xs max-[820px]:table-pin-rows max-[820px]:table-pin-cols">
         <thead>
           <tr>
             {headerCols.map((col) => (
@@ -62,9 +63,17 @@ export const SkeletonTable = ({ rows, cols }: SkeletonTableProps) => {
     <div className="skeleton h-4.5 w-full loading-bg" />,
   );
   return (
-    <div className="grid grid-rows-5 gap-1 min-h-[250px]">
+    <div className="grid grid-rows-5 gap-5 min-h-[250px]">
+      <div className="skeleton-header">
+        {cells.map((cell, index) => (
+          <Fragment key={index}>{cell}</Fragment>
+        ))}
+      </div>
       {records.map((_, index) => (
-        <div className="flex gap-x-5" key={index + 1}>
+        <div
+          className="flex py-3 px-3 gap-x-5 border-b border-gray-400/80 last:border-transparent"
+          key={index + 1}
+        >
           {cells.map((cell, index) => (
             <Fragment key={index}>{cell}</Fragment>
           ))}
@@ -74,4 +83,4 @@ export const SkeletonTable = ({ rows, cols }: SkeletonTableProps) => {
   );
 };
 
-export default Table;
+export default withPagination(Table);

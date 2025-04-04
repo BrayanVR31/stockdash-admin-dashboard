@@ -16,7 +16,10 @@ export const refetchingToken = () => {
       // Fetching a new refresh access token
       const errorType = error.response?.data?.error.type;
       const url = error.response?.config.url;
-      if (error.status === 401 && errorType === "REQUIRED_TOKEN") {
+      if (
+        error.status === 401 &&
+        (errorType === "REQUIRED_TOKEN" || errorType === "TOKEN_EXPIRATION")
+      ) {
         const apiRefresh = (await stockdashInstance.get("/refresh")).data;
         memoryToken.refresh = apiRefresh.token;
       } else {

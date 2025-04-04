@@ -8,6 +8,10 @@
     @apply mx-auto px-8 py-10 rounded-md w-full max-w-sm border shadow-xl;
 }
 
+.skeleton-header {
+    @apply rounded-full flex gap-x-4 items-center py-2 px-3;
+}
+
 /** Dark mode */
 [data-theme]:has(.theme-controller) .login-page {
     @apply from-slate-950 to-blue-950/75 shadow-none z-10;
@@ -18,7 +22,11 @@
 }
 
 [data-theme]:has(.theme-controller) .loading-bg {
-    @apply bg-slate-800/80;
+    @apply bg-[#121b32];
+}
+
+[data-theme]:has(.theme-controller) .skeleton-header {
+    @apply bg-slate-800/90;
 }
 
 /** Light mode */
@@ -31,7 +39,11 @@
 }
 
 [data-theme]:has(.theme-controller:checked) .loading-bg {
-    @apply bg-gray-300;
+    @apply bg-[#121b32]/20;
+}
+
+[data-theme]:has(.theme-controller:checked) .skeleton-header {
+    @apply bg-slate-200/90;
 }
 
 /**

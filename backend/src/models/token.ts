@@ -1,29 +1,26 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 // Types
 interface IToken {
   token: string;
-  userId: string;
+  userId: Schema.Types.ObjectId;
   expiredAt: Date;
-  startedCount: Date;
 }
 
 // Define the schema
 const tokenSchema = new Schema<IToken>(
   {
     token: { type: String, required: true },
-    userId: { type: String, required: true, ref: "User" },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     expiredAt: {
       type: Date,
       required: false,
     },
   },
   {
-    timestamps: {
-      createdAt: "created_at",
-      updatedAt: "updated_at",
-    },
-  }
+    timestamps: true,
+    versionKey: false,
+  },
 );
 
 // Define the model

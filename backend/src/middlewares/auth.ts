@@ -42,6 +42,7 @@ export async function verifyAccess(
     const persistToken = await Token.findOne({
       token: cookies["refresh_token"],
     });
+
     if (!persistToken) {
       const [status, serverError] = getServerError(ERROR_TYPES.EXPIRED_SESSION);
       return response.status(status).json(serverError);

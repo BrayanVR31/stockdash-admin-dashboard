@@ -3,6 +3,8 @@ import { SquarePlus } from "lucide-react";
 import Header from "@/components/Header";
 import { SkeletonTable } from "@/components/table";
 import delay from "@/utils/delay";
+import { NavLink } from "react-router";
+import { PaginationProvider } from "@/components/pagination";
 
 const SupplierTable = lazy(() => delay(import("../components/SupplierTable")));
 
@@ -14,15 +16,17 @@ const SuppliersList = () => {
         description="Lista de información de todos los proveedores registrados."
         leftSide={
           <>
-            <button className="btn btn-primary">
+            <NavLink to="./create" className="btn btn-primary">
               <SquarePlus className="w-4.5" />
               <span>Crear</span>
-            </button>
+            </NavLink>
           </>
         }
       />
       <Suspense fallback={<SkeletonTable rows={5} cols={4} />}>
-        <SupplierTable />
+        <PaginationProvider>
+          <SupplierTable />
+        </PaginationProvider>
       </Suspense>
     </main>
   );

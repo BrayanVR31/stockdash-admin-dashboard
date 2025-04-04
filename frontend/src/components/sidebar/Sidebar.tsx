@@ -41,7 +41,7 @@ const CollapsedMenu = () => {
                   <div
                     tabIndex={0}
                     role="button"
-                    className={`btn btn-square border-none bg-${item.parentUrl?.includes(joined) ? "primary" : "transparent"} shadow-none ${item.parentUrl?.includes(joined) ? "text-white" : "text-gray-400"} hover:text-white tooltip tooltip-secondary tooltip-right`}
+                    className={`btn btn-square border-none bg-${item.parentUrl === joined ? "primary" : "transparent"} shadow-none ${item.parentUrl === joined ? "text-white" : "text-gray-400"} hover:text-white tooltip tooltip-secondary tooltip-right`}
                     data-tip={item.title}
                   >
                     <item.icon className="w-5" />
@@ -56,7 +56,7 @@ const CollapsedMenu = () => {
                         key={`${item.title}-${subItem.subTitle}`}
                       >
                         <NavLink
-                          className="hover:bg-primary hover:text-white"
+                          className={`hover:bg-primary hover:text-white`}
                           to={subItem.url}
                         >
                           {subItem.subTitle}
@@ -69,12 +69,16 @@ const CollapsedMenu = () => {
             }
             return (
               <li key={item.title}>
-                <button
-                  className="btn btn-square bg-transparent border-none shadow-none text-gray-400 hover:text-white tooltip tooltip-secondary tooltip-right"
+                <NavLink
+                  className={({ isActive }) =>
+                    `btn btn-square bg-${isActive ? "primary" : "transparent"} border-none shadow-none text-${isActive ? "white" : "gray-400"} hover:text-white tooltip tooltip-secondary tooltip-right`
+                  }
+                  end
                   data-tip={item.title}
+                  to={`/${item.parentUrl}`}
                 >
                   <item.icon className="w-5 " />
-                </button>
+                </NavLink>
               </li>
             );
           })}
@@ -106,7 +110,7 @@ const SingleMenu = () => {
               {item.subMenu ? (
                 <details>
                   <summary
-                    className={` ${(item.parentUrl?.includes(joined) && "bg-primary") || "hover:bg-gray-400/10"}`}
+                    className={` ${(item.parentUrl === joined && "bg-primary") || "hover:bg-gray-400/10"}`}
                   >
                     <item.icon className="w-4" />
                     <span>{item.title}</span>
@@ -125,10 +129,16 @@ const SingleMenu = () => {
                   </ul>
                 </details>
               ) : (
-                <a className="hover:bg-gray-400/10">
+                <NavLink
+                  className={({ isActive }) =>
+                    `hover:bg-gray-400/10 bg-${isActive ? "primary" : "transparent"}`
+                  }
+                  to={`/${item.parentUrl}`}
+                  end
+                >
                   <item.icon className="w-4" />
                   <span>{item.title}</span>
-                </a>
+                </NavLink>
               )}
             </li>
           ))}

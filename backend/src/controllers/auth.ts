@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { Types } from "mongoose";
 import { Controller, ResponseError, ServerError } from "@/types";
 import { User, Token } from "@/models";
 import { auth } from "@/utils";
@@ -21,11 +22,14 @@ export const signIn: Controller<ResponseError | any> = async (
     const { email, password } = request.body;
     const user = await User.findOne({ email });
     const dbToken = await Token.findOne({
-      userId: user._id,
-      expiredAt: { $gte: Date.now() },
+      userId: user.id,
     });
 
-    console.log(request.headers["user-agent"]);
+    /*findOne({
+      userId: new ObjectId(user._id.),
+      //expiredAt: { $gte: Date.now() },
+    });*/
+
     const accessToken = jwt.sign({ id: user._id }, JWT_SECRET_WORD, {
       expiresIn: 15 * 60, // 15 min.
     });
@@ -42,21 +46,20 @@ export const signIn: Controller<ResponseError | any> = async (
     }
 
     // Create a new persistent token
-    const currentDate = new Date();
-    const expiredAt = new Date(currentDate);
-    expiredAt.setDate(currentDate.getDate() + 7);
+    const expiredAt = +new Date() + 7 * 24 * 60 * 60 * 1_000;
     const createdToken = jwt.sign({ id: user._id }, JWT_SECRET_WORD, {
       expiresIn: "7d",
     });
     await Token.create({
       userId: user._id,
       token: createdToken,
-      // expiredAt: expiredAt, // 7 days
+      expiredAt, // 7 days
     });
     response.cookie("refresh_token", createdToken, {
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      maxAge: 3_600_000 * 24 * 7, // 7 days
     });
+    const savedToken = await Token.findOne({ userId: user._id });
     return response.status(200).json({
       token: accessToken,
     });
@@ -69,6 +72,7 @@ export const signIn: Controller<ResponseError | any> = async (
 /** Logout of the current user session */
 export const logOut: Controller = async (request, response) => {
   try {
+    const tokens = await Token.find();
     const cookieToken = request.cookies["refresh_token"];
     const authToken = await Token.findOneAndDelete({ token: cookieToken });
     if (!authToken) {

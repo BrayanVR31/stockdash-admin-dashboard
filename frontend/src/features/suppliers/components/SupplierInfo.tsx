@@ -1,4 +1,11 @@
+import { useFormContext } from "react-hook-form";
+import { SupplierCreate } from "../supplierSchema";
+
 const SupplierInfo = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<SupplierCreate>();
   return (
     <div className="card bg-navbar shadow-lg h-min">
       <div className="card-body">
@@ -8,9 +15,13 @@ const SupplierInfo = () => {
         <div className="flex flex-col mt-2">
           <label className="mb-1">Nombre</label>
           <input
-            className="input w-full"
+            className={`input ${errors.name ? "input-error" : "input-primary"}  w-full`}
+            {...register("name")}
             placeholder="Escribe el nombre del proveedor"
           />
+          {errors.name && (
+            <p className="validator-hint text-error">{errors.name.message}</p>
+          )}
         </div>
         <div className="flex flex-col mt-2">
           <label className="mb-1">Imagen del proveedor</label>

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/** By default dark mode */
+.toast-notification {
+    @apply bg-gray-900 rounded-md px-6 py-4 mt-6 relative shadow-xl shadow-gray-950 border border-slate-500 flex items-center max-w-max;
+}
+
+.toast-icon {
+    @apply w-6 aspect-square rounded-md flex items-center justify-center bg-blue-800 *:w-3.5 text-gray-200;
+}
+
+.toast-close {
+    @apply cursor-pointer absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-500 *:w-5;
+}
+
+.toast-content {
+    @apply ml-4 text-sm mr-20 [&_p]:max-w-38 text-pretty text-neutral-300;
+}
+
+.notification-success {
+    @apply [&_.toast-icon]:bg-green-700 border-green-700;
+}
+
+.notification-info {
+    @apply [&_.toast-icon]:bg-blue-700 border-blue-700;
+}
+
+.notification-error {
+    @apply [&_.toast-icon]:bg-red-700 border-red-700;
+}
+
+.notification-warning {
+    @apply [&_.toast-icon]:bg-amber-600 border-amber-600;
+}
+
+/** Light mode */
+body:has(.theme-controller[type="checkbox"]:checked) {
+    .toast-notification {
+        @apply bg-white shadow-gray-300 border-gray-300;
+    }
+
+    .toast-close {
+        @apply text-gray-500 hover:text-gray-900;
+    }
+
+    .notification-info {
+        @apply border-blue-400;
+    }
+
+    .notification-success {
+        @apply [&_.toast-icon]:bg-green-600 border-green-400;
+    }
+
+    .notification-error {
+        @apply [&_.toast-icon]:bg-red-600 border-red-700;
+    }
+
+    .notification-warning {
+        @apply [&_.toast-icon]:bg-yellow-300 border-amber-500 [&_.toast-icon]:text-amber-700;
+    }
+
+    .toast-content {
+        @apply text-gray-800;
+    }
+}

@@ -23,6 +23,7 @@ export const menuItems: MenuItems[] = [
   {
     title: "Dashboard",
     icon: LayoutGrid,
+    parentUrl: "dashboard",
   },
   {
     title: "Productos",
