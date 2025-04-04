@@ -10,11 +10,15 @@ import {
 interface PaginationState {
   currentPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
+  perPage: number;
+  setPerPage: Dispatch<SetStateAction<number>>;
 }
 
 const paginationCtx = createContext<PaginationState>({
   currentPage: 0,
   setCurrentPage: () => null,
+  perPage: 0,
+  setPerPage: () => null,
 });
 
 interface Props {
@@ -23,9 +27,12 @@ interface Props {
 
 export const PaginationProvider = ({ children }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
   const value: PaginationState = {
     currentPage,
     setCurrentPage,
+    perPage,
+    setPerPage,
   };
   return (
     <paginationCtx.Provider value={value}>{children}</paginationCtx.Provider>

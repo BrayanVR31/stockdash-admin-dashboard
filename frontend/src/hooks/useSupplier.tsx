@@ -9,14 +9,14 @@ import { getSuppliers, addSupplier } from "@/services/supplier";
 import { usePagination } from "@/components/pagination";
 
 export const useSupplierList = () => {
-  const { currentPage } = usePagination();
+  const { currentPage, perPage } = usePagination();
   return useSuspenseQuery({
-    queryKey: ["suppliers", currentPage],
+    queryKey: ["suppliers", currentPage, perPage],
     queryFn: () =>
       getSuppliers({
         pagination: {
           page: currentPage,
-          perPage: 5,
+          perPage,
         },
       }),
   });

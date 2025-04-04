@@ -8,7 +8,7 @@ const SupplierTable = () => {
   return (
     <>
       <Table
-        totalItems={100}
+        totalItems={data.total}
         headerCols={["Nombre", "Email", "Teléfono"]}
         data={data.results}
         objectKeys={["name", "contact.email", "contact.phoneNumber"]}
