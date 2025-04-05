@@ -2,16 +2,17 @@ import {
   useSuspenseQuery,
   useQuery,
   QueryClient,
+  useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { getSuppliers, addSupplier } from "@/services/supplier";
+import { getSuppliers, addSupplier, deleteSupplier } from "@/services/supplier";
 import { usePagination } from "@/components/pagination";
 
 export const useSupplierList = () => {
   const { currentPage, perPage } = usePagination();
   return useSuspenseQuery({
-    queryKey: ["suppliers", currentPage, perPage],
+    queryKey: ["suppliers", { currentPage, perPage }],
     queryFn: () =>
       getSuppliers({
         pagination: {
@@ -26,6 +27,20 @@ export const useCreateSupplier = () => {
   return useMutation({
     mutationFn: addSupplier,
     onError: (e) => console.log(e),
+  });
+};
+
+export const useDeleteSupplier = () => {
+  const { currentPage, perPage } = usePagination();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteSupplier,
+    onSuccess: (res) => {
+      console.log(res);
+      queryClient.invalidateQueries({
+        queryKey: ["suppliers", { currentPage, perPage }],
+      });
+    },
   });
 };
 

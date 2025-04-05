@@ -31,3 +31,7 @@ export const getSuppliers = async ({ pagination }: FetchParams) => {
 export const addSupplier = async <T>(supplier: T) => {
   return (await stockdashInstance.post("/suppliers", supplier)).data;
 };
+
+export const deleteSupplier = async (id: string) => {
+  return (await stockdashInstance.delete(`/suppliers/${id}`)).data;
+};

@@ -1,8 +1,9 @@
-import { useSupplierList } from "@/hooks/useSupplier";
+import { useSupplierList, useDeleteSupplier } from "@/hooks/useSupplier";
 import Table from "@/components/table";
 
 const SupplierTable = () => {
   const { data } = useSupplierList();
+  const { mutate } = useDeleteSupplier();
   /*
   const items = Array(Math.ceil(data.total / pagination.perPage)).fill(0);*/
   return (
@@ -12,6 +13,12 @@ const SupplierTable = () => {
         headerCols={["Nombre", "Email", "Teléfono"]}
         data={data.results}
         objectKeys={["name", "contact.email", "contact.phoneNumber"]}
+        action={{
+          onDelete: (id) => {
+            mutate(id);
+          },
+          onEdit: () => console.log("edit"),
+        }}
       />
     </>
   );
