@@ -22,13 +22,14 @@ const contactSchema = z.object({
   email: z
     .string()
     .regex(
-      /^$|^[\w|\.]+@(gmail|outlook|yahoo|hotmail)\.(com)$/g,
+      /^$|^[\w|\.]+@(gmail|outlook|yahoo|hotmail|tiamshi)\.(com)$/g,
       "El email debe tener un formato válido.",
     )
     .nullable()
     .transform((email) => (!email ? null : email)),
 });
 
+/**
 const socialMedia = z.object({
   facebook: z
     .string()
@@ -46,20 +47,40 @@ const socialMedia = z.object({
     .nullable()
     .transform((url) => (!url ? null : url)),
 });
+*/
 
-export const supplierSchema = z.object({
-  name: z.string().min(1, "El nombre debe contener al menos un carácter."),
-  address: addressSchema.optional(),
-  contact: contactSchema.default({
-    email: null,
-    phoneNumber: null,
+const socialMediaSchema = z.discriminatedUnion("hasSocialMedia", [
+  z.object({
+    hasSocialMedia: z.literal(false),
   }),
-  socialMedia: socialMedia.optional().default({
-    facebook: null,
-    tiktok: null,
-    twitter: null,
+  z.object({
+    hasSocialMedia: z.literal(true),
+    socialMedia: z.array(
+      z.object({
+        url: z.string().url("La url ingresada es incorrecta."),
+      }),
+    ),
   }),
-  image: z.string().optional(),
-});
+]);
+
+export const supplierSchema = z
+  .object({
+    name: z.string().min(1, "El nombre debe contener al menos un carácter."),
+    address: addressSchema.optional(),
+    contact: contactSchema.default({
+      email: null,
+      phoneNumber: null,
+    }),
+    image: z.string().optional(),
+  })
+  .and(socialMediaSchema);
 
 export type SupplierCreate = z.infer<typeof supplierSchema>;
+
+/**
+socialMedia: socialMedia.optional().default({
+  facebook: null,
+  tiktok: null,
+  twitter: null,
+}),
+*/

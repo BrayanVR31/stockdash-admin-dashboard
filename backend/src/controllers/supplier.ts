@@ -123,3 +123,43 @@ export const destroy: Controller = async (request, response, next) => {
     return next(serverError);
   }
 };
+
+// Bulk delete multiple suppliers
+export const bulkDestroy: Controller = async (request, response, next) => {
+  const serverError = new Error("") as ServerError;
+  try {
+    const { ids } = request.body;
+    console.log("received ids: ", ids);
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      serverError.title = "Invalid request";
+      serverError.message = "IDs array is required and must not be empty";
+      serverError.status = HTTP_STATUS_CODES.BAD_REQUEST;
+      serverError.jsonKey = "error";
+      return next(serverError);
+    }
+
+    // Delete all suppliers with the provided IDs
+    const result = await Supplier.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount === 0) {
+      serverError.title = "Document deletion error";
+      serverError.message = HTTP_STATUS_TYPES.NOT_FOUND;
+      serverError.status = HTTP_STATUS_CODES.NOT_FOUND;
+      serverError.jsonKey = "error";
+      return next(serverError);
+    }
+
+    return response.status(HTTP_STATUS_CODES.OK).json({
+      message: `Successfully deleted ${result.deletedCount} suppliers`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    // Default server error
+    serverError.title = "Internal server error";
+    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
+    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
+    serverError.jsonKey = "error";
+    return next(serverError);
+  }
+};

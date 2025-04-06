@@ -56,3 +56,13 @@ export const schema = z.object({
   socialMedia: socialMediaSchema.nullable().optional().nullable(),
   image: z.string().nullable().optional(),
 });
+
+// Schema for bulk delete operation
+export const bulkDeleteSchema = z.object({
+  ids: z.array(
+    z.string({
+      required_error: "Each ID must be a string",
+      invalid_type_error: "Each ID must be a string",
+    })
+  ).min(1, "At least one ID is required"),
+});

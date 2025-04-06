@@ -6,7 +6,12 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { getSuppliers, addSupplier, deleteSupplier } from "@/services/supplier";
+import {
+  getSuppliers,
+  addSupplier,
+  deleteSupplier,
+  deleteSuppliers,
+} from "@/services/supplier";
 import { usePagination } from "@/components/pagination";
 
 export const useSupplierList = () => {
@@ -39,6 +44,26 @@ export const useDeleteSupplier = () => {
       console.log(res);
       queryClient.invalidateQueries({
         queryKey: ["suppliers", { currentPage, perPage }],
+      });
+    },
+  });
+};
+
+export const useBulkDeleteSuppliers = () => {
+  const { currentPage, perPage } = usePagination();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteSuppliers,
+    onSuccess: (res) => {
+      console.log("Bulk delete success:", res);
+      queryClient.invalidateQueries({
+        queryKey: ["suppliers", { currentPage, perPage }],
+      });
+    },
+    onError: (e) => {
+      console.error("Bulk delete error:", e);
+      toast.error("Ha ocurrido un problema.", {
+        className: "bg-slate-800",
       });
     },
   });

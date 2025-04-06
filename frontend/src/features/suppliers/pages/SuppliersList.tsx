@@ -18,7 +18,7 @@ const SuppliersList = () => {
           <>
             <NavLink to="./create" className="btn btn-primary">
               <SquarePlus className="w-4.5" />
-              <span>Crear</span>
+              <span className="hidden sm:block">Crear</span>
             </NavLink>
           </>
         }

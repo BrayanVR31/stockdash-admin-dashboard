@@ -23,7 +23,7 @@ export const getSuppliers = async ({ pagination }: FetchParams) => {
     ? ""
     : `?per_page=${pagination.perPage}&page=${pagination.page}`;
   const response = await stockdashInstance.get<StockdashResponse<Supplier>>(
-    `/suppliers${query}`,
+    `/suppliers${query}`
   );
   return response.data;
 };
@@ -34,4 +34,8 @@ export const addSupplier = async <T>(supplier: T) => {
 
 export const deleteSupplier = async (id: string) => {
   return (await stockdashInstance.delete(`/suppliers/${id}`)).data;
+};
+
+export const deleteSuppliers = async (ids: string[]) => {
+  return (await stockdashInstance.post(`/suppliers/bulk-delete`, { ids })).data;
 };
