@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import Header from "@/components/Header";
-import SupplierAddress from "../components/SupplierAddress";
-import SupplierContact from "../components/SupplierContact";
-import SupplierInfo from "../components/SupplierInfo";
-import SupplierSocialMedia from "../components/SupplierSocialMedia";
+import CardInfo from "../components/CardInfo";
+import CardAddress from "../components/CardAddress";
+import CardContact from "../components/CardContact";
+import CardSocialMedia from "../components/CardSocialMedia";
 import { NavLink } from "react-router";
 import { supplierSchema, SupplierCreate } from "../supplierSchema";
 import { useCreateSupplier } from "@/hooks/useSupplier";
@@ -18,6 +18,10 @@ const SuppliersAdd = () => {
   const methods = useForm({
     resolver: zodResolver(supplierSchema),
   });
+  const {
+    register,
+    formState: { errors },
+  } = methods;
   const { mutate, isSuccess } = useCreateSupplier();
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<SupplierCreate> = (data) => {
@@ -67,14 +71,19 @@ const SuppliersAdd = () => {
       />
       <FormProvider {...methods}>
         <form
+          className=""
           id="supplier-add"
-          className="grid grid-cols-2 grid-rows-(--form-rows) gap-x-8 gap-y-6"
-          onSubmit={methods.handleSubmit(onSubmit, (e) => console.log(e))}
+          onSubmit={methods.handleSubmit(onSubmit)}
         >
-          <SupplierInfo />
-          <SupplierAddress />
-          <SupplierContact />
-          <SupplierSocialMedia />
+          <div className="card bg-layer rounded-box border border-gray-400/70">
+            <div className="card-body w-[85%] self-center">
+              <h4 className="card-title">Detalles de proveedor</h4>
+              <CardInfo />
+              <CardContact />
+              <CardAddress />
+              <CardSocialMedia />
+            </div>
+          </div>
         </form>
       </FormProvider>
     </main>

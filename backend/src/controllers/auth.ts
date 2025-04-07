@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import { Controller, ResponseError, ServerError } from "@/types";
 import { User, Token } from "@/models";
+import { Session } from "@/models/session";
 import { auth } from "@/utils";
 import {
   getServerError,
@@ -20,15 +21,40 @@ export const signIn: Controller<ResponseError | any> = async (
   try {
     // Access token (temporary)
     const { email, password } = request.body;
+    const ipAddress = request.ip;
     const user = await User.findOne({ email });
-    const dbToken = await Token.findOne({
+
+    // Sessions
+    const userSession = await Session.findOne({
+      ipAddress,
       userId: user.id,
     });
+    if (!userSession) {
+      await Session.create({
+        userId: user.id,
+        ipAddress: request.ip,
+        userAgent: request.headers["user-agent"],
+      });
+    }
 
-    /*findOne({
-      userId: new ObjectId(user._id.),
-      //expiredAt: { $gte: Date.now() },
-    });*/
+    const dbToken = await Token.findOne({
+      userId: user.id,
+      expiredAt: {
+        $gte: new Date(),
+      },
+    });
+
+    console.log(new Date().toLocaleString("es-MX"));
+    console.log(dbToken?.expiredAt?.toLocaleString("es-MX"));
+
+    const sessions = await Session.find();
+    console.log(sessions);
+    /*
+    console.log("User credentials: ", { email, password });
+    console.log("Token saved on token: ", dbToken);
+    console.log("Ip address client: ", request.ip);
+    console.log("User agent client: ", request.headers["user-agent"]);
+    */
 
     const accessToken = jwt.sign({ id: user._id }, JWT_SECRET_WORD, {
       expiresIn: 15 * 60, // 15 min.

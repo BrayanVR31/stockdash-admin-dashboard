@@ -4,6 +4,7 @@ import { Schema, model } from "mongoose";
 export interface ISession {
   ipAddress: string;
   userAgent: string;
+  userId: Schema.Types.ObjectId;
 }
 
 // Schemas
@@ -15,6 +16,10 @@ const sessionSchema = new Schema<ISession>(
     },
     userAgent: {
       type: String,
+      required: true,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
       required: true,
     },
   },

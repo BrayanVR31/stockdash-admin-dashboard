@@ -45,7 +45,7 @@ const Header = ({ title, leftSide, description = "" }: Props) => {
         <h4 className="text-2xl font-bold">{title}</h4>
         <div>{leftSide}</div>
       </div>
-      <p className="text-sm text-base-content my-4">{description}</p>
+      <p className="text-sm text-base-content my-4 mb-10">{description}</p>
     </div>
   );
 };
