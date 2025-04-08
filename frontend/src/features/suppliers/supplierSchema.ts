@@ -38,7 +38,7 @@ const contactSchema = z.discriminatedUnion("hasContact", [
         .string()
         .regex(
           /^$|^[\w|\.]+@(gmail|outlook|yahoo|hotmail|tiamshi)\.(com)$/g,
-          "El email debe tener un formato válido.",
+          "El email debe tener un formato válido."
         )
         .nullable()
         .transform((email) => (!email ? null : email)),
@@ -55,7 +55,7 @@ const socialMediaSchema = z.discriminatedUnion("hasSocialMedia", [
     socialMedia: z.array(
       z.object({
         url: z.string().url("La url ingresada es incorrecta."),
-      }),
+      })
     ),
   }),
 ]);
@@ -63,10 +63,18 @@ const socialMediaSchema = z.discriminatedUnion("hasSocialMedia", [
 export const supplierSchema = z
   .object({
     name: z.string().min(1, "El nombre debe contener al menos un carácter."),
-    image: imageSchema,
+    image: imageSchema.nullable(),
   })
   .and(socialMediaSchema)
   .and(addressSchema)
   .and(contactSchema);
+
+export const defaultSupplier: SupplierCreate = {
+  name: "",
+  image: null,
+  hasSocialMedia: false,
+  hasAddress: false,
+  hasContact: false,
+};
 
 export type SupplierCreate = z.infer<typeof supplierSchema>;

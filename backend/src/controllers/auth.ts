@@ -16,76 +16,32 @@ const { JWT_SECRET_WORD = "JWT_PASS" } = process.env;
 export const signIn: Controller<ResponseError | any> = async (
   request,
   response,
-  next,
+  next
 ) => {
   try {
-    // Access token (temporary)
-    const { email, password } = request.body;
-    const ipAddress = request.ip;
-    const user = await User.findOne({ email });
-
-    // Sessions
-    const userSession = await Session.findOne({
-      ipAddress,
-      userId: user.id,
-    });
-    if (!userSession) {
-      await Session.create({
-        userId: user.id,
-        ipAddress: request.ip,
-        userAgent: request.headers["user-agent"],
-      });
-    }
-
-    const dbToken = await Token.findOne({
-      userId: user.id,
-      expiredAt: {
-        $gte: new Date(),
-      },
-    });
-
-    console.log(new Date().toLocaleString("es-MX"));
-    console.log(dbToken?.expiredAt?.toLocaleString("es-MX"));
+    const authUser = await User.findOne({ email: request.body.email });
+    const expiredAt = +new Date() + 7 * 24 * 60 * 60 * 1_000; // 7 days
 
     const sessions = await Session.find();
     console.log(sessions);
-    /*
-    console.log("User credentials: ", { email, password });
-    console.log("Token saved on token: ", dbToken);
-    console.log("Ip address client: ", request.ip);
-    console.log("User agent client: ", request.headers["user-agent"]);
-    */
 
-    const accessToken = jwt.sign({ id: user._id }, JWT_SECRET_WORD, {
+    // Access and cookie token when user log in a new session
+    const accessToken = jwt.sign({ id: authUser.id }, JWT_SECRET_WORD, {
       expiresIn: 15 * 60, // 15 min.
     });
-
-    // Compare if the token hasn't been expired and return it
-    if (dbToken) {
-      response.cookie("refresh_token", dbToken.token, {
-        httpOnly: true,
-        expires: dbToken.expiredAt,
-      });
-      return response.status(200).json({
-        token: accessToken,
-      });
-    }
-
-    // Create a new persistent token
-    const expiredAt = +new Date() + 7 * 24 * 60 * 60 * 1_000;
-    const createdToken = jwt.sign({ id: user._id }, JWT_SECRET_WORD, {
+    const cookieToken = jwt.sign({ id: authUser.id }, JWT_SECRET_WORD, {
       expiresIn: "7d",
     });
     await Token.create({
-      userId: user._id,
-      token: createdToken,
-      expiredAt, // 7 days
+      userId: authUser.id,
+      token: cookieToken,
+      expiredAt,
     });
-    response.cookie("refresh_token", createdToken, {
+    response.cookie("refresh_token", cookieToken, {
       httpOnly: true,
       maxAge: 3_600_000 * 24 * 7, // 7 days
     });
-    const savedToken = await Token.findOne({ userId: user._id });
+
     return response.status(200).json({
       token: accessToken,
     });
@@ -133,7 +89,7 @@ export const refreshToken: Controller = async (request, response) => {
     const storedToken = await Token.findOne({ token: cookieToken });
     if (!storedToken) {
       const [status, serverError] = getServerError(
-        ERROR_TYPES.TOKEN_EXPIRATION,
+        ERROR_TYPES.TOKEN_EXPIRATION
       );
       return response.status(status).json(serverError);
     }

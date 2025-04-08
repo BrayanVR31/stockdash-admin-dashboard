@@ -9,14 +9,19 @@ import CardAddress from "../components/CardAddress";
 import CardContact from "../components/CardContact";
 import CardSocialMedia from "../components/CardSocialMedia";
 import { NavLink } from "react-router";
-import { supplierSchema, SupplierCreate } from "../supplierSchema";
+import {
+  supplierSchema,
+  SupplierCreate,
+  defaultSupplier,
+} from "../supplierSchema";
 import { useCreateSupplier } from "@/hooks/useSupplier";
 import { memoryToken } from "@/services/stockdashService";
 import Notification from "@/components/notification";
 
 const SuppliersAdd = () => {
-  const methods = useForm({
+  const methods = useForm<SupplierCreate>({
     resolver: zodResolver(supplierSchema),
+    defaultValues: defaultSupplier,
   });
   const {
     register,
@@ -42,7 +47,7 @@ const SuppliersAdd = () => {
               Registro exitoso
             </Notification>
           ),
-          { duration: 5_00 },
+          { duration: 5_00 }
         );
         navigate("../");
       },

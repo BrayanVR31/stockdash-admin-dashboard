@@ -1,5 +1,8 @@
 import { useFormContext } from "react-hook-form";
+import { Upload } from "lucide-react";
 import { SupplierCreate } from "../supplierSchema";
+import UploadModal from "@/components/modal/UploadModal";
+import { useEffect } from "react";
 
 const CardInfo = () => {
   const {
@@ -12,7 +15,9 @@ const CardInfo = () => {
         <legend className="fieldset-legend">Nombre</legend>
         <input
           {...register("name")}
-          className={`input w-full ${errors.name ? "input-error" : "input-primary"}`}
+          className={`input w-full ${
+            errors.name ? "input-error" : "input-primary"
+          }`}
           placeholder="Escribe el nombre del proveedor"
         />
         {errors.name && (
@@ -24,9 +29,10 @@ const CardInfo = () => {
         <input
           {...register("image")}
           type="file"
-          className={`file-input w-full ${errors.image ? "file-input-error" : "file-input-primary"}`}
+          className="hidden"
           placeholder="Escribe el nombre del proveedor"
         />
+        <UploadModal onUpload={(files) => console.log(files)} />
         {errors.image && (
           <p className="validator-hint text-error">{errors.image.message}</p>
         )}
