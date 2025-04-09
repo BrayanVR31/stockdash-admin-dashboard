@@ -6,62 +6,104 @@ import {
   RefCallback,
   useEffect,
 } from "react";
-import { FileImage, Upload, Folder, X, FileUp } from "lucide-react";
-import { isDragActive, motion } from "motion/react";
-import { useUploadPicture } from "@/hooks/useUpload";
+import { FileImage, Upload, Folder, X, FileUp, ImageUp } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { useUploadAreaStore } from "@/store/uploadAreaStore";
+import { ExtendedFile } from "@/types/extendedFiles";
+import { useFileUpload } from "@/hooks/useUpload";
 
-interface UploadedFileProps {
-  filename: string;
-  size: number;
-  picture: File;
-  onClose: () => void;
-}
+type UploadedFileProps = ExtendedFile;
 
 const UploadedFile = ({
-  filename,
-  size,
-  picture,
-  onClose,
+  file,
+  uploadProgress,
+  uploadStatus,
+  id,
 }: UploadedFileProps) => {
+  const removeFile = useUploadAreaStore((state) => state.removeFile);
+  const getProgressColor = useCallback(() => {
+    switch (uploadStatus) {
+      case "success":
+        return "progress-success";
+      case "error":
+        return "progress-error";
+      case "pending":
+        return "progress-primary";
+      case "idle":
+        return "progress-warning";
+    }
+  }, [uploadStatus]);
+
+  const mbSize = file.size / 1024 / 1024;
   return (
-    <div className="card card-side border border-gray-400/50">
-      <div className="py-6 px-3">
-        <figure className="w-11 aspect-square rounded-box overflow-hidden">
-          <img
-            className="w-full h-full object-cover"
-            src={`${URL.createObjectURL(picture)}`}
-            alt="Imagen"
-          />
-        </figure>
-      </div>
-      <div className="card-body gap-3 relative overflow-hidden">
-        <div className="w-[85%]">
-          <h6 className="text-sm truncate">{filename}</h6>
-          <span className="text-xs text-neutral-500">
-            {(size / 1024).toFixed(1)}MB
-          </span>
+    <>
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 50,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.5 }}
+        className={`card card-side border ${uploadStatus === "success" ? "border-success" : "border-gray-400/50"} `}
+      >
+        <div className="py-6 px-3">
+          <figure className={`w-11 aspect-square rounded-box overflow-hidden `}>
+            {uploadStatus === "success" ? (
+              <img
+                className="w-full h-full object-cover"
+                src={`${URL.createObjectURL(file)}`}
+                alt="Imagen"
+              />
+            ) : (
+              <div className="bg-neutral-300 flex items-center justify-center">
+                <ImageUp className="w-5.5 text-neutral-500" />
+              </div>
+            )}
+          </figure>
         </div>
-        <div className="flex items-center gap-4">
-          <progress
-            className="progress progress-primary w-full"
-            value="32"
-            max="100"
-          />
-          <span>32%</span>
+        <div className="card-body gap-3 relative overflow-hidden">
+          <div className="w-[85%]">
+            <h6 className="text-sm truncate">{file.name}</h6>
+            <span className="text-xs text-neutral-500">
+              {mbSize >= 1 ? mbSize.toFixed(1) : (mbSize * 1024).toFixed(1)}
+              {mbSize >= 1 ? "MB" : "KB"}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <div
+              className={`progress progress-primary w-full ${getProgressColor()}`}
+            >
+              <motion.div
+                initial={{
+                  width: 0,
+                }}
+                animate={{
+                  width: `${uploadProgress}%`,
+                  transition: { duration: 0.75 },
+                }}
+                className="bg-success h-full"
+              />
+            </div>
+            <span>{uploadProgress}%</span>
+          </div>
+          <button
+            onClick={() => removeFile(id)}
+            className="absolute top-4 right-4 btn btn-sm btn-circle btn-ghost"
+          >
+            <X className="w-4" />
+          </button>
         </div>
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 btn btn-sm btn-circle btn-ghost"
-        >
-          <X className="w-4" />
-        </button>
-      </div>
-    </div>
+      </motion.div>
+    </>
   );
 };
 
 interface UploadModalProps {
-  onUpload?: (files: File[]) => void;
+  onUpload?: (files: ExtendedFile[]) => void;
   acceptMultiple?: boolean;
 }
 
@@ -69,10 +111,12 @@ const UploadModal = ({
   onUpload,
   acceptMultiple = false,
 }: UploadModalProps) => {
-  const { mutate: attachFile } = useUploadPicture();
+  const { mutate } = useFileUpload();
+  const files = useUploadAreaStore((state) => state.files);
+  const setFiles = useUploadAreaStore((state) => state.appendFiles);
+  const removeFile = useUploadAreaStore((state) => state.removeFile);
   const [isDraggingOver, setDraggingOver] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -122,7 +166,15 @@ const UploadModal = ({
   const handleSearchFiles = useCallback(
     (event: SyntheticEvent<HTMLInputElement>) => {
       const files = Array.from(event.currentTarget.files || []);
-      if (files.length > 0) setFiles([...files]);
+      if (files.length > 0)
+        mutate(
+          files.map((file) => ({
+            file,
+            id: `${file.name}${file.size}`,
+            uploadStatus: "idle",
+            uploadProgress: 0,
+          })),
+        );
     },
     [],
   );
@@ -147,47 +199,46 @@ const UploadModal = ({
         const onlyFiles = transferFiles.filter(
           (transfer) => transfer.kind === "file",
         );
-        const parsedFiles = onlyFiles.map((transfer) => transfer.getAsFile());
-        // Type of uploading file depending size
-        const singleFile = parsedFiles.find((file) => file !== null);
-        const multiFile = [
-          ...files,
-          ...parsedFiles.filter((file) => file !== null),
-        ];
-
-        setFiles(acceptMultiple ? multiFile : singleFile ? [singleFile] : []);
+        const parsedFiles = onlyFiles.map((transfer) =>
+          transfer.getAsFile(),
+        ) as File[];
+        mutate(
+          parsedFiles.map((file) => ({
+            file,
+            id: `${file.name}${file.size}`,
+            uploadProgress: 0,
+            uploadStatus: "idle",
+          })),
+        );
       } else {
         const dataFiles = Array.from(dataTransfer!.files);
-        setFiles([...files, ...dataFiles.filter((file) => file !== null)]);
+        mutate(
+          dataFiles.map((file) => ({
+            file,
+            id: `${file.name}${file.size}`,
+            uploadProgress: 0,
+            uploadStatus: "idle",
+          })),
+        );
       }
       removeDragData(event);
     },
-    [],
+    [mutate],
   );
 
   const handleDragOverArea = (event: SyntheticEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDraggingOver(true);
-    console.log("drag and over!!");
   };
 
   const handleDragLeaveArea = (event: SyntheticEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDraggingOver(false);
-    console.log("drag and leave!!");
   };
 
   const handleSubmit = useCallback(() => {
-    console.log("attaching files: ", files.length);
     if (files.length > 0 && onUpload) {
-      if (acceptMultiple) console.log("");
-      else {
-        const singleForm = new FormData();
-        console.log("sigle form: ", files?.[0]);
-        singleForm.append("image", files?.[0]);
-
-        attachFile(singleForm);
-      }
+      mutate(files);
     }
   }, [files, onUpload]);
 
@@ -264,19 +315,12 @@ const UploadModal = ({
             </div>
           </motion.div>
           <div className="mt-6 flex flex-col gap-6">
-            {files.map((file, index) => (
-              <UploadedFile
-                key={file.name}
-                filename={file.name}
-                size={file.size / 1024}
-                picture={file}
-                onClose={() =>
-                  setFiles(
-                    files.filter((_, closeIndex) => index !== closeIndex),
-                  )
-                }
-              />
-            ))}
+            {/** File list map array */}
+            <AnimatePresence>
+              {files.map((file) => (
+                <UploadedFile key={file.id} {...file} />
+              ))}
+            </AnimatePresence>
           </div>
           <div className="modal-action">
             <button
@@ -286,7 +330,7 @@ const UploadModal = ({
               Cancelar
             </button>
             <button onClick={handleSubmit} className="btn btn-primary flex-1">
-              Subir
+              Adjuntar
             </button>
           </div>
         </div>

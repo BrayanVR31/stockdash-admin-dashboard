@@ -8,6 +8,7 @@ import {
   Search,
   Database,
   PackageOpen,
+  User,
 } from "lucide-react";
 import { getDeepValues, getDeepValueFromObj, GenericObject } from "./object";
 import { Fragment } from "react/jsx-runtime";
@@ -19,6 +20,7 @@ import { usePagination } from "@/components/pagination";
 interface TableProps<T> {
   objectKeys: string[];
   headerCols: string[];
+  withImage?: boolean;
   data: T[];
   action?: {
     onDelete: (id: string) => void;
@@ -39,6 +41,7 @@ interface TableHeaderProps {
 interface TableRowProps<T> {
   data: T;
   objectKeys: string[];
+  withImage?: boolean;
   headerCols: string[];
   selectedIds: string[];
   onSelectRow: (id: string) => void;
@@ -189,8 +192,14 @@ const TableRow = <T extends GenericObject>({
   onSelectRow,
   onDelete,
   editModalRef,
+  withImage = false,
 }: TableRowProps<T>) => {
   const id = getDeepValueFromObj(data, "_id") as unknown as string;
+  const url = `${import.meta.env.VITE_API_URL}:${
+    import.meta.env.VITE_API_PORT
+  }`;
+  const imagePath = data.image?.path || null;
+  const [imageError, setImageError] = useState(false);
 
   return (
     <tr key={`header-row-${id}`}>
@@ -204,11 +213,33 @@ const TableRow = <T extends GenericObject>({
           />
         </label>
       </th>
-      {getDeepValues(data, ...objectKeys).map((item, index) => (
-        <td key={`cell-[${index}]-${item}`}>
-          {!item ? "Sin especificar" : String(item)}
+      {withImage && (
+        <td className="align-middle">
+          <div className="flex justify-center">
+            <div className="avatar">
+              <div className="w-12 h-12 rounded-full bg-base-200 flex items-center justify-center">
+                {!imagePath || imageError ? (
+                  <User className="w-6 text-base-content/60" />
+                ) : (
+                  <img
+                    src={`${url}/${imagePath}`}
+                    alt="Item image"
+                    className="object-cover w-full h-full rounded-full"
+                    onError={() => setImageError(true)}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
         </td>
-      ))}
+      )}
+      {getDeepValues(data, ...objectKeys).map((item, index) => {
+        return (
+          <td key={`cell-[${index}]-${item}`}>
+            {!item ? "Sin especificar" : String(item)}
+          </td>
+        );
+      })}
       <td>
         <button
           onClick={() => editModalRef.current?.showModal()}
@@ -233,6 +264,7 @@ const Table = <T extends GenericObject>({
   data,
   action,
   editModalRef,
+  withImage = false,
 }: TableProps<T>) => {
   const [search, setSearch] = useState("");
   const { currentPage } = usePagination();
@@ -312,6 +344,7 @@ const Table = <T extends GenericObject>({
                     checked={firstStatus}
                   />
                 </th>
+                {withImage && <th>Imagen</th>}
                 {headerCols.map((col) => (
                   <th key={col}>{col}</th>
                 ))}
@@ -329,6 +362,7 @@ const Table = <T extends GenericObject>({
                   onSelectRow={handleSelectRow}
                   onDelete={handleDelete}
                   editModalRef={editModalRef}
+                  withImage={withImage}
                 />
               ))}
             </tbody>

@@ -31,6 +31,7 @@ const SupplierTable = () => {
             if (ids && ids.length > 0) mutateBulkDelete(ids);
           },
         }}
+        withImage
         editModalRef={editModalRef as React.RefObject<HTMLDialogElement>}
       />
     </>

@@ -1,3 +1,4 @@
+import { PopulateOptions } from "mongoose";
 import { Supplier, ISupplier } from "@/models";
 import { Controller, ServerError, JSONResponse } from "@/types";
 import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
@@ -13,7 +14,18 @@ export const home: SupplierController = async (request, response, next) => {
     const total = await Supplier.countDocuments();
     const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
-    const results = await Supplier.find().skip(skipDocument).limit(perPage);
+    const populatedImage: PopulateOptions = {
+      path: "image",
+      transform: (doc) => {
+        doc.path = `public/images/${doc.path}`;
+        return doc;
+      },
+    };
+    const results = await Supplier.find()
+      .populate(populatedImage)
+      .skip(skipDocument)
+      .limit(perPage);
+    console.log(results);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,

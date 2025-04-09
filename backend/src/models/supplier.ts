@@ -85,6 +85,7 @@ const supplierSchema = new Schema<ISupplier>(
     },
     image: {
       type: String,
+      ref: "Image",
       required: false,
       default: null,
     },

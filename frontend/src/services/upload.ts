@@ -10,7 +10,6 @@ interface UploadFile {
 }
 
 export const uploadSingleFile = async (fileForm: FormData) => {
-  console.log(fileForm.get("image"));
   return (
     await stockdashInstance.post<UploadFile>("/upload-image", fileForm, {
       headers: {
