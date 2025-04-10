@@ -1,21 +1,5 @@
 import { z } from "zod";
-
-const addressSchema = z.object({
-  street: z
-    .string({
-      invalid_type_error: "The street must be a text",
-    })
-    .nullable(),
-  state: z
-    .string({ invalid_type_error: "The state must be a text" })
-    .nullable(),
-  zipCode: z
-    .number({ invalid_type_error: "The zip code must be a number" })
-    .nullable(),
-  neighborhood: z
-    .string({ invalid_type_error: "The neighborhood must be a text" })
-    .nullable(),
-});
+import { addressSchema } from "@/validations/address";
 
 const contactSchema = z.object({
   email: z
@@ -59,10 +43,12 @@ export const schema = z.object({
 
 // Schema for bulk delete operation
 export const bulkDeleteSchema = z.object({
-  ids: z.array(
-    z.string({
-      required_error: "Each ID must be a string",
-      invalid_type_error: "Each ID must be a string",
-    })
-  ).min(1, "At least one ID is required"),
+  ids: z
+    .array(
+      z.string({
+        required_error: "Each ID must be a string",
+        invalid_type_error: "Each ID must be a string",
+      }),
+    )
+    .min(1, "At least one ID is required"),
 });

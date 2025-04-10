@@ -25,7 +25,6 @@ export const home: SupplierController = async (request, response, next) => {
       .populate(populatedImage)
       .skip(skipDocument)
       .limit(perPage);
-    console.log(results);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,
@@ -34,7 +33,6 @@ export const home: SupplierController = async (request, response, next) => {
       per_page: perPage,
     });
   } catch (error) {
-    console.log(error);
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";
@@ -141,8 +139,6 @@ export const bulkDestroy: Controller = async (request, response, next) => {
   const serverError = new Error("") as ServerError;
   try {
     const { ids } = request.body;
-    console.log("received ids: ", ids);
-
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       serverError.title = "Invalid request";
       serverError.message = "IDs array is required and must not be empty";

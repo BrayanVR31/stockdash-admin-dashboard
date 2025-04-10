@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import { SkeletonTable } from "@/components/table";
 import delay from "@/utils/delay";
 import { NavLink } from "react-router";
-import { PaginationProvider } from "@/components/pagination";
 
 const SupplierTable = lazy(() => delay(import("../components/SupplierTable")));
 
@@ -24,9 +23,7 @@ const SuppliersList = () => {
         }
       />
       <Suspense fallback={<SkeletonTable rows={5} cols={4} />}>
-        <PaginationProvider>
-          <SupplierTable />
-        </PaginationProvider>
+        <SupplierTable />
       </Suspense>
     </main>
   );

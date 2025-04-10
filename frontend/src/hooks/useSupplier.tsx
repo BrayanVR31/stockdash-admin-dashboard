@@ -12,18 +12,17 @@ import {
   deleteSupplier,
   deleteSuppliers,
 } from "@/services/supplier";
-import { usePagination } from "@/components/pagination";
+import { useTable, PaginationTable } from "@/components/table";
 
 export const useSupplierList = () => {
-  const { currentPage, perPage } = usePagination();
+  const {
+    paginating: { currentPage: page, perPage },
+  } = useTable() as PaginationTable;
   return useSuspenseQuery({
-    queryKey: ["suppliers", { currentPage, perPage }],
+    queryKey: ["suppliers", { page, perPage }],
     queryFn: () =>
       getSuppliers({
-        pagination: {
-          page: currentPage,
-          perPage,
-        },
+        pagination: { page, perPage },
       }),
   });
 };
@@ -36,28 +35,32 @@ export const useCreateSupplier = () => {
 };
 
 export const useDeleteSupplier = () => {
-  const { currentPage, perPage } = usePagination();
+  const {
+    paginating: { currentPage: page, perPage },
+  } = useTable() as PaginationTable;
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteSupplier,
     onSuccess: (res) => {
       console.log(res);
       queryClient.invalidateQueries({
-        queryKey: ["suppliers", { currentPage, perPage }],
+        queryKey: ["suppliers", { page, perPage }],
       });
     },
   });
 };
 
 export const useBulkDeleteSuppliers = () => {
-  const { currentPage, perPage } = usePagination();
+  const {
+    paginating: { currentPage: page, perPage },
+  } = useTable() as PaginationTable;
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteSuppliers,
     onSuccess: (res) => {
       console.log("Bulk delete success:", res);
       queryClient.invalidateQueries({
-        queryKey: ["suppliers", { currentPage, perPage }],
+        queryKey: ["suppliers", { page, perPage }],
       });
     },
     onError: (e) => {

@@ -1,6 +1,6 @@
 import { ComponentType, JSX, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePagination } from "./PaginationProvider";
+import { useTable, PaginationTable } from "@/components/table";
 
 interface InjectedPaginationProps {
   totalItems: number;
@@ -9,11 +9,12 @@ interface InjectedPaginationProps {
 const withPagination = <T,>(Component: ComponentType<T>) => {
   type Props = T & InjectedPaginationProps;
   return (props: Props) => {
-    const { currentPage, setCurrentPage, perPage, setPerPage } =
-      usePagination();
+    const { paginating, updatePage, updatePerPage } =
+      useTable() as PaginationTable;
+
     const { totalItems, ...rest } = props;
     // TODO: Change dynamically by select option
-    const total = Math.ceil(totalItems / perPage);
+    const total = Math.ceil(totalItems / paginating.perPage);
     const listItems = Array(total)
       .fill(null)
       .map((_, index) => index + 1);
@@ -27,7 +28,7 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
     const preLeftItems = listItems.slice(0, 4);
 
     const handleOnNextItem = () => {
-      const nextItem = currentPage + 1;
+      const nextItem = paginating.currentPage + 1;
       const lastSliceItem = [...sliceItems].pop();
       if (nextItem === lastSliceItem && !preRightItems.includes(nextItem)) {
         const startIndex = listItems.indexOf(nextItem);
@@ -39,10 +40,10 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
           ...preRightItems.slice(0, preRightItems.length - 1),
         ]);
       }
-      setCurrentPage(nextItem);
+      updatePage(nextItem);
     };
     const handleOnPrevItem = () => {
-      const prevItem = currentPage - 1;
+      const prevItem = paginating.currentPage - 1;
       const lastItem = [...preLeftItems].pop();
       if (prevItem <= lastItem! || preRightItems.includes(prevItem)) {
         if (preRightItems.includes(prevItem)) {
@@ -61,7 +62,7 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
         const endIndex = startIndex + 3;
         setSliceItems(listItems.slice(startIndex, endIndex));
       }
-      setCurrentPage(prevItem);
+      updatePage(prevItem);
     };
     return (
       <>
@@ -70,8 +71,8 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
           <div className="grid grid-cols-2 items-center gap-x-4 max-[800px]:hidden">
             <label className="text-sm font-semibold">Filas por página</label>
             <select
-              onChange={(e) => setPerPage(+e.target.value)}
-              value={perPage}
+              onChange={(e) => updatePerPage(+e.target.value)}
+              value={paginating.perPage}
               className="select select-primary"
             >
               <option value={5}>5</option>
@@ -83,9 +84,9 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
             {total <= 5 ? (
               listItems.map((item) => (
                 <div
-                  onClick={() => setCurrentPage(item)}
+                  onClick={() => updatePage(item)}
                   key={item}
-                  className={`join-item btn ${item === currentPage ? "btn-primary" : ""}`}
+                  className={`join-item btn ${item === paginating.currentPage ? "btn-primary" : ""}`}
                 >
                   {item}
                 </div>
@@ -93,7 +94,7 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
             ) : (
               <>
                 <div
-                  className={`join-item btn ${currentPage === 1 ? "btn-disabled" : ""} max-[800px]:btn-sm`}
+                  className={`join-item btn ${paginating.currentPage === 1 ? "btn-disabled" : ""} max-[800px]:btn-sm`}
                   onClick={handleOnPrevItem}
                 >
                   <ChevronLeft className="w-3.5" />
@@ -102,49 +103,49 @@ const withPagination = <T,>(Component: ComponentType<T>) => {
                 {/** Partial items sliced from listItems */}
                 <div
                   onClick={() => {
-                    setCurrentPage(1);
+                    updatePage(1);
                     setSliceItems([
                       ...preLeftItems.slice(1, preLeftItems.length),
                     ]);
                   }}
-                  className={`join-item btn ${1 === currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
+                  className={`join-item btn ${1 === paginating.currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
                 >
                   1
                 </div>
                 <div
-                  className={`join-items btn btn-disabled max-[800px]:btn-sm ${!preLeftItems.includes(currentPage) ? "" : "hidden"}`}
+                  className={`join-items btn btn-disabled max-[800px]:btn-sm ${!preLeftItems.includes(paginating.currentPage) ? "" : "hidden"}`}
                 >
                   ...
                 </div>
                 {sliceItems.map((item) => (
                   <div
                     key={item}
-                    onClick={() => setCurrentPage(item)}
-                    className={`join-item btn ${item === currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
+                    onClick={() => updatePage(item)}
+                    className={`join-item btn ${item === paginating.currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
                   >
                     {item}
                   </div>
                 ))}
                 <div
-                  className={`join-items btn btn-disabled max-[800px]:btn-sm ${!preRightItems.includes(currentPage) ? "" : "hidden"}`}
+                  className={`join-items btn btn-disabled max-[800px]:btn-sm ${!preRightItems.includes(paginating.currentPage) ? "" : "hidden"}`}
                 >
                   ...
                 </div>
                 <div
                   onClick={() => {
-                    setCurrentPage(listItems.length);
+                    updatePage(listItems.length);
                     setSliceItems([
                       preRightItems[0] - 1,
                       ...preRightItems.slice(0, preRightItems.length - 1),
                     ]);
                   }}
-                  className={`join-item btn ${listItems.length === currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
+                  className={`join-item btn ${listItems.length === paginating.currentPage ? "btn-primary" : ""} max-[800px]:btn-sm`}
                 >
                   {listItems.length}
                 </div>
                 <div
                   onClick={handleOnNextItem}
-                  className={`join-item btn ${currentPage === listItems.length ? "btn-disabled" : ""} max-[800px]:btn-sm`}
+                  className={`join-item btn ${paginating.currentPage === listItems.length ? "btn-disabled" : ""} max-[800px]:btn-sm`}
                 >
                   <span className="max-[800px]:hidden">Siguiente</span>
                   <ChevronRight className="w-3.5" />
