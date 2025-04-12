@@ -15,7 +15,7 @@ const SuppliersList = () => {
         description="Lista de información de todos los proveedores registrados."
         leftSide={
           <>
-            <NavLink to="./create" className="btn btn-primary">
+            <NavLink to="./form" className="btn btn-primary">
               <SquarePlus className="w-4.5" />
               <span className="hidden sm:block">Crear</span>
             </NavLink>

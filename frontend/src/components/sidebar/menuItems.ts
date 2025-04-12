@@ -31,7 +31,7 @@ export const menuItems: MenuItems[] = [
     parentUrl: "products",
     subMenu: [
       { subTitle: "Listar", url: "/dashboard/products" },
-      { subTitle: "Crear", url: "/dashboard/products/create" },
+      { subTitle: "Crear", url: "/dashboard/products/form" },
     ],
   },
   {
@@ -40,7 +40,7 @@ export const menuItems: MenuItems[] = [
     parentUrl: "suppliers",
     subMenu: [
       { subTitle: "Listar", url: "/dashboard/suppliers" },
-      { subTitle: "Crear", url: "/dashboard/suppliers/create" },
+      { subTitle: "Crear", url: "/dashboard/suppliers/form" },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const menuItems: MenuItems[] = [
     parentUrl: "sales",
     subMenu: [
       { subTitle: "Listar", url: "/dashboard/sales" },
-      { subTitle: "Crear", url: "/dashboard/sales/create" },
+      { subTitle: "Crear", url: "/dashboard/sales/form" },
     ],
   },
   {
@@ -58,7 +58,7 @@ export const menuItems: MenuItems[] = [
     parentUrl: "purchases",
     subMenu: [
       { subTitle: "Listar", url: "/dashboard/purchases" },
-      { subTitle: "Crear", url: "/dashboard/purchases/create" },
+      { subTitle: "Crear", url: "/dashboard/purchases/form" },
     ],
   },
   {
@@ -67,7 +67,7 @@ export const menuItems: MenuItems[] = [
     parentUrl: "users",
     subMenu: [
       { subTitle: "Listar", url: "/dashboard/users" },
-      { subTitle: "Crear", url: "/dashboard/users/create" },
+      { subTitle: "Crear", url: "/dashboard/users/form" },
     ],
   },
   {

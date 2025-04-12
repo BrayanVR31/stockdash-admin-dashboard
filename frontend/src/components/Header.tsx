@@ -30,9 +30,9 @@ const Header = ({ title, leftSide, description = "" }: Props) => {
               <span>{pageTitle}</span>
             </NavLink>
           </li>
-          {joined.includes("create") && (
+          {joined.includes("form") && (
             <li>
-              <NavLink to={`/dashboard/${splitted?.[0]}/create`}>
+              <NavLink to={`/dashboard/${splitted?.[0]}/form`}>
                 <FolderPlus className="w-4" />
                 <span>Crear</span>
               </NavLink>

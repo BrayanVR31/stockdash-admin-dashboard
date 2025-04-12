@@ -18,3 +18,7 @@ export const uploadSingleFile = async (fileForm: FormData) => {
     })
   ).data;
 };
+
+export const getUploadedFile = async (id: string) => {
+  return (await stockdashInstance.get<UploadFile>(`/upload-image/${id}`)).data;
+};

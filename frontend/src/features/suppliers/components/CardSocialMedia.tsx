@@ -11,7 +11,7 @@ import { SupplierCreate } from "../supplierSchema";
 const CardSocialMedia = () => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, defaultValues },
     control,
   } = useFormContext<SupplierCreate>();
   const hasSocialMedia = useWatch({ control, name: "hasSocialMedia" });
@@ -27,8 +27,15 @@ const CardSocialMedia = () => {
       }
     >
   >;
+
   useEffect(() => {
-    if (hasSocialMedia) replace([{ url: "" }]);
+    if (hasSocialMedia) {
+      const defaultStatus = defaultValues?.hasSocialMedia
+        ? (defaultValues as Extract<SupplierCreate, { hasSocialMedia: true }>)
+            .socialMedia
+        : [{ url: "" }];
+      replace(defaultStatus);
+    }
   }, [hasSocialMedia, replace]);
   return (
     <div className="mt-6">

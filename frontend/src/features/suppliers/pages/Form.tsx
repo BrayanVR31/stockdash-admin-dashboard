@@ -12,16 +12,61 @@ import { NavLink } from "react-router";
 import {
   supplierSchema,
   SupplierCreate,
+  SupplierAddress,
+  SupplierContact,
+  SupplierSocialMedia,
   defaultSupplier,
 } from "../supplierSchema";
 import { useCreateSupplier } from "@/hooks/useSupplier";
 import { memoryToken } from "@/services/stockdashService";
 import Notification from "@/components/notification";
+import { Supplier } from "@/types/supplier";
 
-const SuppliersAdd = () => {
+interface Props {
+  supplier?: Supplier;
+}
+
+const Form = ({ supplier }: Props) => {
+  const defaultAddress: SupplierAddress = supplier?.address
+    ? {
+        hasAddress: true,
+        address: {
+          zipCode: `${supplier.address.zipCode}`,
+          neighborhood: supplier.address.neighborhood,
+          state: supplier.address.state,
+          street: supplier.address.street,
+        },
+      }
+    : { hasAddress: false };
+  const defaultContact: SupplierContact = supplier?.contact
+    ? {
+        hasContact: true,
+        contact: {
+          email: supplier.contact.email,
+          phoneNumber: supplier.contact.phoneNumber,
+        },
+      }
+    : { hasContact: false };
+  const defaultSocialMedia: SupplierSocialMedia = supplier?.socialMedia
+    ? {
+        hasSocialMedia: true,
+        socialMedia: supplier.socialMedia,
+      }
+    : {
+        hasSocialMedia: false,
+      };
+  const defaultValue: SupplierCreate = !supplier
+    ? defaultSupplier
+    : {
+        name: supplier.name,
+        ...defaultAddress,
+        ...defaultContact,
+        ...defaultSocialMedia,
+        image: supplier.image?._id || null,
+      };
   const methods = useForm<SupplierCreate>({
     resolver: zodResolver(supplierSchema),
-    defaultValues: defaultSupplier,
+    defaultValues: defaultValue,
   });
   const {
     register,
@@ -30,8 +75,6 @@ const SuppliersAdd = () => {
   const { mutate, isSuccess } = useCreateSupplier();
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<SupplierCreate> = (data) => {
-    console.log(memoryToken.refresh);
-    console.log("submitting...");
     console.log("data:", data);
     mutate(data, {
       onSuccess: () => {
@@ -47,7 +90,7 @@ const SuppliersAdd = () => {
               Registro exitoso
             </Notification>
           ),
-          { duration: 5_00 }
+          { duration: 5_00 },
         );
         navigate("../");
       },
@@ -69,7 +112,7 @@ const SuppliersAdd = () => {
               className="btn btn-primary"
             >
               <Plus className="w-4" />
-              <span>Agregar</span>
+              <span>{supplier ? "Editar" : "Agregar"}</span>
             </button>
           </>
         }
@@ -95,4 +138,4 @@ const SuppliersAdd = () => {
   );
 };
 
-export { SuppliersAdd };
+export { Form };

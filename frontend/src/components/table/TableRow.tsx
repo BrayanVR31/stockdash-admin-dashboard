@@ -14,7 +14,7 @@ interface Props<T> {
   selectedIds: string[];
   onSelectRow: (id: string) => void;
   onDelete: (id: string) => void;
-  editModalRef: React.RefObject<HTMLDialogElement>;
+  onEdit: (id: string) => void;
 }
 
 const TableRow = <T extends GenericObject>({
@@ -23,7 +23,7 @@ const TableRow = <T extends GenericObject>({
   selectedIds,
   onSelectRow,
   onDelete,
-  editModalRef,
+  onEdit,
   withImage = false,
 }: Props<T>) => {
   const id = getDeepValueFromObj(data, "_id") as unknown as string;
@@ -76,7 +76,7 @@ const TableRow = <T extends GenericObject>({
       })}
       <td>
         <button
-          onClick={() => editModalRef.current?.showModal()}
+          onClick={() => onEdit(id)}
           className="btn btn-square btn-outline btn-primary max-sm:btn-xs"
         >
           <Pencil className="w-4 max-sm:w-3" />

@@ -1,14 +1,6 @@
 import { StockdashResponse } from "@/types/responseObject";
 import { stockdashInstance } from "./stockdashService";
-
-interface Supplier {
-  name: string;
-  contact: {
-    email: string;
-    phoneNumber: number;
-  };
-  phoneNumber: number;
-}
+import { Supplier } from "@/types/supplier";
 
 interface FetchParams {
   pagination?: {
@@ -23,7 +15,7 @@ export const getSuppliers = async ({ pagination }: FetchParams) => {
     ? ""
     : `?per_page=${pagination.perPage}&page=${pagination.page}`;
   const response = await stockdashInstance.get<StockdashResponse<Supplier>>(
-    `/suppliers${query}`
+    `/suppliers${query}`,
   );
   return response.data;
 };
@@ -34,6 +26,10 @@ export const addSupplier = async <T>(supplier: T) => {
 
 export const deleteSupplier = async (id: string) => {
   return (await stockdashInstance.delete(`/suppliers/${id}`)).data;
+};
+
+export const getSupplier = async (id: string) => {
+  return (await stockdashInstance.get<Supplier>(`/suppliers/${id}`)).data;
 };
 
 export const deleteSuppliers = async (ids: string[]) => {

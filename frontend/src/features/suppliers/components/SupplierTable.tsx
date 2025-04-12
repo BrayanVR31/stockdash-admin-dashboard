@@ -13,7 +13,6 @@ const QueryTable = () => {
   const { data } = useSupplierList();
   const { mutate } = useDeleteSupplier();
   const { mutate: mutateBulkDelete } = useBulkDeleteSuppliers();
-  const editModalRef = useRef<HTMLDialogElement>(null);
   return (
     <PaginatedTable
       totalItems={data.total}
@@ -24,15 +23,14 @@ const QueryTable = () => {
         onDelete: (id) => {
           mutate(id);
         },
-        onEdit: () => {
-          editModalRef.current?.showModal();
+        onEdit: (id) => {
+          console.log("I'm searching out for: ", id);
         },
         onBulkDelete: (ids) => {
           if (ids && ids.length > 0) mutateBulkDelete(ids);
         },
       }}
       withImage
-      editModalRef={editModalRef as React.RefObject<HTMLDialogElement>}
     />
   );
 };

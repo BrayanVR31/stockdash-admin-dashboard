@@ -1,13 +1,11 @@
 import { useFormContext } from "react-hook-form";
-import { Upload } from "lucide-react";
 import { SupplierCreate } from "../supplierSchema";
-import UploadModal from "@/components/modal/UploadModal";
-import { useEffect } from "react";
+import { UploadModal } from "@/components/modal";
 
 const CardInfo = () => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, defaultValues },
     setValue,
   } = useFormContext<SupplierCreate>();
   return (
@@ -34,10 +32,17 @@ const CardInfo = () => {
           placeholder="Escribe el nombre del proveedor"
         />
         <UploadModal
-          onUpload={(files) => {
-            const fileRefs = files.map((file) => file?.refId);
-            console.log(files);
-            setValue("image", fileRefs.find((id) => id) || null);
+          config={{
+            limitFiles: 1,
+            limitSize: 2,
+          }}
+          existingImages={defaultValues?.image || undefined}
+          onUploadFile={(ids) => {
+            console.log("ids: ", ids);
+            setValue(
+              "image",
+              ids.length === 1 ? ids.find((_, index) => index === 0)! : null,
+            );
           }}
         />
         {errors.image && (

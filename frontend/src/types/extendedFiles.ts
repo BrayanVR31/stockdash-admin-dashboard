@@ -5,7 +5,8 @@ export interface ExtendedFile {
   file: File;
   uploadProgress: number;
   uploadStatus: Status;
-  refId?: string;
+  tempId: string;
+  isValid: boolean;
 }
 
 export interface UploadFile {

@@ -63,7 +63,16 @@ export const create: Controller = async (request, response, next) => {
 export const edit: Controller = async (request, response, next) => {
   const serverError = new Error("") as ServerError;
   try {
-    const result = await Supplier.findById(request.params.id);
+    const populatedImage: PopulateOptions = {
+      path: "image",
+      transform: (doc) => {
+        doc.path = `public/images/${doc.path}`;
+        return doc;
+      },
+    };
+    const result = await Supplier.findById(request.params.id).populate(
+      populatedImage,
+    );
     if (!result) {
       // Returns an error when the resource was not found it
       serverError.title = "Document not found it";

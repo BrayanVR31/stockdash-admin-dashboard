@@ -11,22 +11,8 @@ const contactSchema = z.object({
     .nullable(),
 });
 
-const socialMediaSchema = z.object({
-  facebook: z
-    .string({ invalid_type_error: "The url of facebook must be a string" })
-    .url("The url of social media is not valid")
-    .optional()
-    .nullable(),
-  twitter: z
-    .string({ invalid_type_error: "The url of twitter must be a string" })
-    .url("The url of social media is not valid")
-    .optional()
-    .nullable(),
-  tiktok: z
-    .string({ invalid_type_error: "The url of tiktok must be a string" })
-    .url("The url of social media is not valid")
-    .optional()
-    .nullable(),
+const linkSchema = z.object({
+  url: z.string().url("The url link must be a web address"),
 });
 
 export const schema = z.object({
@@ -37,7 +23,7 @@ export const schema = z.object({
     .min(1, "The name field must be at least 1 character"),
   address: addressSchema.nullable().optional(),
   contact: contactSchema.nullable().optional(),
-  socialMedia: socialMediaSchema.nullable().optional().nullable(),
+  socialMedia: z.array(linkSchema).optional().nullable().default(null),
   image: z.string().nullable().optional(),
 });
 

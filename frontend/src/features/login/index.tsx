@@ -4,7 +4,7 @@ import { useAuthenticationStore } from "@/store/authenticationStore";
 import LoginForm from "./components/LoginForm";
 import Logo from "@/components/Logo";
 
-function LoginPage() {
+const LoginPage = () => {
   const isLogged = useAuthenticationStore((state) => state.isLogged);
   if (isLogged) return <Navigate to="/dashboard" />;
   return (
@@ -34,6 +34,6 @@ function LoginPage() {
       </label>
     </div>
   );
-}
+};
 
 export { LoginPage };

@@ -1,1 +1,1 @@
-export * from "./UploadModal";
+export * from "./upload";

@@ -4,6 +4,7 @@ import {
   uploadImage,
   destroyImage,
   uploadMultiImages,
+  getImage,
 } from "@/controllers/image";
 import { hasAuthorization } from "@/middlewares/rol";
 import {
@@ -32,6 +33,12 @@ router.delete(
   `${prefix}/:id`,
   hasAuthorization("admin", "manager", "employee") as RequestHandler,
   destroyImage as RequestHandler,
+);
+
+router.get(
+  `${prefix}/:id`,
+  hasAuthorization("admin", "manager", "employee") as RequestHandler,
+  getImage as RequestHandler,
 );
 
 export { router as imageRouter };

@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { UploadFile } from "@/types/extendedFiles";
 import { stockdashInstance } from "@/services/stockdashService";
 import { useUploadAreaStore } from "@/store/uploadAreaStore";
 import { ExtendedFile } from "@/types/extendedFiles";
+import { getUploadedFile } from "@/services/upload";
 
 export const useFileUpload = () => {
   const updateUploadProgress = useUploadAreaStore(
@@ -49,5 +50,17 @@ export const useFileUpload = () => {
       });
       await Promise.all(uploadPromises);
     },
+  });
+};
+
+export const useStoredFile = (ids: string[], hasStoredFiles = false) => {
+  return useQueries({
+    queries: ids.map((id) => {
+      return {
+        queryKey: ["file", id],
+        queryFn: () => getUploadedFile(id),
+        enabled: !!hasStoredFiles,
+      };
+    }),
   });
 };

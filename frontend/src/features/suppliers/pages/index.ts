@@ -1,2 +1,3 @@
-export * from "./SuppliersAdd";
+export * from "./Form";
 export * from "./SuppliersList";
+export * from "./SupplierForm";

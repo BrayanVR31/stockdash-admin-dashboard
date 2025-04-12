@@ -78,3 +78,6 @@ export const defaultSupplier: SupplierCreate = {
 };
 
 export type SupplierCreate = z.infer<typeof supplierSchema>;
+export type SupplierAddress = z.infer<typeof addressSchema>;
+export type SupplierContact = z.infer<typeof contactSchema>;
+export type SupplierSocialMedia = z.infer<typeof socialMediaSchema>;

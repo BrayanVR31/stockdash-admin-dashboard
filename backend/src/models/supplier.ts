@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 // Types
-export interface ISupplier {
+export interface ISupplier extends SocialMedia {
   name: string;
   address?: {
     street: string;
@@ -13,34 +13,22 @@ export interface ISupplier {
     phoneNumber?: string;
     email?: string;
   };
-  socialMedia?: SocialMedia;
   image?: string;
   deletedAt: Date;
 }
 
-interface SocialMedia {
-  facebook?: string;
-  tiktok?: string;
-  twitter?: string;
+interface Link {
+  url: string;
 }
 
-// Schemas
-const socialMediaSchema = new Schema<SocialMedia>(
+interface SocialMedia {
+  socialMedia: Link[];
+}
+
+const LinkSchema = new Schema<Link>(
   {
-    facebook: {
+    url: {
       type: String,
-      required: false,
-      default: null,
-    },
-    tiktok: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    twitter: {
-      type: String,
-      required: false,
-      default: null,
     },
   },
   {
@@ -79,7 +67,7 @@ const supplierSchema = new Schema<ISupplier>(
       email: { type: String, required: false },
     },
     socialMedia: {
-      type: socialMediaSchema,
+      type: [LinkSchema],
       required: false,
       default: null,
     },

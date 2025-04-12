@@ -109,4 +109,20 @@ const uploadMultiImages: Controller = async (request, response) => {
   }
 };
 
+export const getImage: Controller = async (request, response) => {
+  try {
+    const image = await Image.findById(request.params.id);
+    if (!image) {
+      const [status, errorResponse] = getServerError(
+        STATUS_TYPES.FILE_NOT_FOUND,
+      );
+      return response.status(status).json(errorResponse);
+    }
+    return response.status(200).json(image);
+  } catch (error) {
+    const [status, errorResponse] = handleServerError(error);
+    return response.status(status).json(errorResponse);
+  }
+};
+
 export { uploadImage, destroyImage, uploadMultiImages };

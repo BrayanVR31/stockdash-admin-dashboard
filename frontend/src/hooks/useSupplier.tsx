@@ -11,8 +11,12 @@ import {
   addSupplier,
   deleteSupplier,
   deleteSuppliers,
+  getSupplier,
 } from "@/services/supplier";
 import { useTable, PaginationTable } from "@/components/table";
+import { getQueryClient } from "@/QueryClient";
+
+const queryClient = getQueryClient();
 
 export const useSupplierList = () => {
   const {
@@ -69,6 +73,20 @@ export const useBulkDeleteSuppliers = () => {
         className: "bg-slate-800",
       });
     },
+  });
+};
+
+export const prefetchSupplier = async (id: string) => {
+  return await queryClient.prefetchQuery({
+    queryKey: ["suppliers", id],
+    queryFn: () => getSupplier(id),
+  });
+};
+
+export const useGetSupplier = (id: string) => {
+  return useQuery({
+    queryKey: ["suppliers", id],
+    queryFn: () => getSupplier(id),
   });
 };
 

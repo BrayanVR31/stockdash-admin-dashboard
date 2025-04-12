@@ -1,4 +1,5 @@
 import { useRef, useState, useMemo, ChangeEvent, useCallback } from "react";
+import { useNavigate } from "react-router";
 import { filterList, sortList } from "@/utils/filter";
 import ColHeader from "./ColHeader";
 import { useTable, PaginationTable, Order } from "./";
@@ -17,7 +18,7 @@ interface Props<T> {
   data: T[];
   action?: {
     onDelete: (id: string) => void;
-    onEdit: () => void;
+    onEdit: (id: string) => void;
     onBulkDelete?: (ids: string[]) => void;
   };
   editModalRef: React.RefObject<HTMLDialogElement>;
@@ -28,7 +29,6 @@ export const Table = <T extends GenericObject>({
   headerCols,
   data,
   action,
-  editModalRef,
   withImage = false,
 }: Props<T>) => {
   const mergedColumns = headerCols
@@ -52,8 +52,10 @@ export const Table = <T extends GenericObject>({
 
   const filteredList = useMemo(
     () => filterList(data, objectKeys, search),
-    [search, data, objectKeys, paginating]
+    [search, data, objectKeys, paginating],
   );
+
+  const navigate = useNavigate();
 
   // Apply sorting to the filtered list
   const sortedList = useMemo(() => {
@@ -84,7 +86,7 @@ export const Table = <T extends GenericObject>({
     setSelectedIds((prev) =>
       prev.includes(id)
         ? prev.filter((selectedId) => selectedId !== id)
-        : [...prev, id]
+        : [...prev, id],
     );
   };
 
@@ -158,7 +160,10 @@ export const Table = <T extends GenericObject>({
                   selectedIds={selectedIds}
                   onSelectRow={handleSelectRow}
                   onDelete={handleDelete}
-                  editModalRef={editModalRef}
+                  onEdit={(id) => {
+                    action?.onEdit(id);
+                    navigate(`./form/${id}`);
+                  }}
                   withImage={withImage}
                 />
               ))}
