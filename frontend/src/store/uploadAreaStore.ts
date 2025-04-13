@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { ExtendedFile, Status } from "@/types/extendedFiles";
+import useErrorNotificationStore from "@/store/errorNotificationStore";
+import {
+  hasValidExtension,
+  bytesToMB,
+  formatFileSize,
+} from "@/utils/fileUtils";
 
 type UploadAreaState = {
   files: ExtendedFile[];
@@ -8,7 +14,7 @@ type UploadAreaState = {
 };
 
 type UploadAreaActions = {
-  appendFiles: (files: File[]) => void;
+  appendFiles: (files: File[], limitFiles?: number) => void;
   removeFile: (id: string) => void;
   updateUploadProgress: (id: string, progress: number) => void;
   updateUploadStatus: (id: string, status: Status) => void;
@@ -34,36 +40,21 @@ export const useUploadAreaStore = create<UploadAreaMerge>()((set) => ({
       ...state,
       error: message,
     })),
-  appendFiles: (files) =>
+  appendFiles: (files, limitFiles = 5) =>
     set((state) => {
-      if (files.length > 5)
-        return {
-          ...state,
-          error: "No se pueden añadir más archivos. Máximo permitido: 5",
-        };
-      const uniqueFiles: ExtendedFile[] = getBoundedFiles(files)
-        .filter((file) => {
-          const validExt = ["jpg", "jpeg", "png", "webp"];
-          const extension = file.name.split(".").pop() || "";
-          console.log({ extension, isValid: validExt.includes(extension) });
-          const isUnique = state.files.some(
-            (stateFile) =>
-              `${stateFile.file.name}${stateFile.file.size}` ===
-              `${file.name}${file.size}`,
-          );
-          return validExt.includes(extension) && !isUnique;
-        })
-        .map((file) => ({
-          file,
-          id: "",
-          tempId: uuidv4(),
-          uploadStatus: "idle",
-          uploadProgress: 0,
-        }));
-      console.log("unique files: ", uniqueFiles);
-      return {
-        files: [...state.files, ...uniqueFiles],
+      const errorMessages = {
+        "max-files": `No se pueden añadir más archivos. Máximo permitido: ${limitFiles}`,
       };
+      const setNotificationError =
+        useErrorNotificationStore.getState().setError;
+      const filesCount = state.files.length + files.length;
+
+      if (filesCount > limitFiles) {
+        setNotificationError(errorMessages["max-files"]);
+        return state;
+      }
+
+      return state;
     }),
   removeFile: (id) =>
     set((state) => ({
@@ -74,13 +65,13 @@ export const useUploadAreaStore = create<UploadAreaMerge>()((set) => ({
   updateUploadProgress: (id, uploadProgress) =>
     set((state) => ({
       files: state.files.map((file) =>
-        file.id === id ? { ...file, uploadProgress } : file,
+        file.id === id ? { ...file, uploadProgress } : file
       ),
     })),
   updateUploadStatus: (id, uploadStatus) =>
     set((state) => ({
       files: state.files.map((file) =>
-        file.id === id ? { ...file, uploadStatus } : file,
+        file.id === id ? { ...file, uploadStatus } : file
       ),
     })),
   updateRefId: (id, refId) =>
@@ -91,7 +82,7 @@ export const useUploadAreaStore = create<UploadAreaMerge>()((set) => ({
               ...file,
               refId,
             }
-          : file,
+          : file
       ),
     })),
   updateUploadValidation: (status) =>

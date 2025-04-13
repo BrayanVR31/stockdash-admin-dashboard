@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { SupplierCreate } from "../supplierSchema";
-import { UploadModal } from "@/components/modal";
+import { DropZone } from "@/components/ui/dropzone";
 
 const CardInfo = () => {
   const {
@@ -31,20 +31,7 @@ const CardInfo = () => {
           className="hidden"
           placeholder="Escribe el nombre del proveedor"
         />
-        <UploadModal
-          config={{
-            limitFiles: 1,
-            limitSize: 2,
-          }}
-          existingImages={defaultValues?.image || undefined}
-          onUploadFile={(ids) => {
-            console.log("ids: ", ids);
-            setValue(
-              "image",
-              ids.length === 1 ? ids.find((_, index) => index === 0)! : null,
-            );
-          }}
-        />
+        <DropZone />
         {errors.image && (
           <p className="validator-hint text-error">{errors.image.message}</p>
         )}
