@@ -81,7 +81,6 @@ const destroyImage: Controller = async (request, response) => {
       );
       return response.status(status).json(errorResponse);
     }
-    await removeFile(image.path, "images");
     return response.status(204).end();
   } catch (error) {
     const [status, errorResponse] = handleServerError(error);

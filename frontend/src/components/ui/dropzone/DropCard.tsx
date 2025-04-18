@@ -1,38 +1,86 @@
-import { X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Trash2, RefreshCcw } from "lucide-react";
+import { decode, encode } from "blurhash";
 import { formatFileSize } from "@/utils/fileUtils";
+import { ExtendedFile, Status } from "@/types/extendedFiles";
+import {
+  useDestroyUpload,
+  useRefreshUpload,
+  useStoredFile,
+  usePersistentFile,
+} from "@/hooks/useUpload";
+import { useBlurredImage } from "@/hooks/useBlurredImage";
+import { encodeImageToBlurHash, getImageData } from "@/utils/image";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { lazy, Suspense } from "react";
+import { Card, CardProgress, CardPicture, CardContent, CardSize } from "./Card";
 
-interface Props {
-  tempId: string;
-  file: File;
-  onRemove: (tempId: string) => void;
+interface Props extends ExtendedFile {
+  onRemove?: () => void;
 }
 
-const DropCard = ({ tempId, file, onRemove }: Props) => {
+const ExistingCard = lazy(() => import("./ExistingCard"));
+
+const matchStatusProgress: {
+  [key in Status]: {
+    border: string;
+    progress: string;
+  };
+} = {
+  success: { progress: "bg-emerald-500", border: "border-emerald-600/40" },
+  error: { progress: "bg-red-700", border: "border-red-700" },
+  idle: { progress: "bg-amber-700", border: "border-slate-600/40" },
+  pending: { progress: "bg-primary", border: "border-primary" },
+};
+
+const DropCard = ({
+  tempId,
+  file,
+  progressValue = 0,
+  onRemove,
+  status,
+  refId,
+}: Props) => {
+  console.log("incoming file: ", { tempId, refId, file });
+  const { mutate: destroyFile } = useDestroyUpload(tempId);
+  const { mutate: refreshUpload } = useRefreshUpload();
+
+  const urlImage = useRef<string>(null);
+
+  const handleRemove = () => {
+    if (onRemove) onRemove();
+    if (refId) destroyFile(refId);
+    if (urlImage.current) URL.revokeObjectURL(urlImage.current);
+  };
+
+  useEffect(() => {
+    if (file && !urlImage.current) urlImage.current = URL.createObjectURL(file);
+  }, []);
+
+  if (!file && refId)
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ExistingCard id={refId} tmpId={tempId} />
+      </Suspense>
+    );
   return (
-    <div className="relative px-4 py-6 border border-slate-600/40 rounded-box p-2 min-h-18 bg-primary/5">
-      <button
-        type="button"
-        onClick={() => onRemove(tempId)}
-        className="btn btn-sm btn-circle btn-soft btn-primary absolute right-4 top-2"
-      >
-        <X className="w-4" />
-      </button>
-      <div className="flex items-center gap-x-2 mb-4">
-        <div className="w-13 aspect-square border border-slate-600/40 rounded-box flex items-center justify-center">
-          x
-        </div>
-        <div className="w-2/4">
-          <p className="text-sm text-neutral-content flex flex-col">
-            <span className="font-bold text-sm truncate">{file.name}</span>
-            <span className="text-xs">{formatFileSize(file.size)}</span>
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center gap-x-4">
-        <progress className="progress progress-primary" value="32" max="100" />
-        <p className="text-xs text-neutral-content">32/100</p>
-      </div>
-    </div>
+    <Card
+      onRemove={handleRemove}
+      onError={{
+        refetch: () => {
+          refreshUpload(tempId!);
+        },
+        destroy: () => null,
+      }}
+      type={status}
+    >
+      <CardContent>
+        <CardPicture imageUrl={urlImage.current!} />
+        <CardSize fileName={file!.name} fileSize={file!.size} />
+      </CardContent>
+      <CardProgress type={status} progressValue={progressValue} />
+    </Card>
   );
 };
 

@@ -1,9 +1,11 @@
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useCallback, useState, useRef, useEffect } from "react";
+import { useDropzone, ErrorCode } from "react-dropzone";
 import { motion } from "motion/react";
 import { Upload, FileUp } from "lucide-react";
+import { useUploadAreaStore } from "@/store/uploadAreaStore";
+import { useMultiUpload } from "@/hooks/useUpload";
 import DropCard from "./DropCard";
-import { v4 as uuidv4 } from "uuid";
+import MapErrors from "./MapErrors";
 
 const transition = {
   type: "spring",
@@ -24,26 +26,34 @@ interface Props {
   maxFiles?: number;
 }
 
-interface ExtendedFile {
-  file: File;
-  tempId: string;
-}
-
 const DropArea = ({ maxFiles = 1 }: Props) => {
-  const [files, setFiles] = useState<ExtendedFile[]>([]);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log({ files, acceptedFiles });
-    if (files.length + acceptedFiles.length > maxFiles) return;
-    setFiles((prev) => [
-      ...prev,
-      ...acceptedFiles.map((file) => ({
-        file,
-        tempId: uuidv4(),
-      })),
-    ]);
-  }, []);
+  const files = useUploadAreaStore((state) => state.files);
+  const setFiles = useUploadAreaStore((state) => state.setFiles);
+  const removeFile = useUploadAreaStore((state) => state.removeFile);
+  const { mutate: attachMulti } = useMultiUpload();
+  const incomingFiles = useRef<File[]>(null);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (!incomingFiles.current) incomingFiles.current = [...acceptedFiles];
+      else {
+        const droppedFiles = acceptedFiles.filter((droppedFile) => {
+          return !incomingFiles.current?.some((incomingFile) => {
+            return (
+              `${droppedFile.name}${droppedFile.size}` ===
+              `${incomingFile.name}${incomingFile.size}`
+            );
+          });
+        });
+        if (droppedFiles.length + incomingFiles.current.length <= maxFiles)
+          incomingFiles.current = [...incomingFiles.current, ...droppedFiles];
+      }
+      setFiles(incomingFiles.current);
+    },
+    [files],
+  );
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
+  console.log("drop area: ", files);
+  const { getRootProps, getInputProps, isDragActive, fileRejections } =
     useDropzone({
       onDrop,
       noClick: true,
@@ -51,8 +61,42 @@ const DropArea = ({ maxFiles = 1 }: Props) => {
         "image/*": [".png", ".jpg", ".jpeg", ".webp"],
       },
       maxFiles,
+      validator: (file) => {
+        if (incomingFiles.current?.length === maxFiles)
+          return {
+            code: ErrorCode.TooManyFiles,
+            message: "",
+          };
+        return null;
+      },
     });
+  //("Has seleccionado demasiados archivos. Se permiten como máximo ");
+  const maxSizeError =
+    fileRejections.find(({ _, errors }) =>
+      errors.some((e) => e.code === ErrorCode.TooManyFiles),
+    )?.errors ?? null;
+  const invalidTypeError =
+    fileRejections.find(({ _, errors }) =>
+      errors.some((e) => e.code === ErrorCode.FileInvalidType),
+    )?.errors ?? null;
 
+  useEffect(() => {
+    if (incomingFiles.current) {
+      if (incomingFiles.current?.length === files.length) {
+        attachMulti(files);
+        return;
+      }
+      const syncFiles = files.filter(({ file: droppedFile }) => {
+        return incomingFiles.current?.some((incomingFile) => {
+          return (
+            `${droppedFile?.name}${droppedFile?.size}` ===
+            `${incomingFile.name}${incomingFile.size}`
+          );
+        });
+      });
+      incomingFiles.current = syncFiles.map((syncFile) => syncFile.file);
+    }
+  }, [files]);
   return (
     <>
       <motion.div
@@ -101,15 +145,17 @@ const DropArea = ({ maxFiles = 1 }: Props) => {
           Tamaño máximo: <b>2MB</b>
         </span>
       </p>
+      <MapErrors errors={maxSizeError || invalidTypeError} />
       <div className="flex flex-col gap-y-4">
-        {files.map(({ file, tempId }) => (
+        {files.map(({ file, tempId, progressValue, status, refId }) => (
           <DropCard
+            status={status}
             key={tempId}
             file={file}
             tempId={tempId}
-            onRemove={() =>
-              setFiles((prev) => prev.filter((f) => f.tempId !== tempId))
-            }
+            refId={refId}
+            progressValue={progressValue}
+            onRemove={() => console.log("deleting the file with id: ", refId)}
           />
         ))}
       </div>

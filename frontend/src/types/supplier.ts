@@ -12,7 +12,7 @@ type Contact = {
   phoneNumber: string;
 };
 
-type URLAddress = {
+export type URLAddress = {
   url: string;
 };
 

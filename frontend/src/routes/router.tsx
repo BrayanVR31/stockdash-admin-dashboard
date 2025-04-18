@@ -1,5 +1,6 @@
-import { Routes, Route, createBrowserRouter } from "react-router";
+import { Routes, Route, createBrowserRouter, Navigate } from "react-router";
 import { useEffect } from "react";
+import "@/App.css";
 import { useSystemStore } from "@/store/systemStore";
 import ProtectRoute from "@/routes/ProtectRoute";
 import Layout from "@/Layout";
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <ProtectRoute />,
     children: [
+      {
+        path: "*",
+        element: <Navigate to="/dashboard" />,
+      },
       {
         path: "dashboard",
         element: <Layout />,

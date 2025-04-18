@@ -2,11 +2,11 @@
 
 /** By default dark mode */
 .toast-notification {
-    @apply bg-gray-900 rounded-md px-6 py-4 mt-6 relative shadow-xl shadow-gray-950 border border-slate-500 flex items-center max-w-max;
+    @apply bg-gray-950 rounded-md px-6 py-4 mt-6 relative shadow-xl shadow-gray-950 border border-slate-500 flex items-center max-w-96;
 }
 
 .toast-icon {
-    @apply w-6 aspect-square rounded-md flex items-center justify-center bg-blue-800 *:w-3.5 text-gray-200;
+    @apply w-6 aspect-square rounded-full flex items-center justify-center bg-blue-800 *:w-3.5 text-gray-200;
 }
 
 .toast-close {
@@ -14,7 +14,7 @@
 }
 
 .toast-content {
-    @apply ml-4 text-sm mr-20 [&_p]:max-w-38 text-pretty text-neutral-300;
+    @apply flex-1 ml-4 text-sm mr-20 [&_p]:w-[100%] [&_p]:text-pretty text-neutral-300;
 }
 
 .notification-success {
@@ -26,11 +26,15 @@
 }
 
 .notification-error {
-    @apply [&_.toast-icon]:bg-red-700 border-red-700;
+    @apply [&_.toast-icon]:bg-red-700/70 [&_.icon-wrapper]:bg-red-800/50 border-red-800/70 bg-red-950/20 [&_h6]:text-red-400;
 }
 
 .notification-warning {
     @apply [&_.toast-icon]:bg-amber-600 border-amber-600;
+}
+
+.icon-wrapper {
+    @apply w-10 aspect-square flex flex-wrap items-center justify-center rounded-full;
 }
 
 /** Light mode */
@@ -52,7 +56,7 @@ body:has(.theme-controller[type="checkbox"]:checked) {
     }
 
     .notification-error {
-        @apply [&_.toast-icon]:bg-red-600 border-red-700;
+        @apply [&_.toast-icon]:bg-red-600 [&_.icon-wrapper]:bg-red-400/50 border-red-600 bg-red-300/25 [&_h6]:text-red-600;
     }
 
     .notification-warning {

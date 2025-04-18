@@ -12,3 +12,11 @@ export interface FetchParams {
     page: number;
   };
 }
+
+export interface DataError {
+  error: {
+    message: string;
+    status: number;
+    type: string;
+  };
+}

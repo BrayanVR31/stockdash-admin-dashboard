@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+.card-error {
+    @apply w-max mx-auto flex flex-col items-center justify-center py-3  px-5;
+}
+
+.card-error-img {
+    @apply max-w-[410px] [&_img]:min-w-full [&_img]:max-h-full [&_img]:object-cover;
+}
+
+.card-error-status {
+    @apply mt-8 text-sky-600 font-extrabold text-5xl;
+}
+
+.card-error-description {
+    @apply text-sm text-gray-300 my-4;
+}
+
+.card-error-title {
+    @apply text-xl font-semibold mt-6;
+}
+
+body:has(.theme-controller[type="checkbox"]:checked) {
+    .card-error-description {
+        @apply text-slate-700;
+    }
+    .card-error-status {
+        @apply text-blue-800;
+    }
+}

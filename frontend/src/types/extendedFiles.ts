@@ -1,12 +1,11 @@
 export type Status = "idle" | "pending" | "error" | "success";
 
 export interface ExtendedFile {
-  id: string;
-  file: File;
-  uploadProgress: number;
-  uploadStatus: Status;
+  file: File | null;
   tempId: string;
-  isValid: boolean;
+  progressValue: number;
+  status: Status;
+  refId?: UploadFile["_id"];
 }
 
 export interface UploadFile {

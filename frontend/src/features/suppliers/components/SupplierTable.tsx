@@ -10,9 +10,10 @@ import withPaginatedTable from "@/components/pagination";
 const PaginatedTable = withPaginatedTable(Table);
 
 const QueryTable = () => {
-  const { data } = useSupplierList();
+  const { data, error } = useSupplierList();
   const { mutate } = useDeleteSupplier();
   const { mutate: mutateBulkDelete } = useBulkDeleteSuppliers();
+  console.log("query table: ", error);
   return (
     <PaginatedTable
       totalItems={data.total}

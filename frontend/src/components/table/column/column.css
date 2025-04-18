@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.col-header {
+    @apply flex items-center flex-1 text-sm text-white transition-colors duration-300 [&_svg]:w-4.5 [&_svg]:ml-1 [&_svg]:text-neutral-300/80 [&.active]:bg-indigo-900/50 data-[sortable=active]:not-[.active]:hover:bg-gray-700/50 data-[sortable=active]:not-[.active]:hover:[&_svg]:text-neutral-300 data-[sortable=active]:cursor-pointer select-none;
+}

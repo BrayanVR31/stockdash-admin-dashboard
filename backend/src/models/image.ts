@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { destinationPath } from "@/config/multer";
+import { removeFile } from "@/utils/file";
 
 export type ImageExt = "png" | "jpeg" | "jpg";
 
@@ -27,10 +28,7 @@ const imageSchema = new Schema<IImage>(
 imageSchema.alias("_id", "id");
 
 imageSchema.post("findOneAndDelete", async function (doc) {
-  const fullPath = path.join(destinationPath, doc?.path || "");
-  if (doc && existsSync(fullPath)) {
-    await fs.rm(path.join(fullPath));
-  }
+  await removeFile(doc?.path, "images");
 });
 
 const Image = model<IImage>("Image", imageSchema);

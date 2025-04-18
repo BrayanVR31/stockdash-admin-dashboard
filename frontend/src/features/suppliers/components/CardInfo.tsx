@@ -31,7 +31,7 @@ const CardInfo = () => {
           className="hidden"
           placeholder="Escribe el nombre del proveedor"
         />
-        <DropZone />
+        <DropZone maxFiles={5} />
         {errors.image && (
           <p className="validator-hint text-error">{errors.image.message}</p>
         )}

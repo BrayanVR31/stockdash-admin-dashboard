@@ -1,7 +1,6 @@
 import { BrowserRouter } from "react-router";
 import { Toaster } from "react-hot-toast";
 import Router from "@/routes/Router";
-import "./App.css";
 
 const App = () => {
   return (

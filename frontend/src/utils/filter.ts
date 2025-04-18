@@ -1,9 +1,10 @@
+import _ from "lodash";
 import { GenericObject, getDeepValueFromObj } from "@/utils/object";
 
 export const filterList = <T>(
   list: T[],
   searchKeys: string[],
-  keyword: string
+  keyword: string,
 ): T[] => {
   if (!keyword || !keyword.trim()) return list;
 
@@ -37,10 +38,58 @@ export const filterList = <T>(
   });
 };
 
+interface FilterByColumnConfig {
+  column: string;
+  keyword: string;
+}
+
+const getNestedKeys = <T extends Record<string, any>>(
+  obj: T,
+  prefix = "",
+): (keyof T | string)[] => {
+  let keys: string[] = [];
+  _.forOwn(obj, (value, key) => {
+    // Append each key in first or deep level
+    const completeKey = prefix ? `${prefix}.${key}` : key;
+    keys.push(completeKey);
+
+    // Use a recursive technique when it's a deep object
+    if (_.isPlainObject(value)) {
+      keys = keys.concat(
+        getNestedKeys(
+          value as Record<string, any>,
+          completeKey,
+        ) as unknown as string[],
+      );
+    }
+  });
+  return keys;
+};
+
+export const filterByColumn = <T extends Record<string, any>>(
+  data: T[],
+  { column, keyword }: FilterByColumnConfig,
+) => {
+  return data.filter((item) => {
+    const col = _.get(item, column, null);
+    const regex = new RegExp(keyword, "i");
+    if (typeof col === "string") {
+      return regex.test(col as string);
+    } else if (typeof col === "object" && (col as unknown) instanceof Date) {
+      const colDate = col as Date;
+      const byYear = regex.test(colDate.getFullYear().toString());
+      const byMonth = regex.test(colDate.getMonth().toString());
+      const byDay = regex.test(colDate.getDay().toString());
+      return byYear || byMonth || byDay;
+    }
+    return false;
+  });
+};
+
 export const sortList = <T>(
   list: T[],
   col: string,
-  order: "asc" | "desc"
+  order: "asc" | "desc",
 ): T[] => {
   if (!col || col === "") return list;
 
