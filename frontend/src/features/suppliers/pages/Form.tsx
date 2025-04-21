@@ -18,7 +18,6 @@ import {
   defaultSupplier,
 } from "../supplierSchema";
 import { useCreateSupplier } from "@/hooks/useSupplier";
-import { memoryToken } from "@/services/stockdashService";
 import Notification from "@/components/notification";
 import { Supplier } from "@/types/supplier";
 

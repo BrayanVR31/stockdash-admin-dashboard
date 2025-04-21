@@ -13,20 +13,25 @@ import {
   deleteSuppliers,
   getSupplier,
 } from "@/services/supplier";
-import { useTable, PaginationTable } from "@/components/table";
+import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
 
 const queryClient = getQueryClient();
 
 export const useSupplierList = () => {
   const {
-    paginating: { currentPage: page, perPage },
-  } = useTable() as PaginationTable;
+    config: { pagination },
+  } = useTable();
+  const paginationOptions = {
+    page: pagination.currentPage,
+    perPage: pagination.selectedPerPage,
+  };
+  console.log(paginationOptions);
   return useSuspenseQuery({
-    queryKey: ["suppliers", { page, perPage }],
+    queryKey: ["suppliers", paginationOptions],
     queryFn: () =>
       getSuppliers({
-        pagination: { page, perPage },
+        pagination: paginationOptions,
       }),
   });
 };

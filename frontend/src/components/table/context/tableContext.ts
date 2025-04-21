@@ -12,6 +12,12 @@ const TableContext = createContext<TableCtx>({
       order: "asc",
       path: "",
     },
+    pagination: {
+      currentPage: 1,
+      perPage: [5, 10, 25, 50],
+      selectedPerPage: 5,
+      totalItems: 5,
+    },
   },
   dispatchConfig: () => null,
 });

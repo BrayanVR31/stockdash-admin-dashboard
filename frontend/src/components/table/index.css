@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+.data-table {
+  @apply bg-transparent;
+}
+
+.table-container {
+  @apply bg-gray-900 rounded-md overflow-hidden border border-slate-700;
+}
+
+.paginator-table {
+  @apply flex items-center justify-between mt-6 px-4 py-3 border-t border-slate-700;
+}
+
+body:has(.theme-controller[type="checkbox"]:checked) {
+  .data-table {
+    @apply [&_thead]:bg-neutral-300/20;
+  }
+
+  .table-container {
+    @apply bg-white border-gray-400;
+  }
+
+  .paginator-table {
+    @apply border-gray-400;
+  }
+}

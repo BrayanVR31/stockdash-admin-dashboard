@@ -31,7 +31,10 @@ const CardInfo = () => {
           className="hidden"
           placeholder="Escribe el nombre del proveedor"
         />
-        <DropZone maxFiles={5} />
+        <DropZone
+          onAttachFile={(ids) => setValue("image", ids.find((id) => id!)!)}
+          maxFiles={1}
+        />
         {errors.image && (
           <p className="validator-hint text-error">{errors.image.message}</p>
         )}

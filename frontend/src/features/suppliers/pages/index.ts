@@ -1,3 +1,3 @@
 export * from "./Form";
-export * from "./SuppliersList";
 export * from "./SupplierForm";
+export * from "./SupplierList";

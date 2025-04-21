@@ -2,9 +2,8 @@ import {
   ArrowUpDown,
   ArrowUpNarrowWide,
   ArrowDownNarrowWide,
-  LucideIcon,
 } from "lucide-react";
-import { JSX } from "react";
+import { JSX, useEffect } from "react";
 import "./column.css";
 import { useTable } from "@/components/table/context";
 
@@ -16,7 +15,6 @@ interface Props {
   title: string;
   path: string /** Object key to render each column data */;
   colConfig?: Partial<Config>;
-  render: () => void;
 }
 
 type sortOrder = "asc" | "desc";
@@ -30,25 +28,22 @@ const defaultConfig: Config = {
   sortable: false,
 };
 
-const Column = ({ title, path, colConfig = defaultConfig, render }: Props) => {
+const Column = ({ title, path, colConfig = defaultConfig }: Props) => {
   const { sortable } = colConfig;
   const { dispatchConfig, config } = useTable();
   const handleClick = () => {
-    console.log(config);
-    if (sortable) {
-      dispatchConfig({
-        type: "update-sort-path",
-        payload: {
-          path,
-        },
-      });
-      dispatchConfig({
-        type: "update-sort-order",
-        payload: {
-          order: config.sorting.order === "asc" ? "desc" : "asc",
-        },
-      });
-    }
+    dispatchConfig({
+      type: "update-sort-path",
+      payload: {
+        path,
+      },
+    });
+    dispatchConfig({
+      type: "update-sort-order",
+      payload: {
+        order: config.sorting.order === "asc" ? "desc" : "asc",
+      },
+    });
   };
 
   const getSortIcon = (path: string, order: sortOrder) => {
@@ -57,9 +52,10 @@ const Column = ({ title, path, colConfig = defaultConfig, render }: Props) => {
     }
     return <ArrowUpDown />;
   };
+
   return (
     <th
-      onClick={handleClick}
+      onClick={() => sortable && handleClick()}
       data-sortable={sortable ? "active" : ""}
       className={`col-header ${path === config.sorting.path ? "active" : ""}`}
     >

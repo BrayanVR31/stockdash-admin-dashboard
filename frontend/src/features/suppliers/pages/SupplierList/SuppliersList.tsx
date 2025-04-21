@@ -1,11 +1,11 @@
 import { lazy, Suspense } from "react";
 import { SquarePlus } from "lucide-react";
 import Header from "@/components/Header";
-import { SkeletonTable } from "@/components/table";
+import { SkeletonTable, TableProvider } from "@/components/table";
 import delay from "@/utils/delay";
 import { NavLink } from "react-router";
 
-const SupplierTable = lazy(() => delay(import("../components/SupplierTable")));
+const SupplierTable = lazy(() => delay(import("./SupplierTable"), 3_10));
 
 const SuppliersList = () => {
   return (
@@ -23,7 +23,9 @@ const SuppliersList = () => {
         }
       />
       <Suspense fallback={<SkeletonTable rows={5} cols={4} />}>
-        <SupplierTable />
+        <TableProvider>
+          <SupplierTable />
+        </TableProvider>
       </Suspense>
     </main>
   );

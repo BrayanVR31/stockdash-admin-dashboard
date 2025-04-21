@@ -1,14 +1,18 @@
 import { useRef } from "react";
 import { Upload, X } from "lucide-react";
+import { useUploadAreaStore } from "@/store/uploadAreaStore";
 import DropArea from "./DropArea";
 
 interface Props {
   maxFiles?: number;
+  onAttachFile: (ids: string[]) => void;
 }
 
-const DropZone = ({ maxFiles = 1 }: Props) => {
+const DropZone = ({ maxFiles = 1, onAttachFile }: Props) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeDialog = () => dialogRef.current?.close();
+  const files = useUploadAreaStore((state) => state.files);
+  const ids = files.filter(({ refId }) => refId);
   return (
     <>
       <button
@@ -17,7 +21,11 @@ const DropZone = ({ maxFiles = 1 }: Props) => {
         className="btn max-sm:btn-sm btn-primary"
       >
         <Upload className="w-4.5 max-sm:w-3.5" />
-        <span>Seleccionar archivos</span>
+        <span>
+          {ids.length > 0
+            ? `${ids.length} archivos seleccionados`
+            : "Seleccionar archivos"}
+        </span>
       </button>
       <dialog ref={dialogRef} className="modal">
         <div className="modal-box w-[70%] max-w-xl">
@@ -44,7 +52,19 @@ const DropZone = ({ maxFiles = 1 }: Props) => {
             >
               Cancelar
             </button>
-            <button className="btn btn-md btn-primary flex-1" type="button">
+            <button
+              onClick={() => {
+                const ids = files.filter(({ refId }) => refId);
+                if (ids.length <= 0) {
+                  console.error("Please attatch at least 1 file");
+                  return;
+                }
+                onAttachFile(ids.map((file) => file.refId!));
+                closeDialog();
+              }}
+              className="btn btn-md btn-primary flex-1"
+              type="button"
+            >
               Adjuntar archivos
             </button>
           </div>

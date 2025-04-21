@@ -13,8 +13,7 @@ import { handlingResponses } from "@/interceptors/errorNetwork";
 import { useAuthenticationStore } from "@/store/authenticationStore";
 import { useSystemErrorStore } from "@/store/systemErrorStore";
 import CardError from "@/components/CardError";
-import { Column } from "./components/table/column";
-import { TableProvider } from "@/components/table/context";
+import { Table, Column } from "@/components/table";
 
 const Content = () => {
   const { isCollapsed } = useSidebar();
@@ -24,7 +23,6 @@ const Content = () => {
   handlingResponses((error) => {
     console.log("layout component: ", error);
     updateSysError(error);
-    console.log("type layout: ", type);
   });
   return (
     <div
@@ -40,23 +38,6 @@ const Content = () => {
 
       <div className="min-h-content-peak">
         <div className="px-8 py-6">
-          <TableProvider>
-            <div className="bg-gray-800 py-4 px-6 rounded-box">
-              <table className="table bg-transparent">
-                <thead>
-                  <tr className="flex">
-                    <Column title="Nombre" path="name" />
-                    <Column title="Email" path="contact.email" />
-                    <Column
-                      title="Teléfono"
-                      path="contact.phoneNumber"
-                      colConfig={{ sortable: true }}
-                    />
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </TableProvider>
           <ErrorBoundary fallback={<CardError {...systemError} />}>
             <Outlet />
           </ErrorBoundary>

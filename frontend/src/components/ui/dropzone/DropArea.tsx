@@ -52,7 +52,6 @@ const DropArea = ({ maxFiles = 1 }: Props) => {
     [files],
   );
 
-  console.log("drop area: ", files);
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
     useDropzone({
       onDrop,
@@ -155,7 +154,7 @@ const DropArea = ({ maxFiles = 1 }: Props) => {
             tempId={tempId}
             refId={refId}
             progressValue={progressValue}
-            onRemove={() => console.log("deleting the file with id: ", refId)}
+            onRemove={() => null}
           />
         ))}
       </div>
