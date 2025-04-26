@@ -9,6 +9,9 @@ export enum HTTP_STATUS_TYPES {
   "ERROR_REMOVING_FILE" = "ERROR_REMOVING_FILE",
   "FILE_NOT_FOUND" = "FILE_NOT_FOUND",
   "CAST_OBJECT_ID_ERROR" = "CAST_OBJECT_ID_ERROR",
+  "REQUIRED_FILE" = "REQUIRED_FILE",
+  "FAILED_UPLOAD" = "FAILED_UPLOAD",
+  "FAILED_UPLOAD_DELETION" = "FAILED_UPLOAD_DELETION",
 }
 
 export enum HTTP_STATUS_CODES {
@@ -22,6 +25,9 @@ export enum HTTP_STATUS_CODES {
   "ERROR_REMOVING_FILE" = 400,
   "FILE_NOT_FOUND" = 404,
   "CAST_OBJECT_ID_ERROR" = 500,
+  "REQUIRED_FILE" = 400,
+  "FAILED_UPLOAD" = 500,
+  "FAILED_UPLOAD_DELETION" = 500,
 }
 
 export enum HTTP_STATUS_DETAILS {
@@ -35,6 +41,9 @@ export enum HTTP_STATUS_DETAILS {
   "ERROR_REMOVING_FILE" = "An error occurred while deleting the file or the file could not be found.",
   "FILE_NOT_FOUND" = "The specified file cannot be found by the system.",
   "CAST_OBJECT_ID_ERROR" = "An error occurred during the casting of the value from objectId.",
+  "REQUIRED_FILE" = "No file uploaded. Please attach a file and try again.",
+  "FAILED_UPLOAD" = "File upload failed. Please try again later.",
+  "FAILED_UPLOAD_DELETION" = "File upload failed and cleanup could not be completed.",
 }
 
 interface ErrorResponse {

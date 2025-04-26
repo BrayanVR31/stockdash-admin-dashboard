@@ -11,7 +11,7 @@ interface UploadFile {
 
 export const uploadSingleFile = async (fileForm: FormData) => {
   return (
-    await stockdashInstance.post<UploadFile>("/upload-image", fileForm, {
+    await stockdashInstance.post<UploadFile>("/upload", fileForm, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

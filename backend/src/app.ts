@@ -9,6 +9,7 @@ import { authorization, handleError } from "@/middlewares";
 const app = express();
 const { server } = settings();
 const publicPath = path.join(process.cwd(), "/public", "/assets", "/images");
+import { cloudinaryConfig } from "@/config/cloudinary";
 
 // Express configurations
 interface BootstrapConfig {
@@ -22,7 +23,7 @@ const bootstrap = (config?: BootstrapConfig) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(cors(corsConfig));
-
+  app.use(cloudinaryConfig);
   app.use("/public/images", express.static(publicPath));
   app.use(api);
   app.use(handleError);

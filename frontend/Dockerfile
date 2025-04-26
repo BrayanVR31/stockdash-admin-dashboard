@@ -1,19 +1,23 @@
-ARG NODE_VERSION=22.14.0
+ARG NODE_VERSION="22.14"
+ARG NGINX_VERSION="1.27.5"
+
 FROM node:${NODE_VERSION}-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-WORKDIR /usr/src/app
+FROM base AS dev
+COPY package*.json ./
+RUN npm install
+CMD ["npm", "run", "dev"]
+EXPOSE 5173
 
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --frozen-lockfile
-
-FROM base as dev 
-WORKDIR /usr/src/app 
+FROM base AS build
+COPY package*.json ./
+RUN npm ci
 COPY . .
-CMD ["pnpm", "dev"]
+RUN npm run build
 
-
-FROM base 
+FROM nginx:${NGINX_VERSION}-alpine AS  production
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

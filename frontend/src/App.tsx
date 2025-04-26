@@ -1,14 +1,8 @@
-import { BrowserRouter } from "react-router";
-import { Toaster } from "react-hot-toast";
-import Router from "@/routes/Router";
+import { RouterProvider } from "react-router";
+import { router } from "@/routes";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Router />
-      <Toaster position="bottom-right" />
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

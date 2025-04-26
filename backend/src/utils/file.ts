@@ -35,7 +35,6 @@ const imageFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback,
 ) => {
-  console.log("files", file);
   // File image extension verification
   const [result] = [...file.mimetype.matchAll(/(?<=\/)png|jpg|jpeg$/g)];
   const extension = result?.[0] || null;

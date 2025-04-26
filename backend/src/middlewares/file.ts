@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import multer from "multer";
 import { storage } from "@/config/multer";
 import { imageFilter } from "@/utils/file";
@@ -91,6 +91,19 @@ const handleMultiUploadErrors = (
     }
 
     return next();
+  });
+};
+
+const runMiddleware = async (
+  request: Request,
+  response: Response,
+  fn: RequestHandler,
+) => {
+  return new Promise((resolve, reject) => {
+    fn(request, response, (result) => {
+      if (result instanceof Error) return reject(result);
+      return resolve(result);
+    });
   });
 };
 

@@ -3,12 +3,13 @@ import { Supplier, ISupplier } from "@/models";
 import { Controller, ServerError, JSONResponse } from "@/types";
 import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
 import { paginateDocs } from "@/utils";
+import { handleServerError } from "@/utils/error";
 
 //  Types
 type SupplierController = Controller<JSONResponse<ISupplier>>;
 
 // Get all resources
-export const home: SupplierController = async (request, response, next) => {
+export const home: Controller = async (request, response, next) => {
   try {
     // Pagination configuration
     const total = await Supplier.countDocuments();
@@ -17,7 +18,7 @@ export const home: SupplierController = async (request, response, next) => {
     const populatedImage: PopulateOptions = {
       path: "image",
       transform: (doc) => {
-        doc.path = `public/images/${doc.path}`;
+        if (doc) doc.path = `public/images/${doc?.path}`;
         return doc;
       },
     };
@@ -33,13 +34,8 @@ export const home: SupplierController = async (request, response, next) => {
       per_page: perPage,
     });
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
@@ -49,13 +45,8 @@ export const create: Controller = async (request, response, next) => {
     const result = await Supplier.create(request.body);
     return response.status(HTTP_STATUS_CODES.CREATED).json(result);
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
@@ -71,7 +62,7 @@ export const edit: Controller = async (request, response, next) => {
       },
     };
     const result = await Supplier.findById(request.params.id).populate(
-      populatedImage,
+      populatedImage
     );
     if (!result) {
       // Returns an error when the resource was not found it

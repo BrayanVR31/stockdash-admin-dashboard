@@ -15,7 +15,8 @@ export async function initDBConnection() {
     console.log("CONNECTION TO DATABASE WAS SUCCESSFULLY STABLISHED");
     return connection;
   } catch (error) {
-    console.log(error);
-    //console.log("ERROR TO STABLISH DATABASE CONNECTION");
+    if (error)
+      // console.log(error);
+      throw new Error("ERROR TO STABLISH DATABASE CONNECTION");
   }
 }

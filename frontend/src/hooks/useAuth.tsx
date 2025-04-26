@@ -1,9 +1,9 @@
 import { useMutation, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router";
 import { memoryToken } from "@/services/stockdashService";
 import { login, logout } from "@/services/authentication";
-import { MatchObject } from "@/types/matchObject";
 import { useAuthenticationStore } from "@/store/authenticationStore";
 
 interface FormattedError {
@@ -11,7 +11,11 @@ interface FormattedError {
   message: string;
 }
 
-const matchError: MatchObject<FormattedError> = {
+type ErrorKeys = "INVALID_PASSWORD" | "INVALID_EMAIL";
+
+type MatchError = Record<ErrorKeys, FormattedError>;
+
+const matchError: MatchError = {
   INVALID_PASSWORD: {
     key: "password",
     message: "La contraseña de usuario es incorrecta.",
@@ -28,9 +32,10 @@ export const useSignIn = () => {
     ...useMutation({
       mutationFn: login,
       onError: (error) => {
+        console.log(error);
         if (error instanceof AxiosError) {
           const resError = error?.response?.data;
-          const keyError = resError?.error?.type as string;
+          const keyError = resError?.error?.type as ErrorKeys;
           setMatchedError(matchError[keyError]);
         }
       },
@@ -45,6 +50,7 @@ export const useSignIn = () => {
 export const useLogOut = () => {
   const queryClient = new QueryClient();
   const setIsLogged = useAuthenticationStore((state) => state.setIsLogged);
+
   const quitSession = async () => {
     try {
       const data = await queryClient.fetchQuery({

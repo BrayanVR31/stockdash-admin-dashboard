@@ -23,31 +23,32 @@ services:
       - mongodb
   api:
     container_name: api
-    image: stockdash/api
+    image: stockdash/dev-api
     build:
       context: ./backend
       target: dev
     volumes:
-      - ./backend/src:/usr/src/app/src
-      - ./backend/public:/usr/src/app/public
-      - /etc/localtime:/etc/localtime:ro
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - 4000:4000
     restart: always
   dashboard:
     container_name: dashboard
-    image: stockdash/dashboard
+    image: stockdash/dev-dashboard
     build:
       context: ./frontend
       target: dev
     volumes:
-      - ./frontend/src:/usr/src/app/src
+      - ./frontend:/app
+      - /app/node_modules
     ports:
       - 5173:5173
     depends_on:
       - api
     restart: always
-    command: pnpm run dev:local
+    environment:
+      - NODE_ENV=development
 volumes:
   db-data:
   api-node-modules:

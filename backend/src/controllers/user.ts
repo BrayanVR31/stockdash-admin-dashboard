@@ -100,7 +100,6 @@ export const viewProfile: Controller = async (request, response) => {
         path: "avatar",
         model: "Image",
         transform: (doc) => {
-          doc.path = `public/images/${doc.path}`;
           return doc;
         },
       },

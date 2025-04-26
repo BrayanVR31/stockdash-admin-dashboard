@@ -1,14 +1,16 @@
 import { AxiosError } from "axios";
 import { stockdashInstance } from "@/services/stockdashService";
 import alert from "@/assets/alert.svg";
-import { ErrorInfo } from "@/types/error";
-import { DataError } from "@/types/responseObject";
 
-const matchStatus: {
-  [code: number]: {
-    [type: string]: ErrorInfo;
-  };
-} = {
+type StatusMessage = {
+  message: string;
+  type: string;
+  ilustration: string;
+  statusCode: number;
+};
+type MatchStatus = Record<number, Record<string, StatusMessage>>;
+
+const matchStatus: MatchStatus = {
   401: {
     EXPIRED_SESSION: {
       message:
@@ -20,7 +22,7 @@ const matchStatus: {
   },
 };
 
-type onCatchError = (info: ErrorInfo) => void;
+type onCatchError = (info: StatusMessage) => void;
 
 export const handlingResponses = (onCatchError?: onCatchError) => {
   stockdashInstance.interceptors.response.use(
@@ -28,7 +30,7 @@ export const handlingResponses = (onCatchError?: onCatchError) => {
     (error) => {
       if (error instanceof AxiosError) {
         const { status } = error.response!;
-        const data: DataError = error.response!.data;
+        const data = error.response!.data;
 
         if (onCatchError) onCatchError(matchStatus[status][data.error.type]);
       }

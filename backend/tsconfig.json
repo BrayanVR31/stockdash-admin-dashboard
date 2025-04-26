@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "noEmit": true,
+    "noEmit": false,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "CommonJS",
+    "strict": false,
+    "skipLibCheck": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "removeComments": true,
     /** Path alias */
     "baseUrl": ".",
     "paths": {
