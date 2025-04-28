@@ -12,6 +12,7 @@ export enum HTTP_STATUS_TYPES {
   "REQUIRED_FILE" = "REQUIRED_FILE",
   "FAILED_UPLOAD" = "FAILED_UPLOAD",
   "FAILED_UPLOAD_DELETION" = "FAILED_UPLOAD_DELETION",
+  "ROL_FORBIDDEN" = "ROL_FORBIDDEN",
 }
 
 export enum HTTP_STATUS_CODES {
@@ -28,6 +29,7 @@ export enum HTTP_STATUS_CODES {
   "REQUIRED_FILE" = 400,
   "FAILED_UPLOAD" = 500,
   "FAILED_UPLOAD_DELETION" = 500,
+  "ROL_FORBIDDEN" = 403,
 }
 
 export enum HTTP_STATUS_DETAILS {
@@ -44,6 +46,7 @@ export enum HTTP_STATUS_DETAILS {
   "REQUIRED_FILE" = "No file uploaded. Please attach a file and try again.",
   "FAILED_UPLOAD" = "File upload failed. Please try again later.",
   "FAILED_UPLOAD_DELETION" = "File upload failed and cleanup could not be completed.",
+  "ROL_FORBIDDEN" = "Access denied: insufficient permissions.",
 }
 
 interface ErrorResponse {

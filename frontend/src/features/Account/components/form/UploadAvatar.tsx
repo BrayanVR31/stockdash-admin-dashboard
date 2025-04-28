@@ -24,14 +24,21 @@ import { FiUpload } from "react-icons/fi";
 import { NotFoundAvatar } from "./AccountAvatar";
 import delay from "@/utils/delay";
 import FileUploadList from "@/components/ui/FileUploadList";
+import { useAttachFile } from "@/hooks/useUpload";
 const AccountAvatar = lazy(() => delay(import("./AccountAvatar"), 3_20));
 
-const UploadAvatar = () => {
+interface Props {
+  defaultPath?: string;
+}
+
+const UploadAvatar = ({ defaultPath }: Props) => {
   const {
     register,
     formState: { errors },
     control,
+    setValue,
   } = useFormContext<AccountInputs>();
+  const { mutate: attach, attachProgress } = useAttachFile();
   const avatar = useWatch({
     control,
     name: "profile.avatar",
@@ -48,6 +55,20 @@ const UploadAvatar = () => {
     maxFiles: 1,
     maxFileSize: 1_048_576,
     accept: "image/*",
+    onFileAccept: ({ files }) => {
+      if (files.length === 1) {
+        const formData = new FormData();
+        formData.append("image", [...files].shift() as Blob);
+        attach(formData, {
+          onSuccess: (data) => {
+            setValue("profile.avatar", data._id);
+          },
+        });
+      } else if (files.length > 1) {
+        //
+      }
+      console.log("accepted files: ", files);
+    },
   });
   const rejected = fileUpload.rejectedFiles.map((e) => e.file.name);
   return (
@@ -69,16 +90,7 @@ const UploadAvatar = () => {
         gap="5"
       >
         {/** Avatar */}
-        <ErrorBoundary
-          fallback={<NotFoundAvatar alternativeMessage={username || name} />}
-        >
-          <Suspense fallback={<SkeletonCircle size="16" />}>
-            <AccountAvatar
-              imageId={avatar || undefined}
-              fallbackMessage={username || name}
-            />
-          </Suspense>
-        </ErrorBoundary>
+        <AccountAvatar path={defaultPath} fallbackMessage={username || name} />
         <Flex
           align={{
             base: "center",
@@ -117,16 +129,21 @@ const UploadAvatar = () => {
       >
         {/** File upload button */}
 
-        <FileUpload.RootProvider
-          onChange={() => {
-            console.log(fileUpload.acceptedFiles);
-          }}
-          value={fileUpload}
-        >
+        <FileUpload.RootProvider gap={6} value={fileUpload}>
           <FileUpload.HiddenInput />
-          <FileUploadList />
+          <FileUploadList
+            status={attachProgress.status}
+            progressUpload={attachProgress.value}
+          />
           <FileUpload.Trigger asChild>
-            <Button colorPalette="purple" variant="surface">
+            <Button
+              w={{
+                base: "full",
+                md: "auto",
+              }}
+              colorPalette="purple"
+              variant="surface"
+            >
               <FiUpload />
               Sube tu imagen
             </Button>

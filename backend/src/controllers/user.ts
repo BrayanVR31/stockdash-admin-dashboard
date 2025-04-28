@@ -3,11 +3,13 @@ import { Types, PopulateOptions } from "mongoose";
 import fs from "fs/promises";
 import _ from "lodash";
 import { Controller, ServerError } from "@/types";
-import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
+import { HTTP_STATUS_CODES } from "@/enums";
 import { User } from "@/models/user";
 import { Image } from "@/models/image";
 import { destinationPath } from "@/config/multer";
 import { handleServerError } from "@/utils/error";
+import { HTTP_STATUS_TYPES, getServerError } from "@/utils/statusCodes";
+import { paginateDocs } from "@/utils";
 
 interface JWTInfo extends JwtPayload {
   id: string;
@@ -20,14 +22,44 @@ interface BaseObject {
 // Get all resources
 export const home: Controller = async (request, response, next) => {
   try {
+    const currentUserId = jwtDecode(request.cookies["refresh_token"])[
+      "id"
+    ] as string;
+    // Pagination configuration
+    const total = await User.countDocuments({
+      _id: {
+        $ne: currentUserId,
+      },
+    });
+    const { per_page, page } = request.query;
+    const { skipDocument, perPage } = paginateDocs(total, per_page, page);
+    const populatedImage: PopulateOptions = {
+      path: "profile.avatar",
+      strictPopulate: false,
+    };
+    const populatedRol: PopulateOptions = {
+      path: "rol",
+      strictPopulate: false,
+      select: "name -_id",
+      transform: (doc) => doc.name,
+    };
+    const results = await User.find({
+      _id: { $ne: currentUserId },
+    })
+      .populate(populatedImage)
+      .populate(populatedRol)
+      .skip(skipDocument)
+      .limit(perPage);
+    return response.status(200).json({
+      results,
+      total,
+      subtotal: results.length,
+      page: per_page && !page ? 1 : +page,
+      per_page: perPage,
+    });
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
@@ -35,13 +67,8 @@ export const home: Controller = async (request, response, next) => {
 export const create: Controller = async (request, response, next) => {
   try {
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
@@ -67,7 +94,6 @@ export const updateProfile: Controller = async (request, response, next) => {
     }).select(selectedFields.exclusion);
     return response.status(200).json(returnedUser);
   } catch (error) {
-    console.log(error);
     const [status, serverError] = handleServerError(error);
     return response.status(status).json(serverError);
   }
@@ -121,26 +147,59 @@ export const viewProfile: Controller = async (request, response) => {
 export const update: Controller = async (request, response, next) => {
   try {
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
 // Delete a specific resource
 export const destroy: Controller = async (request, response, next) => {
   try {
+    const currentUserId = jwtDecode(request.cookies["refresh_token"])[
+      "id"
+    ] as string;
+    const userId = request.params.id;
+    const result = await User.deleteOne({
+      _id: {
+        $eq: userId,
+        $ne: currentUserId,
+      },
+    });
+    if (result.deletedCount <= 0) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.ERROR_REMOVING_FILE,
+      );
+      return response.status(status).json(serverError);
+    }
+    return response.status(204).end();
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
+  }
+};
+
+export const bulkRecords: Controller = async (request, response) => {
+  try {
+    const currentUserId = jwtDecode(request.cookies["refresh_token"])[
+      "id"
+    ] as string;
+    const userIds = request.body.ids as string[];
+    const result = await User.deleteMany({
+      _id: {
+        $in: userIds,
+        $ne: currentUserId,
+      },
+    });
+
+    if (result.deletedCount <= 0) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.ERROR_REMOVING_FILE,
+      );
+      return response.status(status).json(serverError);
+    }
+    return response.status(204).end();
+  } catch (error) {
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };

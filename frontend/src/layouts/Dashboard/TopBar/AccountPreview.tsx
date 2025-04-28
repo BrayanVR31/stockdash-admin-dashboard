@@ -9,15 +9,12 @@ const ringCss = defineStyle({
 });
 
 const AccountPreview = () => {
-  const { VITE_API_URL: url, VITE_API_PORT: port } = import.meta.env;
   const { data } = useProfileSession();
   const { path = "" } = data?.profile?.avatar || {};
-  const image = `${url}:${port}/${path}`;
-
   return (
     <Avatar.Root css={ringCss} colorPalette="purple" size="sm">
-      <Avatar.Fallback name={data.username} />
-      <Avatar.Image src={image} />
+      <Avatar.Fallback name={data.username || "User"} />
+      <Avatar.Image src={path} />
     </Avatar.Root>
   );
 };

@@ -11,23 +11,28 @@ type Address = {
   city: string;
   state: string;
   street: string;
-  zipCode: number;
+  zipCode: string;
   country: string;
 };
 
 type Profile = {
-  avatar: Avatar;
+  avatar: Avatar | null;
   name: string;
   lastName: string;
-  phoneNumber: string;
+  phoneNumber: string | null;
   address: Address;
-  username: string;
 };
 
 export type Account = {
-  username: string;
+  username: string | null;
   email: string;
   rol: string;
   status: boolean;
   profile: Profile;
 } & Omit<TimeStamps, "deletedAt">;
+
+export type ProfileForm = Omit<Account, "profile"> & {
+  profile: Omit<Profile, "avatar"> & {
+    avatar: string | null;
+  };
+};

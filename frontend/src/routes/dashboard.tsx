@@ -2,6 +2,7 @@ import { RouteObject } from "react-router";
 import Layout from "@/layouts/Dashboard/Layout";
 import ProtectRoute from "./ProtectRoute";
 import { AccountSettings } from "@/features/Account/pages";
+import { UserList } from "@/features/User/pages";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -14,6 +15,10 @@ const dashboardRoute: RouteObject = {
         {
           path: "account",
           element: <AccountSettings />,
+        },
+        {
+          path: "users",
+          children: [{ index: true, element: <UserList /> }],
         },
       ],
     },

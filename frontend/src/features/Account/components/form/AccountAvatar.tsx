@@ -1,5 +1,6 @@
 import { Avatar, defineStyle } from "@chakra-ui/react";
 import { useUploadFile } from "@/hooks/useUpload";
+import { Link } from "react-router";
 
 const ringCss = defineStyle({
   outlineWidth: "2px",
@@ -10,15 +11,14 @@ const ringCss = defineStyle({
 
 interface Props {
   fallbackMessage: string;
-  imageId?: string;
+  path?: string;
 }
 
-const AccountAvatar = ({ fallbackMessage, imageId = "" }: Props) => {
-  const { data } = useUploadFile(imageId);
+const AccountAvatar = ({ fallbackMessage, path = "" }: Props) => {
   return (
     <Avatar.Root css={ringCss} colorPalette="purple" size="2xl">
       <Avatar.Fallback name={fallbackMessage} />
-      <Avatar.Image src={data.path} />
+      <Avatar.Image src={path} />
     </Avatar.Root>
   );
 };

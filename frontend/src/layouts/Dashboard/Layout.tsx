@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import { TopBar } from "./TopBar";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
 import { Outlet } from "react-router";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const cssRules: SystemStyleObject = {
   "&:has([data-container=top-bar] :checked)": {
@@ -10,15 +11,16 @@ const cssRules: SystemStyleObject = {
       rotate: "180deg",
     },
     "& [data-container=sidebar]": {
-      width: "260px",
+      width: "320px",
       "& [data-link=sidebar-link]": {
         mx: "initial",
-        "& > :not(svg)": {
+        "&  :not(svg)": {
           display: "block",
         },
       },
       "& [data-logo=logo-text]": {
-        display: "block",
+        width: "auto",
+        ml: 2,
       },
       "& [data-container=logo-wrapper]": {
         justifyContent: "start",
@@ -37,7 +39,8 @@ const cssRules: SystemStyleObject = {
         },
       },
       "& [data-logo=logo-text]": {
-        display: "none",
+        width: "0px",
+        ml: 0,
       },
       "& [data-container=logo-wrapper]": {
         justifyContent: "center",
@@ -47,7 +50,9 @@ const cssRules: SystemStyleObject = {
 };
 
 const Layout = () => {
-  useDocumentTitle("Home");
+  useDocumentTitle("Home", {
+    restoreOnMount: true,
+  });
   return (
     <Flex css={cssRules} height="100vh" overflow="hidden">
       <Sidebar />
@@ -63,6 +68,7 @@ const Layout = () => {
             _dark: "gray.950",
           }}
         >
+          <Breadcrumbs />
           <Outlet />
         </Box>
       </Flex>

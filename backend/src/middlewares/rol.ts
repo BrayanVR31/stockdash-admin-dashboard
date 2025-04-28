@@ -4,6 +4,7 @@ import { Rol, IRol } from "@/models/rol";
 import { PermissionType } from "@/models/permission";
 import { User } from "@/models/user";
 import { handleServerError } from "@/utils/error";
+import { getServerError, HTTP_STATUS_TYPES } from "@/utils/statusCodes";
 
 interface JWTDecoded extends JwtPayload {
   id: string;
@@ -64,6 +65,7 @@ const hasAuthorization =
       // Match each permission depending on method request
       const { method, path, params } = request;
       const resource = path.replace(`/${params.id}`, "").split("/").join("");
+      console.log({ resource, path });
 
       // When the route has nested subpaths
       const splittedResource = path
@@ -89,5 +91,31 @@ const hasAuthorization =
       return response.status(status).json(serverError);
     }
   };
+
+type CheckRole = (...roles: string[]) => Controller;
+
+export const hasRole: CheckRole = (roles) => async (req, res, next) => {
+  try {
+    const token: string = req.cookies?.["refresh_token"];
+    const _id: string = jwtDecode(token)?.["id"];
+    const user = await User.findById(_id).populate({
+      path: "rol",
+      transform: (doc) => doc.name,
+    });
+    const hasRole = roles.includes(user.rol as string);
+    // Not authorized role
+    if (!hasRole) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.ROL_FORBIDDEN,
+      );
+      return res.status(status).json(serverError);
+    }
+    return next();
+  } catch (e) {
+    console.log("error", e);
+    const [status, serverError] = handleServerError(e);
+    return res.status(status).json(serverError);
+  }
+};
 
 export { hasAuthorization };

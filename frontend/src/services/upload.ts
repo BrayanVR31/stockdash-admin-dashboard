@@ -1,6 +1,6 @@
 import { stockdashInstance } from "./stockdashService";
 
-interface UploadFile {
+export interface UploadFile {
   _id: string;
   path: string;
   extension: string;
@@ -8,6 +8,8 @@ interface UploadFile {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type UploadStatus = "idle" | "error" | "success" | "pending";
 
 export const uploadSingleFile = async (fileForm: FormData) => {
   return (
