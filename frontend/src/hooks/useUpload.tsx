@@ -7,6 +7,7 @@ import {
   UploadStatus,
 } from "@/services/upload";
 import { stockdashInstance } from "@/services/stockdashService";
+import { toaster } from "@/components/ui/toaster";
 
 export const useUploadFile = (id: string) => {
   return useSuspenseQuery({
@@ -45,6 +46,20 @@ export const useAttachFile = () => {
       },
       onSuccess: () => {
         setAttachProgress({ ...attachProgress, status: "success" });
+        toaster.dismiss("upload-toast");
+        toaster.create({
+          type: "success",
+          title: "Subida exitosa",
+          description: "Tu archivo se ha subido de manera exitosa.",
+        });
+      },
+      onMutate: () => {
+        toaster.create({
+          type: "loading",
+          title: "Subiendo archivo",
+          description: "Porfavor espera...",
+          id: "upload-toast",
+        });
       },
     }),
     attachProgress,

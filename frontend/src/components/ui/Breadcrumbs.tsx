@@ -16,8 +16,8 @@ const Breadcrumbs = () => {
   const pathnames = pathname.split("/").filter((path) => path);
   console.log(pathnames);
   return (
-    <HStack maxW="4xl" mx="auto">
-      <Breadcrumb.Root colorPalette="purple" size="md">
+    <>
+      <Breadcrumb.Root size="md">
         <Breadcrumb.List>
           {pathnames.map((pathname, index) => {
             const routePath = `/${pathnames.slice(0, index + 1).join("/")}`;
@@ -54,7 +54,7 @@ const Breadcrumbs = () => {
           })}
         </Breadcrumb.List>
       </Breadcrumb.Root>
-    </HStack>
+    </>
   );
 };
 

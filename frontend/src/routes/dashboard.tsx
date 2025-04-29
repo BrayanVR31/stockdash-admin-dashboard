@@ -3,6 +3,7 @@ import Layout from "@/layouts/Dashboard/Layout";
 import ProtectRoute from "./ProtectRoute";
 import { AccountSettings } from "@/features/Account/pages";
 import { UserList } from "@/features/User/pages";
+import { ProductList, ProductForm } from "@/features/Product/pages";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -19,6 +20,16 @@ const dashboardRoute: RouteObject = {
         {
           path: "users",
           children: [{ index: true, element: <UserList /> }],
+        },
+        {
+          path: "products",
+          children: [
+            { index: true, element: <ProductList /> },
+            {
+              path: "create",
+              element: <ProductForm />,
+            },
+          ],
         },
       ],
     },

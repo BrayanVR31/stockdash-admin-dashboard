@@ -1,4 +1,5 @@
 export type TimeStamps = {
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

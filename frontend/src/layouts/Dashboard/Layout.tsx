@@ -1,9 +1,9 @@
-import { Flex, Box, SystemStyleObject } from "@chakra-ui/react";
+import { Flex, Box, SystemStyleObject, Stack } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import { TopBar } from "./TopBar";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
 import { Outlet } from "react-router";
-import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import { Toaster } from "@/components/ui/toaster";
 
 const cssRules: SystemStyleObject = {
   "&:has([data-container=top-bar] :checked)": {
@@ -68,10 +68,10 @@ const Layout = () => {
             _dark: "gray.950",
           }}
         >
-          <Breadcrumbs />
           <Outlet />
         </Box>
       </Flex>
+      <Toaster />
     </Flex>
   );
 };

@@ -8,6 +8,7 @@ interface Props {
 
 export const TableProvider = ({ children, pathKey }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [selection, setSelection] = useState<Set<string>>(new Set());
   const value: TableCtx = {
@@ -18,6 +19,8 @@ export const TableProvider = ({ children, pathKey }: Props) => {
     selection,
     setSelection,
     pathKey,
+    totalItems,
+    setTotalItems,
   };
   return (
     <tableContext.Provider value={value}>{children}</tableContext.Provider>

@@ -55,4 +55,4 @@ const PerPage = () => {
   );
 };
 
-export default PerPage;
+export { PerPage };

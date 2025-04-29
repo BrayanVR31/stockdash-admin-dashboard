@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, HStack, Stack, Text } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
 import { TableProvider } from "@/components/table";
+import TableSkeletonLoader from "@/components/ui/table-skeleton-loader";
 
 const SuspenseTable = lazy(() => import("./userTable"));
 
@@ -22,7 +23,7 @@ const UserList = () => {
           <Button colorPalette="gray">Regresar</Button>
         </ButtonGroup>
       </HStack>
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={<TableSkeletonLoader columns={6} />}>
         <TableProvider pathKey="_id">
           <SuspenseTable />
         </TableProvider>

@@ -2,12 +2,8 @@ import { ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useTable } from "./useTable";
 
-interface Props {
-  count: number;
-}
-
-const PagingTable = ({ count }: Props) => {
-  const { setCurrentPage, perPage } = useTable();
+const PagingTable = () => {
+  const { setCurrentPage, perPage, totalItems: count } = useTable();
   return (
     <Pagination.Root
       onPageChange={({ page }) => {
@@ -47,4 +43,4 @@ const PagingTable = ({ count }: Props) => {
   );
 };
 
-export default PagingTable;
+export { PagingTable };

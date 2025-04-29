@@ -20,7 +20,6 @@ const SuspenseTable = () => {
     <TableLayout
       totalItems={data.total}
       data={data.results}
-      pathKey="_id"
       headingCols={cols}
       onBulkDeletion={(ids) => destroyAll(ids)}
       onDeleteItem={(id) => destroyUser(id)}

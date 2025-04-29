@@ -26,7 +26,6 @@ export type HeadingCol = {
 interface Props<T> {
   headingCols: HeadingCol[];
   data: T[];
-  pathKey: string;
   totalItems: number;
   onBulkDeletion: (ids: string[]) => void;
   onDeleteItem: (id: string) => void;
@@ -35,15 +34,16 @@ interface Props<T> {
 const TableLayout = <T extends Record<string, unknown>>({
   headingCols,
   data,
-  pathKey,
   totalItems,
   onBulkDeletion,
   onDeleteItem,
 }: Props<T>) => {
-  const { selection, setSelection } = useTable();
+  const { selection, setSelection, pathKey, setTotalItems } = useTable();
   const hasSelection = selection.size > 0;
   const indeterminate = hasSelection && selection.size < data.length;
-
+  useEffect(() => {
+    setTotalItems(totalItems);
+  }, [totalItems, setTotalItems]);
   const fields = useMemo(
     () => headingCols.map(({ path }) => path),
     [headingCols],
@@ -84,27 +84,6 @@ const TableLayout = <T extends Record<string, unknown>>({
         hasSelection={hasSelection}
         selectedItems={selection.size}
       />
-      <Stack
-        position="sticky"
-        shadow="lg"
-        bottom="0"
-        direction={{
-          base: "column",
-          md: "row",
-        }}
-        justify="space-between"
-        align="center"
-        rounded="md"
-        px="6"
-        py="2"
-        bg={{
-          base: "white",
-          _dark: "gray.900",
-        }}
-      >
-        <PerPage />
-        <PagingTable count={totalItems} />
-      </Stack>
     </>
   );
 };
@@ -112,8 +91,26 @@ const TableLayout = <T extends Record<string, unknown>>({
 export { TableLayout };
 
 /**
-{data.map((item, index) => (
-  <Row key={`row-${index}`} item={item} fields={fields} />
-))}
+<Stack
+  position="sticky"
+  shadow="lg"
+  bottom="0"
+  direction={{
+    base: "column",
+    md: "row",
+  }}
+  justify="space-between"
+  align="center"
+  rounded="md"
+  px="6"
+  py="2"
+  bg={{
+    base: "white",
+    _dark: "gray.900",
+  }}
+>
+  <PerPage />
+  <PagingTable count={totalItems} />
+</Stack>
 
 */

@@ -27,7 +27,7 @@ const navLinks: SidebarLink[] = [
     icon: <LuFactory size={16} />,
     subItems: [
       { to: "create", label: "Crear" },
-      { to: "list", label: "Listar" },
+      { to: "", label: "Listar" },
     ],
   },
   {
@@ -36,7 +36,7 @@ const navLinks: SidebarLink[] = [
     icon: <BsBoxes size={16} />,
     subItems: [
       { to: "create", label: "Crear" },
-      { to: "list", label: "Listar" },
+      { to: "", label: "Listar" },
     ],
   },
   {
@@ -45,7 +45,7 @@ const navLinks: SidebarLink[] = [
     icon: <TbPigMoney size={16} />,
     subItems: [
       { to: "create", label: "Crear" },
-      { to: "list", label: "Listar" },
+      { to: "", label: "Listar" },
     ],
   },
   {
@@ -54,7 +54,7 @@ const navLinks: SidebarLink[] = [
     icon: <MdOutlineShoppingCart size={16} />,
     subItems: [
       { to: "create", label: "Crear" },
-      { to: "list", label: "Listar" },
+      { to: "", label: "Listar" },
     ],
   },
   {

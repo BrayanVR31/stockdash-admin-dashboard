@@ -67,7 +67,6 @@ const UploadAvatar = ({ defaultPath }: Props) => {
       } else if (files.length > 1) {
         //
       }
-      console.log("accepted files: ", files);
     },
   });
   const rejected = fileUpload.rejectedFiles.map((e) => e.file.name);

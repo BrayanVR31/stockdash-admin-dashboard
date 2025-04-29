@@ -8,6 +8,7 @@ import Contact from "./Contact";
 import Address from "./Address";
 import { useProfileSession, useUpdateAccount } from "@/hooks/useProfile";
 import UploadAvatar from "./UploadAvatar";
+import LoadingOverlaySpinner from "@/components/ui/loading-overlay-spinner";
 
 const Form = () => {
   const { data } = useProfileSession();
@@ -33,7 +34,7 @@ const Form = () => {
       },
     },
   });
-  const { mutate } = useUpdateAccount();
+  const { mutate, isPending } = useUpdateAccount();
 
   const onSubmit: SubmitHandler<AccountInputs> = (account) => {
     console.log(data);
@@ -58,41 +59,40 @@ const Form = () => {
       username: account?.profile?.username,
     });
   };
-  console.log("react query[account]: ", data.profile?.avatar?.path);
   return (
-    <FormProvider {...methods}>
-      <Flex direction="column" gap={6} asChild>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit, (e) => console.log(e))}
-          autoComplete="off"
-        >
-          <UploadAvatar defaultPath={data.profile?.avatar?.path} />
-          <Stack gapY="5" separator={<StackSeparator />}>
-            {/*** Personal info */}
-            <PersonalInfo />
-            {/** Contact */}
-            <Contact />
-            {/** Street */}
-            <Address />
-          </Stack>
-          <Flex
-            justify={{
-              base: "space-between",
-              md: "flex-end",
-            }}
-            gap={4}
-            mt={6}
-          >
-            <Button variant="solid" asChild>
-              <NavLink to="/dashboard">Cancelar</NavLink>
-            </Button>
-            <Button type="submit" colorPalette="purple">
-              Guardar
-            </Button>
-          </Flex>
-        </form>
-      </Flex>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <Flex direction="column" gap={6} asChild>
+          <form onSubmit={methods.handleSubmit(onSubmit)} autoComplete="off">
+            <UploadAvatar defaultPath={data.profile?.avatar?.path} />
+            <Stack gapY="5" separator={<StackSeparator />}>
+              {/*** Personal info */}
+              <PersonalInfo />
+              {/** Contact */}
+              <Contact />
+              {/** Street */}
+              <Address />
+            </Stack>
+            <Flex
+              justify={{
+                base: "space-between",
+                md: "flex-end",
+              }}
+              gap={4}
+              mt={6}
+            >
+              <Button variant="solid" asChild>
+                <NavLink to="/dashboard">Cancelar</NavLink>
+              </Button>
+              <Button type="submit" colorPalette="purple">
+                Guardar
+              </Button>
+            </Flex>
+          </form>
+        </Flex>
+      </FormProvider>
+      {isPending && <LoadingOverlaySpinner message="Enviando información" />}
+    </>
   );
 };
 

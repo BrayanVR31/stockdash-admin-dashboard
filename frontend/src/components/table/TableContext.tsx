@@ -5,12 +5,14 @@ interface TableState {
   perPage: number;
   selection: Set<string>;
   pathKey: string;
+  totalItems: number;
 }
 
 interface TableActions {
   setCurrentPage: Dispatch<SetStateAction<number>>;
   setPerPage: Dispatch<SetStateAction<number>>;
   setSelection: Dispatch<SetStateAction<Set<string>>>;
+  setTotalItems: Dispatch<SetStateAction<number>>;
 }
 
 export type TableCtx = TableState & TableActions;
@@ -23,4 +25,6 @@ export const tableContext = createContext<TableCtx>({
   selection: new Set(),
   setSelection: () => null,
   pathKey: "",
+  setTotalItems: () => null,
+  totalItems: 0,
 });

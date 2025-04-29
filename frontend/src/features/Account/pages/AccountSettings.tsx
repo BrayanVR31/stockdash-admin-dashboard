@@ -33,6 +33,7 @@ const AccountSettings = () => {
         mx="auto"
         p={10}
         boxShadow="xl"
+        position="relative"
       >
         <Text
           textAlign={{
