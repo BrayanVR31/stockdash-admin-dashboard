@@ -7,11 +7,15 @@ import { paginateDocs } from "@/utils";
 type CategoryController = Controller<JSONResponse<ICategory>>;
 
 // Get all resources
-export const home: CategoryController = async (request, response, next) => {
+export const home: Controller = async (request, response, next) => {
   try {
     // Pagination configuration
     const total = await Category.countDocuments();
-    const { per_page, page } = request.query;
+    const { per_page, page, with_pagination = "1" } = request.query;
+    if (with_pagination === "0") {
+      const data = await Category.find();
+      return response.status(HTTP_STATUS_CODES.OK).json(data);
+    }
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
     const results = await Category.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({

@@ -1,6 +1,6 @@
 import { Results, TimeStamps } from "./stockdash";
 
-type Category = {
+export type Category = {
   name: string;
 } & TimeStamps;
 

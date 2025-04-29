@@ -13,6 +13,7 @@ import { PerPage, PagingTable, TableProvider } from "@/components/table";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import TableSkeletonLoader from "@/components/ui/table-skeleton-loader";
 import Container from "@/layouts/Dashboard/Container";
+import { NavLink } from "react-router";
 
 const ProductTable = lazy(() =>
   import("../components/table").then((mod) => ({
@@ -80,9 +81,11 @@ const ProductList = () => {
                 <InputGroup flex="1" startElement={<GoSearch />}>
                   <Input placeholder="Busca productos" />
                 </InputGroup>
-                <Button>
-                  <GoPlus />
-                  Agregar
+                <Button asChild>
+                  <NavLink to="./create">
+                    <GoPlus />
+                    Agregar
+                  </NavLink>
                 </Button>
               </Stack>
             </Stack>

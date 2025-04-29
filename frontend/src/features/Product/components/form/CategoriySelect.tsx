@@ -1,51 +1,50 @@
 import {
   createListCollection,
-  Field,
   Portal,
   Select,
   Spinner,
+  Field,
 } from "@chakra-ui/react";
 import { Controller, useFormContext } from "react-hook-form";
 import { ProductInputs } from "@/models/productSchema";
-import { useSuppliers } from "@/hooks/useSupplier";
+import { useCategories } from "@/hooks/useCategory";
 import { useMemo } from "react";
 
-const SupplierSelect = () => {
-  const { data, isPending } = useSuppliers();
+const CategorySelect = () => {
+  const { data, isPending } = useCategories();
+  const collection = useMemo(() => {
+    return createListCollection({
+      items: data ?? [],
+      itemToString: (category) => category.name,
+      itemToValue: (category) => category._id,
+    });
+  }, [data]);
   const {
     control,
     formState: { errors },
   } = useFormContext<ProductInputs>();
-  const collection = useMemo(() => {
-    return createListCollection({
-      items: data?.results ?? [],
-      itemToString: (supplier) => supplier.name,
-      itemToValue: (supplier) => supplier._id,
-    });
-  }, [data]);
   return (
-    <Field.Root required invalid={!!errors?.suppliers}>
+    <Field.Root required invalid={!!errors?.categories}>
       <Field.Label>
-        Selecciona proveedores
-        <Field.RequiredIndicator />{" "}
+        Selecciona categorías <Field.RequiredIndicator />{" "}
       </Field.Label>
       <Controller
         control={control}
-        name="suppliers"
+        name="categories"
         render={({ field }) => (
           <Select.Root
             multiple
             name={field.name}
-            value={field.value}
+            value={field.value as string[] | undefined}
             onValueChange={({ value }) => field.onChange(value)}
             onInteractOutside={() => field.onBlur()}
-            disabled={(data?.total || 0) <= 0}
+            disabled={(data?.length || 0) <= 0}
             collection={collection}
           >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
-                <Select.ValueText placeholder="Selecciona proveedores" />
+                <Select.ValueText placeholder="Selecciona categorías" />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 {isPending && (
@@ -57,9 +56,9 @@ const SupplierSelect = () => {
             <Portal>
               <Select.Positioner>
                 <Select.Content>
-                  {collection.items.map((supplier) => (
-                    <Select.Item item={supplier} key={supplier._id}>
-                      {supplier.name}
+                  {collection.items.map((category) => (
+                    <Select.Item item={category} key={category._id}>
+                      {category.name}
                       <Select.ItemIndicator />
                     </Select.Item>
                   ))}
@@ -69,9 +68,9 @@ const SupplierSelect = () => {
           </Select.Root>
         )}
       />
-      <Field.ErrorText>{errors?.suppliers?.message}</Field.ErrorText>
+      <Field.ErrorText>{errors?.categories?.message}</Field.ErrorText>
     </Field.Root>
   );
 };
 
-export { SupplierSelect };
+export { CategorySelect };

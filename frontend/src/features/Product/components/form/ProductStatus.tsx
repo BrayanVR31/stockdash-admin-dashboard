@@ -7,6 +7,8 @@ import {
   Stack,
   NumberInput,
 } from "@chakra-ui/react";
+import { useFormContext, Controller } from "react-hook-form";
+import { ProductInputs } from "@/models/productSchema";
 import { useState } from "react";
 
 const items = [
@@ -19,8 +21,19 @@ const matchStatus: Record<string, boolean> = {
   "2": false,
 };
 
+const matchValue: Record<string, string> = {
+  true: "1",
+  false: "2",
+};
+
+const castBoolToStr = (value: boolean) => (value ? "true" : "false");
+
 const ProductStatus = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const {
+    register,
+    formState: { errors },
+    control,
+  } = useFormContext<ProductInputs>();
   return (
     <Stack
       gap={6}
@@ -29,34 +42,50 @@ const ProductStatus = () => {
         md: "row",
       }}
     >
-      <Field.Root required>
+      <Field.Root required invalid={!!errors?.quantity}>
         <Field.Label>
           Cantidad
           <Field.RequiredIndicator />
         </Field.Label>
-        <NumberInput.Root width="full" defaultValue="10">
+        <NumberInput.Root width="full" defaultValue="0">
           <NumberInput.Control />
-          <NumberInput.Input placeholder="Cantidad" />
+          <NumberInput.Input
+            {...register("quantity", {
+              valueAsNumber: true,
+            })}
+            placeholder="Cantidad"
+          />
         </NumberInput.Root>
+        <Field.ErrorText>{errors?.quantity?.message}</Field.ErrorText>
       </Field.Root>
       <Fieldset.Root>
         <Fieldset.Legend>Seleciona el status</Fieldset.Legend>
-        <RadioGroup.Root
-          colorPalette="purple"
-          variant="outline"
-          value={value}
-          onValueChange={(e) => setValue(e.value!)}
-        >
-          <HStack gap="6">
-            {items.map((item) => (
-              <RadioGroup.Item key={item.value} value={item.value}>
-                <RadioGroup.ItemHiddenInput />
-                <RadioGroup.ItemIndicator />
-                <RadioGroup.ItemText>{item.label}</RadioGroup.ItemText>
-              </RadioGroup.Item>
-            ))}
-          </HStack>
-        </RadioGroup.Root>
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <RadioGroup.Root
+              name={field.name}
+              colorPalette="purple"
+              variant="outline"
+              value={matchValue[castBoolToStr(field.value)]}
+              onValueChange={(e) => {
+                const status = matchStatus[e.value!];
+                field.onChange(status);
+              }}
+            >
+              <HStack gap="6">
+                {items.map((item) => (
+                  <RadioGroup.Item key={item.value} value={item.value}>
+                    <RadioGroup.ItemHiddenInput onBlur={field.onBlur} />
+                    <RadioGroup.ItemIndicator />
+                    <RadioGroup.ItemText>{item.label}</RadioGroup.ItemText>
+                  </RadioGroup.Item>
+                ))}
+              </HStack>
+            </RadioGroup.Root>
+          )}
+        />
       </Fieldset.Root>
     </Stack>
   );

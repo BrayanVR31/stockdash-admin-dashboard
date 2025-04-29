@@ -1,4 +1,5 @@
 import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
+import { toaster } from "@/components/ui/toaster";
 import {
   addProduct,
   getProductById,
@@ -8,6 +9,7 @@ import {
 } from "@/services/product";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
+import { useNavigate } from "react-router";
 
 const client = getQueryClient();
 
@@ -32,12 +34,19 @@ export const useProductItem = (id: string) => {
 
 export const useCreateProduct = () => {
   const { currentPage, perPage } = useTable();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: addProduct,
-    onSuccess: () =>
+    onSuccess: () => {
       client.invalidateQueries({
         queryKey: ["products", { currentPage, perPage }],
-      }),
+      });
+      toaster.create({
+        description: "Se han actualizado los datos de forma correcta.",
+        type: "success",
+      });
+      navigate("..");
+    },
   });
 };
 

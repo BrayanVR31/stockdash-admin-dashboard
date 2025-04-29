@@ -13,8 +13,16 @@ const descriptionSchema = z.discriminatedUnion("hasDescription", [
 
 const priceSchema = z.object({
   price: z.object({
-    purchase: z.number().positive("El valor debe ser un número positivo."),
-    sale: z.number().positive("El valor debe ser un número positivo."),
+    purchase: z
+      .number({
+        invalid_type_error: "El valor debe ser númerico.",
+      })
+      .positive("El valor debe ser un número positivo."),
+    sale: z
+      .number({
+        invalid_type_error: "El valor debe ser númerico.",
+      })
+      .positive("El valor debe ser un número positivo."),
   }),
 });
 
@@ -22,13 +30,18 @@ export const productSchema = z
   .object({
     name: z.string().min(1, "Este campo es obligatorio."),
     quantity: z
-      .number()
-      .positive("El valor debe ser un número positivo.")
-      .default(0),
-    categories: z.array(z.string()),
-    suppliers: z.array(z.string()),
+      .number({
+        invalid_type_error: "El valor debe ser númerico.",
+      })
+      .positive("El valor debe ser un número positivo."),
+    categories: z
+      .array(z.string())
+      .min(1, "Debes seleccionar al menos 1 elemento."),
+    suppliers: z
+      .array(z.string())
+      .min(1, "Debes seleccionar al menos 1 elemento."),
     status: z.boolean(),
-    images: z.array(z.string()).nullable().default(null),
+    images: z.array(z.string()).nullable(),
   })
   .and(priceSchema)
   .and(descriptionSchema);
