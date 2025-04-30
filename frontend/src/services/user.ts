@@ -12,6 +12,11 @@ export const getUserList = async ({
   return (await stockdashInstance.get<Results<Account>>(`/users${query}`)).data;
 };
 
+export const getUsers = async () => {
+  const query = `?with_pagination=0`.trim();
+  return (await stockdashInstance.get<Account[]>(`/users${query}`)).data;
+};
+
 export const bulkUserList = async (ids: string[]) => {
   return (
     await stockdashInstance.delete(`/users/bulk`, {

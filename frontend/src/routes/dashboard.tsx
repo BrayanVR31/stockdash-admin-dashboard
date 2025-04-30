@@ -4,6 +4,7 @@ import ProtectRoute from "./ProtectRoute";
 import { AccountSettings } from "@/features/Account/pages";
 import { UserList } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
+import { SaleAdd, SaleList } from "@/features/Sale/pages";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -28,6 +29,16 @@ const dashboardRoute: RouteObject = {
             {
               path: "create",
               element: <ProductForm />,
+            },
+          ],
+        },
+        {
+          path: "sales",
+          children: [
+            { index: true, element: <SaleList /> },
+            {
+              path: "create",
+              element: <SaleAdd />,
             },
           ],
         },

@@ -7,11 +7,15 @@ import { paginateDocs } from "@/utils";
 type ProductController = Controller<JSONResponse<IProduct>>;
 
 // Get all resources
-export const home: ProductController = async (request, response, next) => {
+export const home: Controller = async (request, response, next) => {
   try {
     // Pagination configuration
     const total = await Product.countDocuments();
-    const { per_page, page } = request.query;
+    const { per_page, page, with_pagination = "1" } = request.query;
+    if (with_pagination === "0") {
+      const data = await Product.find();
+      return response.status(HTTP_STATUS_CODES.OK).json(data);
+    }
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
     const results = await Product.find()
       .populate("suppliers")

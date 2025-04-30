@@ -1,5 +1,10 @@
-import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
-import { getUserList, bulkUserList, deleteUser } from "@/services/user";
+import { useSuspenseQuery, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  getUserList,
+  bulkUserList,
+  deleteUser,
+  getUsers,
+} from "@/services/user";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
 
@@ -14,6 +19,13 @@ export const useUserList = () => {
         page: currentPage,
         perPage,
       }),
+  });
+};
+
+export const useUsers = () => {
+  return useSuspenseQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
   });
 };
 

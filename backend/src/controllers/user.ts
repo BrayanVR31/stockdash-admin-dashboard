@@ -31,7 +31,11 @@ export const home: Controller = async (request, response, next) => {
         $ne: currentUserId,
       },
     });
-    const { per_page, page } = request.query;
+    const { per_page, page, with_pagination = "1" } = request.query;
+    if (with_pagination === "0") {
+      const data = await User.find();
+      return response.status(HTTP_STATUS_CODES.OK).json(data);
+    }
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
     const populatedImage: PopulateOptions = {
       path: "profile.avatar",

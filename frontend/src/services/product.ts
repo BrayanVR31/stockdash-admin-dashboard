@@ -13,6 +13,12 @@ export const getProductList = async ({
   return (await stockdashInstance.get<Products>(`/products${query}`)).data;
 };
 
+export const getProducts = async () => {
+  const query = `?with_pagination=0`.trim();
+  return (await stockdashInstance.get<Products["results"]>(`/products${query}`))
+    .data;
+};
+
 export const addProduct = async (product: ProductInputs) => {
   return (await stockdashInstance.post<Products>("/products", product)).data;
 };

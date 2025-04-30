@@ -8,6 +8,8 @@ import {
 } from "@/services/sale";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
+import { useNavigate } from "react-router";
+import { toaster } from "@/components/ui/toaster";
 
 const client = getQueryClient();
 
@@ -32,12 +34,20 @@ export const useSaleItem = (id: string) => {
 
 export const useCreateSale = () => {
   const { currentPage, perPage } = useTable();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: addSale,
-    onSuccess: () =>
+    onSuccess: () => {
       client.invalidateQueries({
         queryKey: ["sales", { currentPage, perPage }],
-      }),
+      });
+      toaster.create({
+        type: "success",
+        title: "Registro exitoso",
+        description: "Se han registrado los datos de satisfactoriamente.",
+      });
+      navigate("..");
+    },
   });
 };
 

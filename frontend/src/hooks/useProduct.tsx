@@ -6,6 +6,7 @@ import {
   getProductList,
   removeProductById,
   updateProductById,
+  getProducts,
 } from "@/services/product";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
@@ -22,6 +23,13 @@ export const useProductList = () => {
         page: currentPage,
         perPage,
       }),
+  });
+};
+
+export const useProducts = () => {
+  return useSuspenseQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
   });
 };
 

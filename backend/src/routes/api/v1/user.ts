@@ -1,19 +1,19 @@
 import { Router, RequestHandler } from "express";
 import { home, bulkRecords, destroy } from "@/controllers/user";
-import { hasAuthorization, hasRole } from "@/middlewares/rol";
+import { hasRole } from "@/middlewares/rol";
 
 const userRouter = Router();
 const urlPrefix = "/users";
 
 userRouter.get(
   urlPrefix,
-  hasAuthorization("admin") as RequestHandler,
+  hasRole("admin") as RequestHandler,
   home as RequestHandler,
 );
 
 userRouter.delete(
   `${urlPrefix}/:id`,
-  hasAuthorization("admin") as RequestHandler,
+  hasRole("admin") as RequestHandler,
   destroy as RequestHandler,
 );
 
