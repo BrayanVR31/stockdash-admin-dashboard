@@ -44,7 +44,7 @@ const hasAuthorization =
       // Rol based verification
       const selectedRoles = await Rol.find({ name: { $in: roles } })
         .select(
-          "_id -name -description -permissions -deletedAt -createdAt -updatedAt",
+          "_id -name -description -permissions -deletedAt -createdAt -updatedAt"
         )
         .lean();
       const refRol = selectedRoles.map((rol) => rol._id);
@@ -56,7 +56,7 @@ const hasAuthorization =
             -_id -profile -sessions
             -createdAt -updatedAt -deletedAt
             -status -email -password
-          `,
+          `
         )
         .lean();
 
@@ -92,30 +92,30 @@ const hasAuthorization =
     }
   };
 
-type CheckRole = (...roles: string[]) => Controller;
-
-export const hasRole: CheckRole = (roles) => async (req, res, next) => {
-  try {
-    const token: string = req.cookies?.["refresh_token"];
-    const _id: string = jwtDecode(token)?.["id"];
-    const user = await User.findById(_id).populate({
-      path: "rol",
-      transform: (doc) => doc.name,
-    });
-    const hasRole = roles.includes(user.rol as string);
-    // Not authorized role
-    if (!hasRole) {
-      const [status, serverError] = getServerError(
-        HTTP_STATUS_TYPES.ROL_FORBIDDEN,
-      );
+export const hasRole =
+  (...roles: string[]): Controller =>
+  async (req, res, next) => {
+    try {
+      const token: string = req.cookies?.["refresh_token"];
+      const _id: string = jwtDecode(token)?.["id"];
+      const user = await User.findById(_id).populate({
+        path: "rol",
+        transform: (doc) => doc.name,
+      });
+      const hasRole = [...roles].some((role) => user?.rol === role);
+      // Not authorized role
+      if (!hasRole) {
+        const [status, serverError] = getServerError(
+          HTTP_STATUS_TYPES.ROL_FORBIDDEN
+        );
+        return res.status(status).json(serverError);
+      }
+      return next();
+    } catch (e) {
+      console.log("error", e);
+      const [status, serverError] = handleServerError(e);
       return res.status(status).json(serverError);
     }
-    return next();
-  } catch (e) {
-    console.log("error", e);
-    const [status, serverError] = handleServerError(e);
-    return res.status(status).json(serverError);
-  }
-};
+  };
 
 export { hasAuthorization };

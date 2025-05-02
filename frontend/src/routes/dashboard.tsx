@@ -5,6 +5,7 @@ import { AccountSettings } from "@/features/Account/pages";
 import { UserList } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
 import { SaleAdd, SaleList } from "@/features/Sale/pages";
+import ErrorPage from "@/layouts/Error/ErrorPage";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",

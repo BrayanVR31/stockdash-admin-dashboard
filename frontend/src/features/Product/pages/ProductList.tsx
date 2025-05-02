@@ -14,11 +14,13 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import TableSkeletonLoader from "@/components/ui/table-skeleton-loader";
 import Container from "@/layouts/Dashboard/Container";
 import { NavLink } from "react-router";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorPage from "@/layouts/Error/ErrorPage";
 
 const ProductTable = lazy(() =>
   import("../components/table").then((mod) => ({
     default: mod.ProductTable,
-  })),
+  }))
 );
 
 const Footer = () => {
@@ -50,52 +52,54 @@ const Header = () => {
 
 const ProductList = () => {
   return (
-    <Container>
-      <TableProvider pathKey="_id">
-        <CardLayout footer={<Footer />} header={<Header />}>
-          <Stack
-            align="center"
-            justify="space-between"
-            direction={{
-              base: "column",
-              md: "row",
-            }}
-          >
-            <Stack>
-              <Text
-                color={{
-                  base: "gray.700",
-                  _dark: "gray.200",
-                }}
-                fontWeight="semibold"
-                fontSize="md"
-              >
-                Todos los productos
-                <Badge ml="1" variant="surface" colorPalette="purple">
-                  100
-                </Badge>
-              </Text>
-            </Stack>
-            <Stack>
-              <Stack direction="row">
-                <InputGroup flex="1" startElement={<GoSearch />}>
-                  <Input placeholder="Busca productos" />
-                </InputGroup>
-                <Button asChild>
-                  <NavLink to="./create">
-                    <GoPlus />
-                    Agregar
-                  </NavLink>
-                </Button>
+    <ErrorBoundary fallback={<ErrorPage />}>
+      <Container>
+        <TableProvider pathKey="_id">
+          <CardLayout footer={<Footer />} header={<Header />}>
+            <Stack
+              align="center"
+              justify="space-between"
+              direction={{
+                base: "column",
+                md: "row",
+              }}
+            >
+              <Stack>
+                <Text
+                  color={{
+                    base: "gray.700",
+                    _dark: "gray.200",
+                  }}
+                  fontWeight="semibold"
+                  fontSize="md"
+                >
+                  Todos los productos
+                  <Badge ml="1" variant="surface" colorPalette="purple">
+                    100
+                  </Badge>
+                </Text>
+              </Stack>
+              <Stack>
+                <Stack direction="row">
+                  <InputGroup flex="1" startElement={<GoSearch />}>
+                    <Input placeholder="Busca productos" />
+                  </InputGroup>
+                  <Button asChild>
+                    <NavLink to="./create">
+                      <GoPlus />
+                      Agregar
+                    </NavLink>
+                  </Button>
+                </Stack>
               </Stack>
             </Stack>
-          </Stack>
-          <Suspense fallback={<TableSkeletonLoader />}>
-            <ProductTable />
-          </Suspense>
-        </CardLayout>
-      </TableProvider>
-    </Container>
+            <Suspense fallback={<TableSkeletonLoader />}>
+              <ProductTable />
+            </Suspense>
+          </CardLayout>
+        </TableProvider>
+      </Container>
+    </ErrorBoundary>
   );
 };
 

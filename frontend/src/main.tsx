@@ -6,10 +6,12 @@ import { Provider } from "@/components/ui/provider";
 import "./index.css";
 import { getQueryClient } from "@/QueryClient";
 import { refetchingToken } from "@/interceptors/refreshToken";
+import { handlingResponses } from "@/interceptors/errorNetwork";
 import App from "./App.tsx";
 
 const queryClient = getQueryClient();
 refetchingToken();
+handlingResponses();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

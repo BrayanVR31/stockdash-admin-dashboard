@@ -21,6 +21,12 @@ services:
       target: production
     ports:
       - 4000:4000
+    environment:
+      DB_HOST: mongodb
+      DB_PORT: 27017
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: stockdash
     restart: always
   dashboard:
     container_name: dashboard

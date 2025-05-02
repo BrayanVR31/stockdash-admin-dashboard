@@ -6,10 +6,12 @@ import {
   defineStyle,
 } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegUserCircle, FaUser } from "react-icons/fa";
 import { MdOutlineLogout } from "react-icons/md";
 import { useLogOut } from "@/hooks/useAuth";
 import { NavLink } from "react-router";
+import { ErrorBoundary } from "react-error-boundary";
+import AvatarError from "./AvatarError";
 
 const ringCss = defineStyle({
   outlineWidth: "2px",
@@ -25,9 +27,11 @@ const AvatarMenu = () => {
   return (
     <Menu.Root>
       <Menu.Trigger>
-        <Suspense fallback={<SkeletonCircle size="36px" />}>
-          <AccountPreview />
-        </Suspense>
+        <ErrorBoundary fallback={<AvatarError />}>
+          <Suspense fallback={<SkeletonCircle size="36px" />}>
+            <AccountPreview />
+          </Suspense>
+        </ErrorBoundary>
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>

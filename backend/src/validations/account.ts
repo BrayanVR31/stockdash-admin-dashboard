@@ -20,6 +20,7 @@ const profileSchema = z.object(
       .optional()
       .nullable()
       .transform((avatar, ctx) => {
+        if(!avatar) return null;
         if (!isValidObjectId(avatar)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

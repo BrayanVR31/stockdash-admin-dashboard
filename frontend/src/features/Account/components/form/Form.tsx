@@ -2,42 +2,51 @@ import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Flex, Stack, StackSeparator } from "@chakra-ui/react";
 import { NavLink } from "react-router";
-import { accountSchema, AccountInputs } from "../../models/accountSchema";
+import {
+  accountSchema,
+  AccountInputs,
+  defaultAccount,
+} from "../../models/accountSchema";
 import PersonalInfo from "./PersonalInfo";
 import Contact from "./Contact";
 import Address from "./Address";
 import { useProfileSession, useUpdateAccount } from "@/hooks/useProfile";
 import UploadAvatar from "./UploadAvatar";
 import LoadingOverlaySpinner from "@/components/ui/loading-overlay-spinner";
+import { produce } from "immer";
 
 const Form = () => {
-  const { data } = useProfileSession();
-  const methods = useForm({
+  const { data, isSuccess } = useProfileSession();
+  const initialAccount = produce(defaultAccount, (draft) => {
+    if (isSuccess) {
+      draft.profile.name = data?.profile?.name;
+      draft.profile.lastName = data?.profile?.lastName;
+      draft.profile.avatar = data?.profile?.avatar?._id || null;
+      draft.profile.hasAddress = data?.profile?.address !== null;
+      if (draft.profile.hasAddress) {
+        draft.profile.address.city = data?.profile?.address?.city || "";
+        draft.profile.address.state = data?.profile?.address?.state || "";
+        draft.profile.address.street = data?.profile?.address?.street || "";
+        draft.profile.address.zipCode = data?.profile?.address?.zipCode || "";
+        draft.profile.address.country = data?.profile?.address?.country || "";
+      }
+      draft.profile.hasContact = data?.profile?.phoneNumber !== null;
+      if (draft.profile.hasContact) {
+        draft.profile.phoneNumber = data?.profile?.phoneNumber || "";
+      }
+    }
+    return defaultAccount;
+  });
+  const methods = useForm<AccountInputs>({
     resolver: zodResolver(accountSchema),
     mode: "all",
-    defaultValues: {
-      profile: {
-        name: data.profile.name,
-        lastName: data.profile.lastName,
-        hasAddress: !!data.profile.address,
-        address: {
-          state: data?.profile?.address?.state || "",
-          city: data?.profile?.address?.city || "",
-          street: data?.profile?.address?.street || "",
-          country: data?.profile?.address?.country || "",
-          zipCode: `${data?.profile?.address?.zipCode || ""}`,
-        },
-        hasContact: !!data.profile?.phoneNumber,
-        phoneNumber: data.profile?.phoneNumber || null,
-        avatar: data?.profile?.avatar?._id || null,
-        username: data?.username || null,
-      },
-    },
+    defaultValues: initialAccount,
   });
   const { mutate, isPending } = useUpdateAccount();
 
   const onSubmit: SubmitHandler<AccountInputs> = (account) => {
-    console.log(data);
+    // console.log(data);
+    /*
     mutate({
       profile: {
         name: account.profile.name,
@@ -58,13 +67,16 @@ const Form = () => {
       },
       username: account?.profile?.username,
     });
+    */
+    mutate(account);
+    console.log("sending data: ", account);
   };
   return (
     <>
       <FormProvider {...methods}>
         <Flex direction="column" gap={6} asChild>
           <form onSubmit={methods.handleSubmit(onSubmit)} autoComplete="off">
-            <UploadAvatar defaultPath={data.profile?.avatar?.path} />
+            <UploadAvatar defaultPath={"anonymous"} />
             <Stack gapY="5" separator={<StackSeparator />}>
               {/*** Personal info */}
               <PersonalInfo />

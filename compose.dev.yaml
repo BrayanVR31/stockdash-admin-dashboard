@@ -8,8 +8,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      # - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - /etc/localtime:/etc/localtime:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - db-data:/data/db
       #- ./scripts:/docker-entrypoint-initdb.d
   mongo-seeder:
@@ -33,6 +32,8 @@ services:
     ports:
       - 4000:4000
     restart: always
+    depends_on:
+      - mongodb
   dashboard:
     container_name: dashboard
     image: stockdash/dev-dashboard

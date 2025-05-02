@@ -4,6 +4,8 @@ import { TopBar } from "./TopBar";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
 import { Outlet } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorPage from "@/layouts/Error/ErrorPage";
 
 const cssRules: SystemStyleObject = {
   "&:has([data-container=top-bar] :checked)": {

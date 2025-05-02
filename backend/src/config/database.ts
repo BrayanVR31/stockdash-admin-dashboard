@@ -11,12 +11,17 @@ const {
 export async function initDBConnection() {
   try {
     const url = `mongodb://${hostname}:${port}/${database}`;
-    const connection = await mongoose.connect(url, { user, pass });
+    const connection = await mongoose.connect(url, {
+      authSource: "admin",
+      user,
+      pass,
+    });
     console.log("CONNECTION TO DATABASE WAS SUCCESSFULLY STABLISHED");
     return connection;
   } catch (error) {
-    if (error)
-      // console.log(error);
+    if (error) {
+      console.log(error);
       throw new Error("ERROR TO STABLISH DATABASE CONNECTION");
+    }
   }
 }

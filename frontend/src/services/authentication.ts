@@ -30,7 +30,7 @@ export const login = async (user: User) => {
 export const logout = async () => {
   return (
     await stockdashInstance.get<Pick<AuthError, "status" | "message">>(
-      "/log-out",
+      "/log-out"
     )
   ).data;
 };
