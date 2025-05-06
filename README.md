@@ -10,6 +10,6 @@ There are two ways to execute this projects: development mode or production mode
 
 First, clone the source code repository:
 
-<pre>
+```
   npm run dev
-</pre>
+```
