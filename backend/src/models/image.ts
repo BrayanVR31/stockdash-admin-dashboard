@@ -9,7 +9,7 @@ export interface IImage {
   refId: string;
 }
 
-const imageSchema = new Schema<IImage>(
+export const imageSchema = new Schema<IImage>(
   {
     path: {
       type: String,
@@ -19,7 +19,7 @@ const imageSchema = new Schema<IImage>(
     size: { type: Number, required: true },
     refId: { type: String, required: true },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true, autoCreate: false }
 );
 
 imageSchema.alias("_id", "id");

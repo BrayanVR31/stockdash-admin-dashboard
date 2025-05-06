@@ -11,12 +11,14 @@ const categorySchema = new Schema<ICategory>(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
   },
   {
     versionKey: false,
+    autoIndex: true,
     timestamps: true,
-  },
+  }
 );
 
 // Field aliases

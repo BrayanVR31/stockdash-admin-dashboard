@@ -9,6 +9,7 @@ type SidebarLink = {
   to: string;
   label: string;
   icon: JSX.Element;
+  isMain?: boolean;
   subItems?: {
     to: string;
     label: string;
@@ -19,6 +20,7 @@ const navLinks: SidebarLink[] = [
   {
     to: "/dashboard",
     label: "Dashboard",
+    isMain: true,
     icon: <LuLayoutDashboard size={16} />,
   },
   {

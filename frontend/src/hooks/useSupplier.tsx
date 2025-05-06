@@ -8,6 +8,7 @@ import {
 } from "@/services/supplier";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
+import { toaster } from "@/components/ui/toaster";
 
 const client = getQueryClient();
 
@@ -46,10 +47,17 @@ export const useCreateSupplier = () => {
   const { currentPage, perPage } = useTable();
   return useMutation({
     mutationFn: addSupplier,
-    onSuccess: () =>
+    onSuccess: () => {
+      toaster.create({
+        title: "Proveedor agregado correctamente",
+        description:
+          "El nuevo proveedor ha sido registrado exitosamente en el sistema.",
+        type: "success",
+      });
       client.invalidateQueries({
         queryKey: ["suppliers", { currentPage, perPage }],
-      }),
+      });
+    },
   });
 };
 
@@ -57,10 +65,17 @@ export const useDestroySupplier = () => {
   const { currentPage, perPage } = useTable();
   return useMutation({
     mutationFn: removeSupplierById,
-    onSuccess: () =>
+    onSuccess: () => {
+      toaster.create({
+        title: "Proveedor eliminado correctamente",
+        description:
+          "El proveedor ha sido eliminado de forma satisfactoria del sistema.",
+        type: "success",
+      });
       client.invalidateQueries({
         queryKey: ["suppliers", { currentPage, perPage }],
-      }),
+      });
+    },
   });
 };
 
@@ -68,9 +83,26 @@ export const useUpdateSupplier = () => {
   const { currentPage, perPage } = useTable();
   return useMutation({
     mutationFn: updateSupplierById,
-    onSuccess: () =>
+    onSuccess: () => {
+      toaster.create({
+        title: "Proveedor actualizado correctamente",
+        description:
+          "La información del proveedor ha sido actualizada exitosamente.",
+        type: "success",
+      });
       client.invalidateQueries({
         queryKey: ["suppliers", { currentPage, perPage }],
-      }),
+      });
+    },
   });
 };
+
+/**
+  bulk deletion:
+  toaster.create({
+    title: "Proveedores eliminados correctamente",
+    description:
+      "Los proveedores seleccionados han sido eliminados exitosamente del sistema.",
+    type: "success",
+  });
+*/

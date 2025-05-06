@@ -2,6 +2,8 @@ import { Card, Stack, Button, ButtonGroup } from "@chakra-ui/react";
 import { NavLink } from "react-router";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { produce } from "immer";
+import { format } from "date-fns";
 import { defaultSale, saleSchema, SaleInputs } from "@/models/saleSchema";
 import LoadingOverlaySpinner from "@/components/ui/loading-overlay-spinner";
 import {
@@ -22,10 +24,18 @@ const SaleAdd = () => {
   const { mutate, isPending } = useCreateSale();
   const onSubmit: SubmitHandler<SaleInputs> = (data) => {
     console.log(data);
-    mutate({
-      ...data,
-      user: data.user.find((x) => x) as unknown as string[],
+    const addedSale = produce(data, (draft) => {
+      if (draft.hasSaleDate) {
+        console.log(format(draft.saleDate, "yyyy-MM-dd"));
+        draft.saleDate = format(
+          draft.saleDate,
+          "yyyy-MM-dd",
+        ) as unknown as Date;
+      }
+      draft.user = data.user.find((x) => x) as unknown as string[];
     });
+
+    mutate(addedSale);
   };
   return (
     <FormProvider {...methods}>

@@ -14,7 +14,6 @@ const Breadcrumbs = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const pathnames = pathname.split("/").filter((path) => path);
-  console.log(pathnames);
   return (
     <>
       <Breadcrumb.Root size="md">

@@ -4,6 +4,7 @@ import { TopBar } from "./TopBar";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
 import { Outlet } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
+import { SidebarProvider } from "./context";
 
 const cssRules: SystemStyleObject = {
   "&:has([data-container=top-bar] :checked)": {
@@ -15,7 +16,7 @@ const cssRules: SystemStyleObject = {
       "& [data-link=sidebar-link]": {
         mx: "initial",
         "&  :not(svg)": {
-          display: "block",
+          display: "flex",
         },
       },
       "& [data-logo=logo-text]": {
@@ -54,25 +55,27 @@ const Layout = () => {
     restoreOnMount: true,
   });
   return (
-    <Flex css={cssRules} height="100vh" overflow="hidden">
-      <Sidebar />
-      <Flex flex="1" direction="column">
-        <TopBar />
-        <Box
-          as="main"
-          p={6}
-          overflowY="auto"
-          height="full"
-          bg={{
-            base: "gray.200",
-            _dark: "gray.950",
-          }}
-        >
-          <Outlet />
-        </Box>
+    <SidebarProvider breakpoint={85}>
+      <Flex css={cssRules} height="100vh" overflow="hidden">
+        <Sidebar />
+        <Flex flex="1" direction="column">
+          <TopBar />
+          <Box
+            as="main"
+            p={6}
+            overflowY="auto"
+            height="full"
+            bg={{
+              base: "gray.200",
+              _dark: "gray.950",
+            }}
+          >
+            <Outlet />
+          </Box>
+        </Flex>
+        <Toaster />
       </Flex>
-      <Toaster />
-    </Flex>
+    </SidebarProvider>
   );
 };
 

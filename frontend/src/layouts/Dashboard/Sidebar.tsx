@@ -1,32 +1,22 @@
-import {
-  Box,
-  Text,
-  VStack,
-  Flex,
-  Link,
-  Collapsible,
-  HStack,
-  Button,
-} from "@chakra-ui/react";
-import { TbLayoutDashboard } from "react-icons/tb";
+import { Box, Text, VStack, Flex, Collapsible, HStack } from "@chakra-ui/react";
 import { PiStackBold } from "react-icons/pi";
-import { NavLink } from "react-router";
 import { Fragment } from "react";
 import navLinks from "./navLinks";
-import { MdLabel } from "react-icons/md";
 import { CollapseButton, NestedLink } from "@/components/collapsible";
 import { useContainerQuery } from "@/hooks/useContainerQuery";
+import { AvatarMenu } from "./AvatarMenu";
+import { useSidebar } from "./context";
 
 const Sidebar = () => {
-  const { containerRef, isMatch } = useContainerQuery(85);
-  const props = !isMatch ? { open: false } : {};
+  const { isCollapsed, sidebarRef } = useSidebar();
+  const props = !isCollapsed ? { open: false } : {};
   return (
     <Box
-      overflowY="scroll"
+      overflowY="auto"
       position="sticky"
       data-container="sidebar"
       as="aside"
-      ref={containerRef}
+      ref={sidebarRef}
       bg={{
         _light: "gray.950",
         _dark: "gray.950",
@@ -85,48 +75,67 @@ const Sidebar = () => {
           Stockdash
         </Text>
       </Flex>
-      <VStack
-        align="stretch"
-        gap={4}
-        p={5}
-        css={{
-          "[data-container=dashboard]:not(:has(:checked)) &": {
-            alignItems: "center",
-          },
-        }}
+      <Flex
+        direction="column"
+        minH="calc(100vh - 75px)"
+        justify="space-between"
       >
-        {navLinks.map(({ label, to, icon, subItems }) => (
-          <Fragment key={label}>
-            {subItems ? (
-              <Collapsible.Root {...props}>
-                <CollapseButton toolMessage={!isMatch ? label : ""}>
-                  {icon}
-                  <Text>{label}</Text>
-                </CollapseButton>
-                <Collapsible.Content>
-                  <VStack mt="2" pl={5}>
-                    {subItems.map(({ label, to: subTo }) => (
-                      <NestedLink
-                        key={`${to}/${subTo}`}
-                        path={`${to}/${subTo}`}
-                      >
-                        {label}
-                      </NestedLink>
-                    ))}
-                  </VStack>
-                </Collapsible.Content>
-              </Collapsible.Root>
-            ) : (
-              <NestedLink toolMessage={!isMatch ? label : ""} path={to}>
-                <HStack data-link="sidebar-link">
-                  {icon}
-                  <Text>{label}</Text>
-                </HStack>
-              </NestedLink>
-            )}
-          </Fragment>
-        ))}
-      </VStack>
+        <VStack
+          align="stretch"
+          gap={4}
+          p={5}
+          css={{
+            "[data-container=dashboard]:not(:has(:checked)) &": {
+              alignItems: "center",
+            },
+          }}
+        >
+          {navLinks.map(({ label, to, icon, subItems, isMain = false }) => (
+            <Fragment key={label}>
+              {subItems ? (
+                <Collapsible.Root {...props}>
+                  <CollapseButton
+                    parentPath={to}
+                    toolMessage={!isCollapsed ? label : ""}
+                  >
+                    {icon}
+                    <Text>{label}</Text>
+                  </CollapseButton>
+                  <Collapsible.Content>
+                    <VStack mt="3" gap="3.5" pl={5}>
+                      {subItems.map(({ label, to: subTo }) => (
+                        <NestedLink
+                          key={`${to}/${subTo}`}
+                          path={`${to}/${subTo}`}
+                        >
+                          {label}
+                        </NestedLink>
+                      ))}
+                    </VStack>
+                  </Collapsible.Content>
+                </Collapsible.Root>
+              ) : (
+                <NestedLink
+                  isMain={isMain}
+                  toolMessage={!isCollapsed ? label : ""}
+                  path={to}
+                >
+                  <HStack data-link="sidebar-link">
+                    {icon}
+                    <Text>{label}</Text>
+                  </HStack>
+                </NestedLink>
+              )}
+            </Fragment>
+          ))}
+        </VStack>
+        {/** Avatar menu options */}
+        <VStack bg="gray.950" w="full" position="sticky" bottom="0" left="0">
+          <HStack px="5" pb="2" w="full">
+            <AvatarMenu />
+          </HStack>
+        </VStack>
+      </Flex>
     </Box>
   );
 };

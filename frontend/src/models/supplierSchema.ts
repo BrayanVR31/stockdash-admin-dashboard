@@ -29,8 +29,9 @@ const contactSchema = z.discriminatedUnion("hasContact", [
       phoneNumber: z
         .string()
         .regex(/^$|^\d+$/g, "El número de teléfono solo debe contener dígitos.")
-        .min(0)
+        .min(10, "El número de teléfono debe contener como máximo 10 dígitos.")
         .max(10, "El número de teléfono debe contener como máximo 10 dígitos.")
+        .optional()
         .nullable()
         .transform((phoneNumber) => (!phoneNumber ? null : phoneNumber)),
       email: z
@@ -39,6 +40,7 @@ const contactSchema = z.discriminatedUnion("hasContact", [
           /^$|^[\w|\.]+@(gmail|outlook|yahoo|hotmail|tiamshi)\.(com)$/g,
           "El email debe tener un formato válido.",
         )
+        .optional()
         .nullable()
         .transform((email) => (!email ? null : email)),
     }),

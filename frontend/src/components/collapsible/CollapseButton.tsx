@@ -1,13 +1,53 @@
 import { ReactNode } from "react";
-import { Collapsible, Button } from "@chakra-ui/react";
+import {
+  Collapsible,
+  Button,
+  defineStyle,
+  HStack,
+  SystemStyleObject,
+} from "@chakra-ui/react";
+import { useLocation } from "react-router";
+import { FaChevronDown } from "react-icons/fa";
 import { Tooltip } from "@/components/ui/tooltip";
 
 interface Props {
   children: ReactNode;
   toolMessage?: string;
+  parentPath?: string;
 }
 
-const CollapseButton = ({ children, toolMessage }: Props) => {
+type CollapsedBtnStyle = (
+  active: boolean,
+  state: "open" | "close",
+) => SystemStyleObject;
+
+const getCollapsedBtnStyle: CollapsedBtnStyle = (active, state) => {
+  return defineStyle({
+    bg: active ? "blue.700" : "transparent",
+    color: active ? "white" : "gray.300",
+    w: "full",
+    justifyContent: state === "open" ? "space-between" : "start",
+    _hover: {
+      bg: active ? "" : "blue.700/25",
+      color: active ? "" : "blue.400",
+    },
+  });
+};
+
+const CollapseButton = ({ children, toolMessage, parentPath = "" }: Props) => {
+  const { pathname = "" } = useLocation();
+  const segments = pathname.split("/").filter((seg) => seg);
+  const lastSegment =
+    parentPath
+      .split("/")
+      .filter((seg) => seg)
+      .pop() || "";
+  const isActive = segments.includes(lastSegment);
+  const collapsedBtn = getCollapsedBtnStyle(
+    isActive,
+    toolMessage ? "close" : "open",
+  );
+
   if (toolMessage)
     return (
       <Tooltip
@@ -28,27 +68,7 @@ const CollapseButton = ({ children, toolMessage }: Props) => {
         }}
       >
         <Collapsible.Trigger asChild>
-          <Button
-            colorPalette="purple"
-            color={{
-              _light: "purple.200",
-              _dark: "purple.400/70",
-            }}
-            bg="transparent"
-            _hover={{
-              _light: {
-                bg: "purple.900",
-              },
-              _dark: {
-                bg: "purple.800",
-                color: "purple.300",
-              },
-            }}
-            data-link="sidebar-link"
-            justifyContent="start"
-            w="full"
-            size="sm"
-          >
+          <Button {...collapsedBtn} data-link="sidebar-link" size="sm">
             {children}
           </Button>
         </Collapsible.Trigger>
@@ -57,27 +77,20 @@ const CollapseButton = ({ children, toolMessage }: Props) => {
   return (
     <Collapsible.Trigger asChild>
       <Button
-        colorPalette="purple"
-        color={{
-          _light: "purple.200",
-          _dark: "purple.300/70",
-        }}
-        bg="transparent"
-        _hover={{
-          _light: {
-            bg: "purple.900",
-          },
-          _dark: {
-            bg: "purple.800",
-            color: "purple.300",
-          },
-        }}
+        {...collapsedBtn}
         data-link="sidebar-link"
-        justifyContent="start"
-        w="full"
         size="sm"
+        css={{
+          "& * + svg": {
+            transition: "transform 140ms linear",
+          },
+          "[data-state=open] & * + svg": {
+            transform: "rotate(180deg)",
+          },
+        }}
       >
-        {children}
+        <HStack>{children}</HStack>
+        <FaChevronDown style={{ width: "10px" }} />
       </Button>
     </Collapsible.Trigger>
   );

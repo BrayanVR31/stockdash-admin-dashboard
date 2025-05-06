@@ -8,7 +8,7 @@ import {
   CloseButton,
   Box,
 } from "@chakra-ui/react";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import _ from "lodash";
 import { useTable } from "./useTable";
@@ -28,6 +28,7 @@ const Row = memo(
     onDeleteItem,
   }: Props<T>) => {
     const { selection, setSelection, pathKey } = useTable();
+    const [open, setOpen] = useState(false);
     const id = _.get(item, pathKey) as string;
     const isSelected = selection.has(id);
     return (
@@ -76,7 +77,12 @@ const Row = memo(
                     Editar
                   </Menu.Item>
                   <Menu.Item value={`delete-${id}`} asChild>
-                    <Dialog.Root placement="center">
+                    <Dialog.Root
+                      lazyMount
+                      open={open}
+                      onOpenChange={(e) => setOpen(e.open)}
+                      placement="center"
+                    >
                       <Dialog.Trigger asChild>
                         <Box
                           color="fg.error"
@@ -112,7 +118,13 @@ const Row = memo(
                               <Dialog.ActionTrigger asChild>
                                 <Button variant="outline">Cancelar</Button>
                               </Dialog.ActionTrigger>
-                              <Button onClick={onDeleteItem} colorPalette="red">
+                              <Button
+                                onClick={() => {
+                                  setOpen(false);
+                                  onDeleteItem();
+                                }}
+                                colorPalette="red"
+                              >
                                 Eliminar
                               </Button>
                             </Dialog.Footer>

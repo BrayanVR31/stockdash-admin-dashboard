@@ -1,4 +1,4 @@
-import { Schema, model, SchemaTypes } from "mongoose";
+import mongoose, { Schema, model, SchemaTypes, Types } from "mongoose";
 import { IPermission, permissionSchema } from "@/models/permission";
 
 // Types
@@ -11,7 +11,7 @@ export type RolType = "admin" | "manager" | "employee";
 export interface IRol {
   name: RolType;
   description: string;
-  permissions: Permissions;
+  permissions: IPermission[];
   deletedAt?: Date;
 }
 
@@ -22,15 +22,16 @@ const rolSchema = new Schema<IRol>(
       type: String,
       enum: ["admin", "employee", "manager"],
       required: true,
+      unique: true,
+      index: true,
     },
     description: {
       type: String,
       required: true,
     },
-
     permissions: {
-      type: SchemaTypes.Map,
-      of: permissionSchema,
+      type: [permissionSchema],
+      ref: "Permission",
     },
     deletedAt: {
       type: Date,
@@ -39,9 +40,14 @@ const rolSchema = new Schema<IRol>(
     },
   },
   {
-    versionKey: false,
     timestamps: true,
-  },
+    autoIndex: true,
+    statics: {
+      findRolByName(name: string) {
+        return this.find({ name: new RegExp(name, "i") }).select("_id");
+      },
+    },
+  }
 );
 
 // Field aliases

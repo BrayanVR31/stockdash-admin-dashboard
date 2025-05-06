@@ -1,38 +1,41 @@
 import { Schema, model } from "mongoose";
 
 // Types
-export type PermissionType = "all" | "view" | "edit" | "delete" | "create";
+export type PermissionType = "create" | "read" | "update" | "delete";
 
-export type IPermission = { [key in PermissionType]: boolean };
+export type IPermission = {
+  title: string;
+  action: PermissionType;
+  description?: string;
+  resource: string;
+};
 
 // Schemas
 const permissionSchema = new Schema<IPermission>(
   {
-    all: {
-      type: Boolean,
+    title: {
+      type: String,
+      required: true,
+    },
+    action: {
+      type: String,
+      required: true,
+      enum: ["create", "read", "update", "delete"],
+    },
+    description: {
+      type: String,
       required: false,
     },
-    view: {
-      type: Boolean,
-      required: false,
-    },
-    edit: {
-      type: Boolean,
-      required: false,
-    },
-    create: {
-      type: Boolean,
-      required: false,
-    },
-    delete: {
-      type: Boolean,
-      required: false,
+    resource: {
+      type: String,
+      required: true,
     },
   },
   {
     versionKey: false,
     timestamps: false,
     _id: false,
+    autoCreate: false,
   }
 );
 

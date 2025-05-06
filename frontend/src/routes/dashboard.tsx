@@ -5,6 +5,7 @@ import { AccountSettings } from "@/features/Account/pages";
 import { UserList } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
 import { SaleAdd, SaleList } from "@/features/Sale/pages";
+import { SupplierList, SupplierAdd } from "@/features/Supplier/pages";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -39,6 +40,16 @@ const dashboardRoute: RouteObject = {
             {
               path: "create",
               element: <SaleAdd />,
+            },
+          ],
+        },
+        {
+          path: "suppliers",
+          children: [
+            { index: true, element: <SupplierList /> },
+            {
+              path: "create",
+              element: <SupplierAdd />,
             },
           ],
         },

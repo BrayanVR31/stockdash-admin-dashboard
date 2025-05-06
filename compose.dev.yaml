@@ -12,15 +12,21 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - db-data:/data/db
       #- ./scripts:/docker-entrypoint-initdb.d
-  mongo-seeder:
-    image: stockdash/mongo-seeder
-    env_file:
-      - .env.dev
+  seed:
+    container_name: seed
     build:
-      context: ./
+      context: ./backend
       target: dev
+    command: npm run seed:up
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/stockdash
     depends_on:
       - mongodb
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    profiles:
+      - seed
   api:
     container_name: api
     image: stockdash/dev-api

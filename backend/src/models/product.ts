@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { ICategory } from ".";
+import { IImage, imageSchema } from "@/models/image";
 
 // Types
 export interface IProduct {
@@ -12,7 +12,7 @@ export interface IProduct {
   description?: string;
   quantity?: number;
   suppliers: Types.ObjectId[];
-  images: string[];
+  images: IImage[];
   status: boolean;
   deletedAt?: Date;
 }
@@ -56,7 +56,7 @@ const productSchema = new Schema<IProduct>(
       required: true,
     },
     images: {
-      type: [String],
+      type: [imageSchema],
       required: false,
       default: null,
     },
@@ -73,7 +73,7 @@ const productSchema = new Schema<IProduct>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Field aliases

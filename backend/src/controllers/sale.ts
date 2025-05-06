@@ -38,6 +38,7 @@ export const create: Controller = async (request, response, next) => {
     const result = await Sale.create(request.body);
     return response.status(HTTP_STATUS_CODES.CREATED).json(result);
   } catch (error) {
+    console.log(error)
     const serverError = new Error("") as ServerError;
     // Default server error
     serverError.title = "Internal server error";

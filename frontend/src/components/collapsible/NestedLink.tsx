@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, defineStyle } from "@chakra-ui/react";
 import { NavLink } from "react-router";
 import { ReactNode } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -7,33 +7,38 @@ interface Props {
   children: ReactNode;
   path: string;
   toolMessage?: string;
+  isMain?: boolean;
 }
 
-const NestedLink = ({ children, path, toolMessage = "" }: Props) => {
+const NestedLink = ({
+  children,
+  path,
+  toolMessage = "",
+  isMain = false,
+}: Props) => {
+  const singleBtn = defineStyle({
+    justifyContent: "start",
+    w: "full",
+    color: "gray.400",
+    bg: "transparent",
+    "&.active, &:hover": {
+      bg: "blue.700/25",
+      color: "blue.400",
+    },
+    borderLeft: !isMain ? "4px solid" : "0px",
+    borderColor: "transparent",
+    "&.active": {
+      bg: isMain ? "blue.700" : "",
+      borderLeftColor: "blue.400",
+      color: isMain ? "white" : "",
+    },
+  });
   if (!toolMessage)
     return (
-      <Button
-        justifyContent="start"
-        w="full"
-        size="sm"
-        colorPalette="purple"
-        color={{
-          _light: "purple.200",
-          _dark: "purple.300/70",
-        }}
-        bg="transparent"
-        _hover={{
-          _light: {
-            bg: "purple.900",
-          },
-          _dark: {
-            bg: "purple.800",
-            color: "purple.300",
-          },
-        }}
-        asChild
-      >
-        <NavLink to={path}>{children}</NavLink>
+      <Button {...singleBtn} size="sm" asChild>
+        <NavLink end to={path}>
+          {children}
+        </NavLink>
       </Button>
     );
   return (
@@ -54,28 +59,15 @@ const NestedLink = ({ children, path, toolMessage = "" }: Props) => {
         placement: "left-end",
       }}
     >
-      <Button
-        colorPalette="purple"
-        color={{
-          _light: "purple.200",
-          _dark: "purple.400/70",
-        }}
-        bg="transparent"
-        _hover={{
-          _light: {
-            bg: "purple.900",
-          },
-          _dark: {
-            bg: "purple.800",
-            color: "purple.300",
-          },
-        }}
-        justifyContent="start"
-        w="full"
-        size="sm"
-        asChild
-      >
-        <NavLink to={path}>{children}</NavLink>
+      <Button {...singleBtn} size="sm" asChild>
+        <NavLink
+          to={{
+            pathname: path,
+          }}
+          end
+        >
+          {children}
+        </NavLink>
       </Button>
     </Tooltip>
   );

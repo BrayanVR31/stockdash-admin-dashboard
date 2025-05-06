@@ -1,9 +1,10 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 import { ISession, sessionSchema } from ".";
+import { IImage, imageSchema } from "@/models/image";
 
 // Type
-interface IUser {
+export interface IUser {
   username?: string;
   email: string;
   password: string;
@@ -17,7 +18,7 @@ interface IUser {
 interface Profile {
   name: string;
   lastName: string;
-  avatar?: string | Schema.Types.ObjectId;
+  avatar?: IImage;
   phoneNumber?: string;
   address?: Address;
 }
@@ -54,7 +55,7 @@ const addressSchema = new Schema<Address>(
       required: true,
     },
   },
-  { versionKey: false, timestamps: false, _id: false },
+  { versionKey: false, timestamps: false, _id: false }
 );
 
 const profileSchema = new Schema<Profile>(
@@ -68,7 +69,7 @@ const profileSchema = new Schema<Profile>(
       required: true,
     },
     avatar: {
-      type: String,
+      type: imageSchema,
       required: false,
       default: null,
     },
@@ -78,7 +79,7 @@ const profileSchema = new Schema<Profile>(
       required: false,
     },
   },
-  { timestamps: false, versionKey: false, _id: false },
+  { timestamps: false, versionKey: false, _id: false }
 );
 
 const userSchema = new Schema<IUser>(
@@ -86,6 +87,7 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -120,9 +122,8 @@ const userSchema = new Schema<IUser>(
     },
   },
   {
-    versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Alias fields
