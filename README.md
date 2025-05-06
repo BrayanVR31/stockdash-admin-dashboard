@@ -14,7 +14,7 @@ git clone https://github.com/BrayanVR31/stockdash-admin-dashboard.git
 
 ### Development mode
 
-If you're running the projects in the development environment, it's important to define some configuration files like .env.dev that will be used by docker.compose.yaml before it starts.
+If you're running the projects in the development environment, it's important to define some configuration files like .env.dev that will be used by compose.dev.yaml before it starts.
 
 This file contains the configuration variables (database) that will be used when docker compose starts. Copy and paste this code into your env.dev file in your root project folder.
 
@@ -28,6 +28,12 @@ Navigate to the backend and frontend folders to install all the dependencies nec
 
 ```
 npm install
+```
+
+When you clone this project for the first time, the database is empty by default and has no data, but you can run a seed script to populate some faker data.
+
+```
+docker compose -f compose.dev.yaml --profile seed up --build seed
 ```
 
 After defining the configuration files, run the following command to launch all docker containers.
