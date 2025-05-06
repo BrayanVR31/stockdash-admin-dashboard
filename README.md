@@ -6,10 +6,34 @@ This a fullstack application used to manage product inventory. This includes cre
 
 There are two ways to execute this projects: development mode or production mode.
 
-### Development mode
-
 First, clone the source code repository:
 
 ```
-  npm run dev
+git clone https://github.com/BrayanVR31/stockdash-admin-dashboard.git
 ```
+
+### Development mode
+
+If you're running the projects in the development environment, it's important to define some configuration files like .env.dev that will be used by docker.compose.yaml before it starts.
+
+This file contains the configuration variables (database) that will be used when docker compose starts. Copy and paste this code into your env.dev file in your root project folder.
+
+```
+MONGO_INITDB_ROOT_USERNAME: root
+MONGO_INITDB_ROOT_PASSWORD: root
+MONGO_INITDB_DATABASE: stockdash
+```
+
+Navigate to the backend and frontend folders to install all the dependencies necessary to run the application in dev mode:
+
+```
+npm install
+```
+
+After defining the configuration files, run the following command to launch all docker containers.
+
+```
+docker compose -f compose.dev.yaml up -d
+```
+
+Finally, open the local application in your browser, the default address is http://localhost:5173/dashboard
