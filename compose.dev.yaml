@@ -27,6 +27,21 @@ services:
       - /usr/src/app/node_modules
     profiles:
       - seed
+  api-test:
+    container_name: api-test
+    build:
+      context: ./backend
+      target: dev
+    command: npm run test
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/stockdash
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    profiles:
+      - api-test
   api:
     container_name: api
     image: stockdash/dev-api

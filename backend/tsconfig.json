@@ -9,10 +9,11 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "removeComments": true,
-    /** Path alias */
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
-  }
+    },
+    "resolveJsonModule": true
+  },
+  "exclude": ["jest.config.ts"]
 }
