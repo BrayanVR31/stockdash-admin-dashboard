@@ -24,29 +24,52 @@ const dbUri = `mongodb://${hostname}:${port}/${database}`;
 const adminUri = `mongodb://${hostname}:${port}`;
 
 export class Database {
-  private static dbInstance: typeof mongoose | null;
-  private static adminInstance: mongoose.Connection;
-  public static async connect() {
-    if (!this.adminInstance) {
-      this.adminInstance = mongoose.createConnection(adminUri, { user, pass });
+  private static instance: Database;
+
+  public static getInstance(): Database {
+    if (!Database.instance) {
+      Database.instance = new Database();
     }
-    if (!this.dbInstance) {
-      this.dbInstance = await mongoose.connect(dbUri, { user, pass });
+    return Database.instance;
+  }
+
+  public static async connect(): Promise<"success" | "failed"> {
+    try {
+      await mongoose.connect(dbUri, { user, pass });
+      return Promise.resolve("success");
+    } catch (e) {
+      return Promise.reject("failed");
     }
   }
 
-  public static async refreshDB() {
-    const { databases = [] } = await this.adminInstance.listDatabases();
-    const existsDB = databases.some((db) => db.name === "stockdash");
-    if (existsDB) {
-      await this.adminInstance.useDb("stockdash").db.dropDatabase();
-      this.dbInstance = null;
+  private static async adminConnect() {
+    try {
+      return mongoose.createConnection(adminUri, { user, pass });
+    } catch (e) {}
+  }
+
+  public static async refreshDB(dbName: string) {
+    try {
+      const adminDb = await this.adminConnect();
+      const existsDb = dbName === database;
+      if (!existsDb) {
+        await adminDb.close();
+        return false;
+      }
+      await adminDb.useDb(database).dropDatabase();
+      await adminDb.close();
+      return true;
+    } catch (e) {
+      return Promise.reject(false);
     }
-    await this.connect();
+  }
+
+  public static dbStatus(): "connected" | "disconnected" {
+    return !this.instance ? "disconnected" : "connected";
   }
 
   public static async closeConnection() {
-    await this.dbInstance.connection.close(true);
-    await this.adminInstance.close(true);
+    await mongoose.disconnect();
+    this.instance = null;
   }
 }

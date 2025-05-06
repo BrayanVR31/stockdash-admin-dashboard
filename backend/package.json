@@ -7,7 +7,7 @@
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && node ./dist/main.js",
     "seed:up": "ts-node -r tsconfig-paths/register ./src/seeders/script.ts",
-    "test": "jest"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",

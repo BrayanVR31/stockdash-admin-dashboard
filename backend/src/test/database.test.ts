@@ -1,10 +1,34 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
 import "dotenv/config";
 import { Database } from "@/config/database";
 
-describe("Database class", () => {
-  it("should return true when the database connection is success", async () => {
-    const isConnected = await Database.connect();
-    expect(isConnected).toBeTruthy();
+beforeAll(async () => {
+  Database.getInstance();
+  await Database.connect();
+});
+
+afterAll(async () => {
+  Database.getInstance();
+  await Database.closeConnection();
+  expect(Database.dbStatus()).toEqual("disconnected");
+});
+
+describe("Database class connection", () => {
+  it("should return a connected status when db credentials are valid", () => {
+    expect(Database.dbStatus()).toEqual("connected");
+  });
+  it("should return a disconnected status when db credentials are invalid", () => {
+    expect(Database.dbStatus()).toEqual("disconnected");
+  });
+  it("should disconnect the current db connection and return 'disconnected' status", async () => {
+    try {
+      await Database.closeConnection();
+      expect(Database.dbStatus()).toEqual("disconnected");
+    } catch (e) {}
+  });
+  it("should return true if the database was refreshed", async () => {
+    await Database.connect();
+    const isRefreshed = await Database.refreshDB("stockdash");
+    expect(isRefreshed).toBeTruthy();
   });
 });
