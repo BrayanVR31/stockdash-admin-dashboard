@@ -6,45 +6,53 @@ import AvatarFactory from "@/factories/AvatarFactory";
 import { Supplier } from "@/models/supplier";
 import { Category } from "@/models/category";
 
-class ProductFactory implements FactoryInt {
-  public async making() {
-    const suppliers = await Supplier.find(
-      {},
-      {
-        address: 0,
-        contact: 0,
-        deletedAt: 0,
-        createdAt: 0,
-        updatedAt: 0,
-        image: 0,
-        name: 0,
-        socialMedia: 0,
-        _id: 1,
-      }
-    ).lean();
-    const categories = await Category.find(
-      {},
-      {
-        name: 0,
-        _id: 1,
-        createdAt: 0,
-        updatedAt: 0,
-      }
-    ).lean();
+type RefModel = Record<string, string>;
 
-    const randSuppliers = faker.helpers.arrayElements(suppliers, {
+class ProductFactory implements FactoryInt {
+  private suppliers: RefModel[] = [];
+  private categories: RefModel[] = [];
+
+  public async init() {
+    if (this.suppliers.length === 0) {
+      this.suppliers = (await Supplier.find(
+        {},
+        {
+          address: 0,
+          contact: 0,
+          deletedAt: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          image: 0,
+          name: 0,
+          socialMedia: 0,
+          _id: 1,
+        }
+      ).lean()) as unknown as RefModel[];
+    }
+
+    if (this.categories.length === 0) {
+      this.categories = (await Category.find(
+        {},
+        {
+          name: 0,
+          _id: 1,
+          createdAt: 0,
+          updatedAt: 0,
+        }
+      ).lean()) as unknown as RefModel[];
+    }
+  }
+
+  public async making() {
+    const randSuppliers = faker.helpers.arrayElements(this.suppliers, {
       min: 3,
       max: 7,
     });
-    const randCategories = faker.helpers.arrayElements(categories, {
+    const randCategories = faker.helpers.arrayElements(this.categories, {
       min: 1,
       max: 7,
     });
 
-    console.log(
-      "leaned: ",
-      randCategories.map((x) => x._id)
-    );
     return {
       name: faker.commerce.productName(),
       price: {
@@ -68,6 +76,7 @@ class ProductFactory implements FactoryInt {
 
   public async create({ count }: CreateOptions) {
     try {
+      await this.init();
       await Product.insertMany(
         Array.from({ length: count }, () => this.making()),
         {
@@ -76,7 +85,6 @@ class ProductFactory implements FactoryInt {
       );
       return true;
     } catch (error) {
-      console.log("product error: ", error);
       return false;
     }
   }

@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { IImage, imageSchema } from "@/models/image";
 
 // Types
 export interface ISupplier extends SocialMedia {
@@ -13,7 +14,7 @@ export interface ISupplier extends SocialMedia {
     phoneNumber?: string;
     email?: string;
   };
-  image?: string;
+  image?: IImage;
   deletedAt: Date;
 }
 
@@ -35,7 +36,7 @@ const LinkSchema = new Schema<Link>(
     versionKey: false,
     timestamps: false,
     _id: false,
-  },
+  }
 );
 
 const supplierSchema = new Schema<ISupplier>(
@@ -72,8 +73,7 @@ const supplierSchema = new Schema<ISupplier>(
       default: null,
     },
     image: {
-      type: String,
-      ref: "Image",
+      type: imageSchema,
       required: false,
       default: null,
     },
@@ -86,7 +86,7 @@ const supplierSchema = new Schema<ISupplier>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Field aliases

@@ -7,7 +7,7 @@ abstract class UserSeeder extends Seeder {
       await UserFactory.create({ count: 120 });
       return Promise.resolve(true);
     } catch (error) {
-      return Promise.resolve(false);
+      console.log(error);
     }
   }
 }

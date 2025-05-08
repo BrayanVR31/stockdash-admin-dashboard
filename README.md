@@ -42,4 +42,10 @@ After defining the configuration files, run the following command to launch all 
 docker compose -f compose.dev.yaml up -d
 ```
 
+If you are interested in using tests, you can use the following Docker command depending on the type of service you want to test (front and back project):
+
+```
+docker compose -f compose.dev.yaml --profile test-api up --build test-api
+```
+
 Finally, open the local application in your browser, the default address is http://localhost:5173/dashboard

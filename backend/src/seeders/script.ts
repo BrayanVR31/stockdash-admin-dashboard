@@ -6,7 +6,7 @@ const main = async () => {
   try {
     console.log("seeding database");
     await Database.connect();
-    await Database.refreshDB();
+    await Database.refreshDB("stockdash");
     await DocFactory.run();
     await Database.closeConnection();
   } catch (e) {
