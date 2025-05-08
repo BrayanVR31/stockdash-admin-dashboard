@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from "express";
 import { destroyFile, getImage, uploadFile } from "@/controllers/image";
-import { hasAuthorization } from "@/middlewares/rol";
+import { hasRole } from "@/middlewares/rol";
 import {
   handleUploadErrors,
   handleMultiUploadErrors,
@@ -13,21 +13,21 @@ const prefix = "/upload";
 
 router.delete(
   `${prefix}/:id`,
-  hasAuthorization("admin", "manager", "employee") as RequestHandler,
-  destroyFile as RequestHandler,
+  hasRole("admin", "manager", "employee") as RequestHandler,
+  destroyFile as RequestHandler
 );
 
 router.get(
   `${prefix}/:id`,
-  hasAuthorization("admin", "manager", "employee") as RequestHandler,
-  getImage as RequestHandler,
+  hasRole("admin", "manager", "employee") as RequestHandler,
+  getImage as RequestHandler
 );
 
 router.post(
   "/upload",
-  hasAuthorization("admin", "manager", "employee") as RequestHandler,
+  hasRole("admin", "manager", "employee") as RequestHandler,
   multerUpload,
-  uploadFile as RequestHandler,
+  uploadFile as RequestHandler
 );
 
 export { router as imageRouter };

@@ -6,6 +6,7 @@ import { User } from "@/models/user";
 import { handleServerError } from "@/utils/error";
 import { getServerError, HTTP_STATUS_TYPES } from "@/utils/statusCodes";
 
+/*
 interface JWTDecoded extends JwtPayload {
   id: string;
 }
@@ -23,7 +24,9 @@ const matchedResource: MatchResource = {
   PUT: "edit",
   DELETE: "delete",
 };
+*/
 
+/*
 const hasAuthorization =
   (...roles: string[]): Controller =>
   async (request, response, next) => {
@@ -91,22 +94,41 @@ const hasAuthorization =
       return response.status(status).json(serverError);
     }
   };
+*/
 
 type CheckRole = (...roles: string[]) => Controller;
 
 export const hasRole: CheckRole = (roles) => async (req, res, next) => {
   try {
-    const token: string = req.cookies?.["refresh_token"];
-    const _id: string = jwtDecode(token)?.["id"];
+    const cookies = req.cookies;
+    const token: string = cookies?.["refresh_token"] || "";
+    const _id: string = jwtDecode(token)?.["id"] || "";
+
+    // Check if the user has a rol
+    if (!_id) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.ROL_FORBIDDEN
+      );
+      return res.status(status).json(serverError);
+    }
+
+    // Check if the user exists
     const user = await User.findById(_id).populate({
       path: "rol",
       transform: (doc) => doc.name,
     });
+    if (!user) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.ROL_FORBIDDEN
+      );
+      return res.status(status).json(serverError);
+    }
+
+    // Match the rol with the roles passed as parameter
     const hasRole = roles.includes(user.rol as string);
-    // Not authorized role
     if (!hasRole) {
       const [status, serverError] = getServerError(
-        HTTP_STATUS_TYPES.ROL_FORBIDDEN,
+        HTTP_STATUS_TYPES.ROL_FORBIDDEN
       );
       return res.status(status).json(serverError);
     }
@@ -117,5 +139,3 @@ export const hasRole: CheckRole = (roles) => async (req, res, next) => {
     return res.status(status).json(serverError);
   }
 };
-
-export { hasAuthorization };
