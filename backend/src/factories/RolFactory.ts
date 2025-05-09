@@ -1,35 +1,36 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
-import _ from "lodash";
-import { FactoryInt, CreateOptions } from "@/types/factory";
-import { Rol } from "@/models/rol";
+import { Rol, IRol } from "@/models/rol";
 import Factory from "@/factories/Factory";
-import Permission from "@/factories/Permission";
+import PermissionFactory from "@/factories/Permission";
+import { Permission, IPermission } from "@/models/permission";
 
-class RolFactory implements FactoryInt {
+class RolFactory extends Factory<IRol> {
+  private permissions: IPermission[];
+
+  private async init() {
+    if (this.permissions.length === 0) {
+      await new PermissionFactory().create({ count: 80 });
+      const permissionDocs = await Permission.find({}).lean();
+      this.permissions = permissionDocs;
+    }
+  }
+
   public making() {
-    const randCount = faker.number.int({ min: 3, max: 7 });
-    const permissions = Array.from({ length: randCount }, () =>
-      Permission.making()
-    );
     return {
       name: faker.helpers.arrayElement(["admin", "employee", "manager"]),
       description: faker.lorem.lines({ min: 3, max: 5 }),
-      permissions,
+      permissions: this.permissions,
     };
   }
 
-  public async create({ count }: CreateOptions) {
-    const docs = Array.from({ length: count }, () => this.making());
-    const uniqueDocs = _.uniqBy(docs, "name");
-    try {
-      await Rol.insertMany(uniqueDocs, {
-        ordered: false,
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
+  protected async save(docs: IRol[]): Promise<void> {
+    await this.init();
+    await Rol.insertMany(docs, { ordered: false });
+  }
+
+  protected async delete() {
+    await Rol.deleteMany();
   }
 }
 
-export default Factory.define(RolFactory);
+export default RolFactory;

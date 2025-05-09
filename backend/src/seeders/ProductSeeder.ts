@@ -2,12 +2,18 @@ import Seeder from "@/seeders/Seeder";
 import ProductFactory from "@/factories/ProductFactory";
 
 abstract class ProductSeeder extends Seeder {
+  private static instance: ProductFactory;
+
   public static async exec() {
-    try {
-      await ProductFactory.create({ count: 5 });
-      return Promise.resolve(true);
-    } catch (error) {
-      return Promise.resolve(false);
+    if (!this.instance) {
+      this.instance = new ProductFactory();
+    }
+    await this.instance.create({ count: 120 });
+  }
+
+  public static async down() {
+    if (this.instance) {
+      await this.instance.bulkDelete();
     }
   }
 }

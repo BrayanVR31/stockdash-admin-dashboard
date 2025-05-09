@@ -1,13 +1,18 @@
-import Seeder from "@/seeders/Seeder";
 import UserFactory from "@/factories/UserFactory";
 
-abstract class UserSeeder extends Seeder {
+abstract class UserSeeder {
+  private static instance: UserFactory;
+
   public static async exec() {
-    try {
-      await UserFactory.create({ count: 120 });
-      return Promise.resolve(true);
-    } catch (error) {
-      return Promise.resolve(false);
+    if (!this.instance) {
+      this.instance = new UserFactory();
+    }
+    await this.instance.create({ count: 120 });
+  }
+
+  public static async down() {
+    if (this.instance) {
+      await this.instance.bulkDelete();
     }
   }
 }

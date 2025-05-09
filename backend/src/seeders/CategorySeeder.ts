@@ -1,13 +1,19 @@
 import Seeder from "@/seeders/Seeder";
 import CategoryFactory from "@/factories/CategoryFactory";
 
-abstract class CategorySeeder extends Seeder {
+abstract class CategorySeeder {
+  private static instance: CategoryFactory;
+
   public static async exec() {
-    try {
-      await CategoryFactory.create({ count: 100 });
-      return Promise.resolve(true);
-    } catch (error) {
-      return Promise.resolve(false);
+    if (!this.instance) {
+      this.instance = new CategoryFactory();
+    }
+    await this.instance.create({ count: 60 });
+  }
+
+  public static async down() {
+    if (this.instance) {
+      await this.instance.bulkDelete();
     }
   }
 }

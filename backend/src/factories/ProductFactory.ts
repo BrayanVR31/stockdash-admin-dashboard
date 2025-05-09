@@ -1,58 +1,72 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
-import { FactoryInt, CreateOptions } from "@/types/factory";
-import { Product } from "@/models/product";
+import { Types } from "mongoose";
+import { Product, IProduct } from "@/models/product";
 import Factory from "@/factories/Factory";
 import AvatarFactory from "@/factories/AvatarFactory";
 import { Supplier } from "@/models/supplier";
 import { Category } from "@/models/category";
+import { Image, IImage } from "@/models/image";
 
-class ProductFactory implements FactoryInt {
-  public async making() {
-    const suppliers = await Supplier.find(
-      {},
-      {
-        address: 0,
-        contact: 0,
-        deletedAt: 0,
-        createdAt: 0,
-        updatedAt: 0,
-        image: 0,
-        name: 0,
-        socialMedia: 0,
-        _id: 1,
-      }
-    ).lean();
-    const categories = await Category.find(
-      {},
-      {
-        name: 0,
-        _id: 1,
-        createdAt: 0,
-        updatedAt: 0,
-      }
-    ).lean();
+class ProductFactory extends Factory<IProduct> {
+  private suppliers: Types.ObjectId[];
+  private categories: Types.ObjectId[];
+  private images: IImage[];
 
-    const randSuppliers = faker.helpers.arrayElements(suppliers, {
+  private async init() {
+    if (this.suppliers.length === 0) {
+      const supplierDocs = await Supplier.find(
+        {},
+        {
+          address: 0,
+          contact: 0,
+          deletedAt: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          image: 0,
+          name: 0,
+          socialMedia: 0,
+          _id: 1,
+        },
+      ).lean();
+      this.suppliers = supplierDocs.map((doc) => doc._id);
+    }
+    if (this.categories.length === 0) {
+      const categoryDocs = await Category.find(
+        {},
+        {
+          name: 0,
+          _id: 1,
+          createdAt: 0,
+          updatedAt: 0,
+        },
+      ).lean();
+      this.categories = categoryDocs.map((doc) => doc._id);
+    }
+    if (!this.images) {
+      await new AvatarFactory().create({ count: 50 });
+      const imageDocs = await Image.find({}).lean();
+      this.images = imageDocs;
+    }
+  }
+
+  making() {
+    const randSuppliers = faker.helpers.arrayElements(this.suppliers, {
       min: 3,
       max: 7,
     });
-    const randCategories = faker.helpers.arrayElements(categories, {
+    const randCategories = faker.helpers.arrayElements(this.categories, {
       min: 1,
       max: 7,
     });
 
-    console.log(
-      "leaned: ",
-      randCategories.map((x) => x._id)
-    );
     return {
       name: faker.commerce.productName(),
       price: {
-        purchase: faker.commerce.price({
+        purchase: +faker.commerce.price({
           min: 50,
           max: 300,
         }),
-        sale: faker.commerce.price({
+        sale: +faker.commerce.price({
           min: 301,
           max: 500,
         }),
@@ -60,26 +74,20 @@ class ProductFactory implements FactoryInt {
       description: faker.commerce.productDescription(),
       quantity: faker.number.int({ min: 1, max: 200 }),
       status: faker.datatype.boolean(0.75),
-      images: faker.helpers.multiple(() => AvatarFactory.making()),
-      suppliers: randSuppliers.map((doc) => doc._id),
-      categories: randCategories.map((doc) => doc._id),
+      images: faker.helpers.arrayElements(this.images),
+      suppliers: randSuppliers,
+      categories: randCategories,
     };
   }
 
-  public async create({ count }: CreateOptions) {
-    try {
-      await Product.insertMany(
-        Array.from({ length: count }, () => this.making()),
-        {
-          ordered: false,
-        }
-      );
-      return true;
-    } catch (error) {
-      console.log("product error: ", error);
-      return false;
-    }
+  protected async save(docs: IProduct[]): Promise<void> {
+    await this.init();
+    await Product.insertMany(docs, { ordered: false });
+  }
+
+  protected async delete() {
+    await Product.deleteMany();
   }
 }
 
-export default Factory.define(ProductFactory);
+export default ProductFactory;

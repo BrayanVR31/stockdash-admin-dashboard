@@ -1,9 +1,8 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
-import { FactoryInt, CreateOptions } from "@/types/factory";
-import { Image } from "@/models/image";
+import { Image, IImage } from "@/models/image";
 import Factory from "@/factories/Factory";
 
-class AvatarFactory implements FactoryInt {
+class AvatarFactory extends Factory<IImage> {
   public making() {
     return {
       path: faker.image.avatar(),
@@ -13,11 +12,13 @@ class AvatarFactory implements FactoryInt {
     };
   }
 
-  public async create({ count }: CreateOptions) {
-    const docs = Array.from({ length: count }, () => this.making());
-    await Image.insertMany(docs);
-    return true;
+  protected async save(docs: IImage[]): Promise<void> {
+    await Image.insertMany(docs, { ordered: false });
+  }
+
+  protected async delete() {
+    await Image.deleteMany();
   }
 }
 
-export default Factory.define(AvatarFactory);
+export default AvatarFactory;

@@ -1,13 +1,18 @@
-import Seeder from "@/seeders/Seeder";
 import SupplierFactory from "@/factories/SupplierFactory";
 
-abstract class SupplierSeeder extends Seeder {
+abstract class SupplierSeeder {
+  private static instance: SupplierFactory;
+
   public static async exec() {
-    try {
-      await SupplierFactory.create({ count: 100 });
-      return Promise.resolve(true);
-    } catch (error) {
-      return Promise.resolve(false);
+    if (!this.instance) {
+      this.instance = new SupplierFactory();
+    }
+    await this.instance.create({ count: 120 });
+  }
+
+  public static async down() {
+    if (this.instance) {
+      await this.instance.bulkDelete();
     }
   }
 }

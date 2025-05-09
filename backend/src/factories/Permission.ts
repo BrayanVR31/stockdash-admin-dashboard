@@ -1,9 +1,8 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
-import { FactoryInt, CreateOptions } from "@/types/factory";
 import Factory from "@/factories/Factory";
-import { Permission } from "@/models/permission";
+import { Permission, IPermission } from "@/models/permission";
 
-class PermissionFactory implements FactoryInt {
+class PermissionFactory extends Factory<IPermission> {
   public making() {
     return {
       title: faker.lorem.sentence({ min: 3, max: 6 }),
@@ -27,11 +26,13 @@ class PermissionFactory implements FactoryInt {
     };
   }
 
-  public async create({ count }: CreateOptions) {
-    const docs = Array.from({ length: count }, () => this.making());
-    await Permission.insertMany(docs);
-    return true;
+  protected async save(docs: IPermission[]): Promise<void> {
+    await Permission.insertMany(docs, { ordered: false });
+  }
+
+  protected async delete() {
+    await Permission.deleteMany();
   }
 }
 
-export default Factory.define(PermissionFactory);
+export default PermissionFactory;

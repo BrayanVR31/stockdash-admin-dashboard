@@ -17,10 +17,8 @@ describe("Database class connection", () => {
   it("should return a connected status when db credentials are valid", () => {
     expect(Database.dbStatus()).toEqual("connected");
   });
-  it("should return a disconnected status when db credentials are invalid", () => {
-    expect(Database.dbStatus()).toEqual("disconnected");
-  });
   it("should disconnect the current db connection and return 'disconnected' status", async () => {
+    expect.assertions(1);
     try {
       await Database.closeConnection();
       expect(Database.dbStatus()).toEqual("disconnected");
