@@ -8,11 +8,11 @@ import { Category } from "@/models/category";
 import { Image, IImage } from "@/models/image";
 
 class ProductFactory extends Factory<IProduct> {
-  private suppliers: Types.ObjectId[];
-  private categories: Types.ObjectId[];
-  private images: IImage[];
+  private suppliers: Types.ObjectId[] = [];
+  private categories: Types.ObjectId[] = [];
+  private images: IImage[] = [];
 
-  private async init() {
+  protected async init() {
     if (this.suppliers.length === 0) {
       const supplierDocs = await Supplier.find(
         {},
@@ -43,9 +43,8 @@ class ProductFactory extends Factory<IProduct> {
       this.categories = categoryDocs.map((doc) => doc._id);
     }
     if (!this.images) {
-      await new AvatarFactory().create({ count: 50 });
-      const imageDocs = await Image.find({}).lean();
-      this.images = imageDocs;
+      const imgs = new AvatarFactory();
+      this.images = Array.from({ length: 50 }, () => imgs.making());
     }
   }
 
@@ -81,7 +80,6 @@ class ProductFactory extends Factory<IProduct> {
   }
 
   protected async save(docs: IProduct[]): Promise<void> {
-    await this.init();
     await Product.insertMany(docs, { ordered: false });
   }
 

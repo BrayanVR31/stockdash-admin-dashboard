@@ -6,13 +6,14 @@ import Factory from "@/factories/Factory";
 import AvatarFactory from "@/factories/AvatarFactory";
 import { Rol } from "@/models/rol";
 import { Image, IImage } from "@/models/image";
+import RolFactory from "@/factories/RolFactory";
 
 class UserFactory extends Factory<IUser> {
-  private roles: (string | Types.ObjectId)[] = [];
-  private hashedPass: string = "";
-  private images: IImage[] = [];
+  protected roles: (string | Types.ObjectId)[] = [];
+  protected hashedPass: string = "";
+  protected images: IImage[] = [];
 
-  private async init() {
+  protected async init() {
     if (this.roles.length === 0) {
       const rolDocs = await Rol.find(
         {},
@@ -28,7 +29,27 @@ class UserFactory extends Factory<IUser> {
           _id: 1,
         },
       ).lean();
-      this.roles = rolDocs.map((doc) => doc._id);
+      if (rolDocs?.length > 1) {
+        this.roles = rolDocs.map((doc) => doc._id);
+      } else {
+        const rolFact = new RolFactory();
+        await rolFact.create({ count: 50 });
+        const rolDcs = await Rol.find(
+          {},
+          {
+            address: 0,
+            contact: 0,
+            deletedAt: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            image: 0,
+            name: 0,
+            socialMedia: 0,
+            _id: 1,
+          },
+        ).lean();
+        this.roles = rolDcs.map((doc) => doc._id);
+      }
     }
     if (!this.hashedPass) {
       const salt = await bcrypt.genSalt(10);
@@ -64,7 +85,6 @@ class UserFactory extends Factory<IUser> {
   }
 
   protected async save(docs: IUser[]): Promise<void> {
-    await this.init();
     await User.insertMany(docs, { ordered: false });
   }
 

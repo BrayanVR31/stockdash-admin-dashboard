@@ -5,9 +5,9 @@ import PermissionFactory from "@/factories/Permission";
 import { Permission, IPermission } from "@/models/permission";
 
 class RolFactory extends Factory<IRol> {
-  private permissions: IPermission[];
+  private permissions: IPermission[] = [];
 
-  private async init() {
+  protected async init() {
     if (this.permissions.length === 0) {
       await new PermissionFactory().create({ count: 80 });
       const permissionDocs = await Permission.find({}).lean();
@@ -24,7 +24,6 @@ class RolFactory extends Factory<IRol> {
   }
 
   protected async save(docs: IRol[]): Promise<void> {
-    await this.init();
     await Rol.insertMany(docs, { ordered: false });
   }
 
