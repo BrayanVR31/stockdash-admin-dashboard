@@ -8,8 +8,10 @@ import { Supplier } from "@/models/supplier";
 import { User } from "@/models/user";
 import { Product } from "@/models/product";
 import CategorySeeder from "@/seeders/CategorySeeder";
+import PurchaseSeeder from "@/seeders/PurchaseSeeder";
 import SaleSeeder from "@/seeders/SaleSeeder";
 import { Sale } from "@/models/sale";
+import { Purchase } from "@/models/purchase";
 
 const testTimeout = 75_000;
 
@@ -33,7 +35,7 @@ describe("Supplier seed", () => {
       const suppliers = await Supplier.find({});
       expect(suppliers.length).toBe(120);
     },
-    testTimeout
+    testTimeout,
   );
   it(
     "should remove 120 docs in supplier collection",
@@ -42,7 +44,7 @@ describe("Supplier seed", () => {
       const suppliers = await Supplier.find({});
       expect(suppliers.length).toBe(0);
     },
-    testTimeout
+    testTimeout,
   );
 });
 
@@ -54,7 +56,7 @@ describe("User seed", () => {
       const users = await User.find({});
       expect(users?.length).toBe(120);
     },
-    testTimeout
+    testTimeout,
   );
   it(
     "should remove 120 docs in user collection",
@@ -63,7 +65,7 @@ describe("User seed", () => {
       const users = await User.find({});
       expect(users?.length).toBe(0);
     },
-    testTimeout
+    testTimeout,
   );
 });
 
@@ -77,7 +79,7 @@ describe("Product seed", () => {
       const products = await Product.find({});
       expect(products?.length).toBe(120);
     },
-    testTimeout
+    testTimeout,
   );
   it(
     "should remove 120 docs in product collection",
@@ -86,7 +88,7 @@ describe("Product seed", () => {
       const products = await Product.find({});
       expect(products?.length).toBe(0);
     },
-    testTimeout
+    testTimeout,
   );
 });
 
@@ -101,11 +103,31 @@ describe("Sale seed", () => {
       const sales = await Sale.find({});
       expect(sales?.length).toBe(120);
     },
-    testTimeout
+    testTimeout,
   );
   it("should remove 120 docs in sale collection", async () => {
     await SaleSeeder.down();
     const sales = await Sale.find({});
     expect(sales?.length).toBe(0);
+  });
+});
+
+describe("Purchase seed", () => {
+  it(
+    "should insert 120 docs in purchase collection",
+    async () => {
+      await UserSeeder.exec();
+      await SupplierSeeder.exec();
+      await ProductSeeder.exec();
+      await PurchaseSeeder.exec();
+      const purchases = await Purchase.find({});
+      expect(purchases?.length).toBe(120);
+    },
+    testTimeout,
+  );
+  it("should remove 120 docs in purchase collection", async () => {
+    await PurchaseSeeder.down();
+    const purchases = await Purchase.find({});
+    expect(purchases?.length).toBe(0);
   });
 });
