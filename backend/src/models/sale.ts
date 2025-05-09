@@ -1,14 +1,13 @@
-import { Schema, model } from "mongoose";
-import { IProduct, productSchema } from ".";
+import { Schema, model, Types } from "mongoose";
 
 // Types
 type SaleStatus = "completed" | "pending" | "canceled";
 
 export interface ISale {
-  products: IProduct[];
+  products: (String | Types.ObjectId)[];
   totalAmount: number;
   saleDate?: Date;
-  user: string | Schema.Types.ObjectId;
+  user: string | Types.ObjectId;
   status?: SaleStatus;
   deletedAt?: Date;
 }
@@ -17,7 +16,8 @@ export interface ISale {
 const saleSchema = new Schema<ISale>(
   {
     products: {
-      type: [productSchema],
+      type: [Types.ObjectId],
+      ref: "Product",
       required: true,
     },
     totalAmount: {
@@ -44,7 +44,7 @@ const saleSchema = new Schema<ISale>(
       default: null,
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 // Field aliases

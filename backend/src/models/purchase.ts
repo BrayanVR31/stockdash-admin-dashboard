@@ -1,24 +1,20 @@
 import { Schema, model, Types, ObjectId } from "mongoose";
+import { IImage, imageSchema } from "@/models/image";
 
 // Types
 export interface IPurchase {
-  name: string;
   totalPrice: number;
   totalQuantity: number;
-  supplier: ObjectId;
+  supplier: Types.ObjectId;
   purchaseDate?: Date;
   products: Types.ObjectId[];
-  ticketImages?: string[];
+  ticketImages?: IImage[];
   deletedAt?: Date;
 }
 
 // Schemas
 const purchaseSchema = new Schema<IPurchase>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
     totalPrice: {
       type: Number,
       required: true,
@@ -28,7 +24,7 @@ const purchaseSchema = new Schema<IPurchase>(
       required: true,
     },
     supplier: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Supplier",
       required: true,
     },
@@ -43,7 +39,7 @@ const purchaseSchema = new Schema<IPurchase>(
       required: true,
     },
     ticketImages: {
-      type: [String],
+      type: [imageSchema],
       required: false,
       default: null,
     },
@@ -56,7 +52,7 @@ const purchaseSchema = new Schema<IPurchase>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 // Field aliases
