@@ -23,7 +23,6 @@ const rolSchema = new Schema<IRol>(
       enum: ["admin", "employee", "manager"],
       required: true,
       unique: true,
-      index: true,
     },
     description: {
       type: String,
@@ -41,7 +40,6 @@ const rolSchema = new Schema<IRol>(
   },
   {
     timestamps: true,
-    autoIndex: true,
     statics: {
       findRolByName(name: string) {
         return this.find({ name: new RegExp(name, "i") }).select("_id");
