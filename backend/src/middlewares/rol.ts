@@ -13,7 +13,7 @@ export const hasRole =
       const cookies = req.cookies;
       const token: string = cookies?.["refresh_token"] || "";
       const _id: string = jwtDecode(token)?.["id"] || "";
-
+      console.log(roles);
       // Check if the user has a rol
       if (!_id) {
         const [status, serverError] = getServerError(
@@ -27,6 +27,7 @@ export const hasRole =
         path: "rol",
         transform: (doc) => doc.name,
       });
+      console.log(user);
       if (!user) {
         const [status, serverError] = getServerError(
           HTTP_STATUS_TYPES.ROL_FORBIDDEN,

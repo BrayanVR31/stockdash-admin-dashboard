@@ -1,34 +1,35 @@
-import { Button, ButtonGroup, HStack, Stack, Text } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
+import Container from "@/layouts/Dashboard/Container";
+import { CardLayout } from "@/layouts/System";
 import { TableProvider } from "@/components/table";
 import TableSkeletonLoader from "@/components/ui/table-skeleton-loader";
+import { Footer, Header, HeaderList } from "../components/list";
+import { ErrorBoundary } from "react-error-boundary";
+import errorLoadData, { resetQuery } from "@/components/error/errorLoadData";
 
-const SuspenseTable = lazy(() => import("./userTable"));
+const UserTable = lazy(() =>
+  import("../components/list").then((mod) => ({
+    default: mod.UserTable,
+  })),
+);
 
 const UserList = () => {
   return (
-    <Stack mt={5} mx="auto" maxW="5xl">
-      <HStack justify="space-between">
-        <Text fontWeight="bolder" fontSize="3xl">
-          Lista de usuarios
-        </Text>
-        <ButtonGroup
-          size="sm"
-          variant={{
-            _dark: "outline",
-            _light: "solid",
-          }}
-        >
-          <Button colorPalette="purple">Agregar</Button>
-          <Button colorPalette="gray">Regresar</Button>
-        </ButtonGroup>
-      </HStack>
-      <Suspense fallback={<TableSkeletonLoader columns={6} />}>
-        <TableProvider pathKey="_id">
-          <SuspenseTable />
-        </TableProvider>
-      </Suspense>
-    </Stack>
+    <Container>
+      <TableProvider pathKey="_id">
+        <CardLayout footer={<Footer />} header={<Header />}>
+          <HeaderList />
+          <ErrorBoundary
+            fallbackRender={errorLoadData}
+            onReset={resetQuery("suppliers")}
+          >
+            <Suspense fallback={<TableSkeletonLoader />}>
+              <UserTable />
+            </Suspense>
+          </ErrorBoundary>
+        </CardLayout>
+      </TableProvider>
+    </Container>
   );
 };
 
