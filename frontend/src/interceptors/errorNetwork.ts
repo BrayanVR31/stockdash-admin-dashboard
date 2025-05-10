@@ -1,38 +1,16 @@
 import { AxiosError } from "axios";
 import { stockdashInstance } from "@/services/stockdashService";
-import alert from "@/assets/alert.svg";
+import useSystemErrorStore, { SysError } from "@/store/systemErrorStore";
 
-type StatusMessage = {
-  message: string;
-  type: string;
-  ilustration: string;
-  statusCode: number;
-};
-type MatchStatus = Record<number, Record<string, StatusMessage>>;
-
-const matchStatus: MatchStatus = {
-  401: {
-    EXPIRED_SESSION: {
-      message:
-        "Tu sesión ha expirado. Por favor, vuelve a iniciar sesión para continuar.",
-      type: "login-again",
-      ilustration: alert,
-      statusCode: 401,
-    },
-  },
-};
-
-type onCatchError = (info: StatusMessage) => void;
-
-export const handlingResponses = (onCatchError?: onCatchError) => {
+export const handlingResponses = () => {
   stockdashInstance.interceptors.response.use(
     (res) => res,
     (error) => {
       if (error instanceof AxiosError) {
-        const { status } = error.response!;
-        const data = error.response!.data;
-
-        if (onCatchError) onCatchError(matchStatus[status][data.error.type]);
+        const errorRes = error.response?.data?.error;
+        const typeError: SysError | null = errorRes?.type || null;
+        const { setSysError } = useSystemErrorStore.getState();
+        setSysError(typeError, "users");
       }
     },
   );

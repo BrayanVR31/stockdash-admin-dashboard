@@ -11,7 +11,7 @@ import { useUsers } from "@/hooks/useUser";
 import { useMemo } from "react";
 
 const UserSelect = () => {
-  const { data, isPending, isSuccess } = useUsers();
+  const { data, isPending, isSuccess, isError } = useUsers();
   const {
     control,
     formState: { errors },
@@ -24,7 +24,7 @@ const UserSelect = () => {
     });
   }, [data, isSuccess]);
   return (
-    <Field.Root required invalid={!!errors?.user}>
+    <Field.Root required invalid={isError || !!errors?.user}>
       <Field.Label>
         Selecciona usuario
         <Field.RequiredIndicator />
@@ -41,7 +41,7 @@ const UserSelect = () => {
               field.onChange(value);
             }}
             onInteractOutside={() => field.onBlur()}
-            disabled={(data?.length || 0) <= 0}
+            disabled={isError || (data?.length || 0) <= 0}
             collection={collection}
           >
             <Select.HiddenSelect />
@@ -58,20 +58,24 @@ const UserSelect = () => {
             </Select.Control>
             <Portal>
               <Select.Positioner>
-                <Select.Content>
-                  {collection.items.map((user) => (
-                    <Select.Item item={user} key={user._id}>
-                      {user.email}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
+                {!isError && (
+                  <Select.Content>
+                    {collection.items.map((user) => (
+                      <Select.Item item={user} key={user._id}>
+                        {user.email}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                )}
               </Select.Positioner>
             </Portal>
           </Select.Root>
         )}
       />
-      <Field.ErrorText>{errors?.user?.message}</Field.ErrorText>
+      <Field.ErrorText>
+        {isError ? "Error al cargar los datos." : errors?.user?.message}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

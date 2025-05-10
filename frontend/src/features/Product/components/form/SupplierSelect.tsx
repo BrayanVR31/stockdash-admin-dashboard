@@ -11,7 +11,7 @@ import { useSuppliers } from "@/hooks/useSupplier";
 import { useMemo } from "react";
 
 const SupplierSelect = () => {
-  const { data, isPending } = useSuppliers();
+  const { data, isPending, isError } = useSuppliers();
   const {
     control,
     formState: { errors },
@@ -24,7 +24,11 @@ const SupplierSelect = () => {
     });
   }, [data]);
   return (
-    <Field.Root required invalid={!!errors?.suppliers}>
+    <Field.Root
+      position="relative"
+      required
+      invalid={isError || !!errors?.suppliers}
+    >
       <Field.Label>
         Selecciona proveedores
         <Field.RequiredIndicator />{" "}
@@ -69,7 +73,9 @@ const SupplierSelect = () => {
           </Select.Root>
         )}
       />
-      <Field.ErrorText>{errors?.suppliers?.message}</Field.ErrorText>
+      <Field.ErrorText bottom="-5" position="absolute">
+        {isError ? "Error al cargar los datos." : errors?.suppliers?.message}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

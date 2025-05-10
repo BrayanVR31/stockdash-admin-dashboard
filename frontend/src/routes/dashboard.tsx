@@ -1,6 +1,7 @@
 import { RouteObject } from "react-router";
 import Layout from "@/layouts/Dashboard/Layout";
 import ProtectRoute from "./ProtectRoute";
+import RestrictRoute from "@/routes/RestrictRoute";
 import { AccountSettings } from "@/features/Account/pages";
 import { UserList } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
@@ -14,42 +15,47 @@ const dashboardRoute: RouteObject = {
     {
       element: <Layout />,
       children: [
-        { index: true, element: <div>Dashboard</div> },
         {
-          path: "account",
-          element: <AccountSettings />,
-        },
-        {
-          path: "users",
-          children: [{ index: true, element: <UserList /> }],
-        },
-        {
-          path: "products",
+          element: <RestrictRoute />,
           children: [
-            { index: true, element: <ProductList /> },
+            { index: true, element: <div>Dashboard</div> },
             {
-              path: "create",
-              element: <ProductForm />,
+              path: "account",
+              element: <AccountSettings />,
             },
-          ],
-        },
-        {
-          path: "sales",
-          children: [
-            { index: true, element: <SaleList /> },
             {
-              path: "create",
-              element: <SaleAdd />,
+              path: "users",
+              children: [{ index: true, element: <UserList /> }],
             },
-          ],
-        },
-        {
-          path: "suppliers",
-          children: [
-            { index: true, element: <SupplierList /> },
             {
-              path: "create",
-              element: <SupplierAdd />,
+              path: "products",
+              children: [
+                { index: true, element: <ProductList /> },
+                {
+                  path: "create",
+                  element: <ProductForm />,
+                },
+              ],
+            },
+            {
+              path: "sales",
+              children: [
+                { index: true, element: <SaleList /> },
+                {
+                  path: "create",
+                  element: <SaleAdd />,
+                },
+              ],
+            },
+            {
+              path: "suppliers",
+              children: [
+                { index: true, element: <SupplierList /> },
+                {
+                  path: "create",
+                  element: <SupplierAdd />,
+                },
+              ],
             },
           ],
         },

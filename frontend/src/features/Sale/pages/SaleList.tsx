@@ -1,9 +1,11 @@
 import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import Container from "@/layouts/Dashboard/Container";
 import { CardLayout } from "@/layouts/System";
 import { TableProvider } from "@/components/table";
 import TableSkeletonLoader from "@/components/ui/table-skeleton-loader";
 import { Footer, Header, HeaderList } from "../components/list";
+import errorLoadData, { resetQuery } from "@/components/error/errorLoadData";
 
 const SaleTable = lazy(() =>
   import("../components/list").then((mod) => ({
@@ -17,9 +19,14 @@ const SaleList = () => {
       <TableProvider pathKey="_id">
         <CardLayout footer={<Footer />} header={<Header />}>
           <HeaderList />
-          <Suspense fallback={<TableSkeletonLoader />}>
-            <SaleTable />
-          </Suspense>
+          <ErrorBoundary
+            onReset={resetQuery("sales")}
+            fallbackRender={errorLoadData}
+          >
+            <Suspense fallback={<TableSkeletonLoader />}>
+              <SaleTable />
+            </Suspense>
+          </ErrorBoundary>
         </CardLayout>
       </TableProvider>
     </Container>
