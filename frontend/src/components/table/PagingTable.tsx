@@ -1,13 +1,20 @@
 import { ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { useSearchParams } from "react-router";
 import { useTable } from "./useTable";
 
 const PagingTable = () => {
   const { setCurrentPage, perPage, totalItems: count } = useTable();
+  const [, setSearchParams] = useSearchParams();
   return (
     <Pagination.Root
       onPageChange={({ page }) => {
         setCurrentPage(page);
+        setSearchParams((prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set("page", `${page}`);
+          return newParams;
+        });
       }}
       pageSize={perPage}
       count={count}

@@ -5,6 +5,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useSearchParams } from "react-router";
 import { useTable } from "./useTable";
 
 const itemsPerPage = createListCollection({
@@ -19,11 +20,20 @@ const itemsPerPage = createListCollection({
 
 const PerPage = () => {
   const { setPerPage, perPage } = useTable();
+  const [, setSearchParams] = useSearchParams();
   return (
     <Stack direction="row" align="center">
       <Text fontSize="sm">Filas por página</Text>
       <Select.Root
-        onValueChange={({ value }) => setPerPage(+[...value].pop()!)}
+        onValueChange={({ value }) => {
+          setPerPage(+[...value].pop()!);
+          setSearchParams((prev) => {
+            const newParams = new URLSearchParams(prev);
+            newParams.set("perPage", [...value]?.pop() || "5");
+            newParams.set("page", "1");
+            return newParams;
+          });
+        }}
         collection={itemsPerPage}
         defaultValue={[`${perPage}`]}
         size="sm"
