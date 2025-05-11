@@ -1,5 +1,5 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { Types, PopulateOptions } from "mongoose";
+import { Types, PopulateOptions, isValidObjectId } from "mongoose";
 import fs from "fs/promises";
 import _ from "lodash";
 import { Controller, ServerError } from "@/types";
@@ -10,6 +10,7 @@ import { destinationPath } from "@/config/multer";
 import { handleServerError } from "@/utils/error";
 import { HTTP_STATUS_TYPES, getServerError } from "@/utils/statusCodes";
 import { paginateDocs } from "@/utils";
+import { userSchema } from "@/validations/user";
 
 interface JWTInfo extends JwtPayload {
   id: string;
@@ -68,11 +69,32 @@ export const home: Controller = async (request, response, next) => {
 };
 
 // Create a new resource
-export const create: Controller = async (request, response, next) => {
+export const create: Controller = async (req, res) => {
   try {
+    // Validate request body
+    // const parsedBody = await userSchema.parseAsync(req.body);
+
+    // Create a new user instance
+    const newUser = new User(req.body);
+
+    // Save the user to the database
+    const savedUser = await newUser.save();
+
+    // Return the created user (excluding sensitive fields like password)
+    return res.status(201).json({
+      message: "User created successfully.",
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        username: savedUser.username,
+        profile: savedUser.profile,
+        rol: savedUser.rol,
+        status: savedUser.status,
+      },
+    });
   } catch (error) {
     const [status, serverError] = handleServerError(error);
-    return response.status(status).json(serverError);
+    return res.status(status).json(serverError);
   }
 };
 
@@ -148,11 +170,36 @@ export const viewProfile: Controller = async (request, response) => {
 };
 
 // Update a specific resource
-export const update: Controller = async (request, response, next) => {
+export const update: Controller = async (req, res) => {
   try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    // Validate ObjectId
+    if (!id || !isValidObjectId(id)) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.CAST_OBJECT_ID_ERROR,
+      );
+      return res.status(status).json(serverError);
+    }
+
+    // Find and update the user
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure schema validation
+    });
+
+    if (!updatedUser) {
+      const [status, serverError] = getServerError(
+        HTTP_STATUS_TYPES.FILE_NOT_FOUND,
+      );
+      return res.status(status).json(serverError);
+    }
+
+    return res.status(HTTP_STATUS_CODES.OK).json({ user: updatedUser });
   } catch (error) {
     const [status, serverError] = handleServerError(error);
-    return response.status(status).json(serverError);
+    return res.status(status).json(serverError);
   }
 };
 
@@ -205,5 +252,24 @@ export const bulkRecords: Controller = async (request, response) => {
   } catch (error) {
     const [status, serverError] = handleServerError(error);
     return response.status(status).json(serverError);
+  }
+};
+
+export const edit: Controller = async (req, res) => {
+  try {
+    const { id = "" } = req.params || {};
+    if (!id || isValidObjectId(id)) {
+      const [status, serverError] = getServerError(HTTP_STATUS_TYPES.NOT_FOUND);
+      return res.status(status).json(serverError);
+    }
+    const user = await User.findById(id);
+    if (!user) {
+      const [status, serverError] = getServerError(HTTP_STATUS_TYPES.NOT_FOUND);
+      return res.status(status).json(serverError);
+    }
+    return res.status(200).json(user);
+  } catch (e) {
+    const [status, serverError] = handleServerError(e);
+    return res.status(status).json(serverError);
   }
 };

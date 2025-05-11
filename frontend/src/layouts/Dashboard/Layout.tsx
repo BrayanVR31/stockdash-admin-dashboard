@@ -2,9 +2,11 @@ import { Flex, Box, SystemStyleObject, Stack } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import { TopBar } from "./TopBar";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider } from "./context";
+import { useEffect } from "react";
+import { getLocation } from "@/historyLocation";
 
 const cssRules: SystemStyleObject = {
   "&:has([data-container=top-bar] :checked)": {
@@ -51,9 +53,13 @@ const cssRules: SystemStyleObject = {
 };
 
 const Layout = () => {
+  const location = useLocation();
   useDocumentTitle("Home", {
     restoreOnMount: true,
   });
+  useEffect(() => {
+    getLocation.setPath(location.pathname);
+  }, [location.pathname]);
   return (
     <SidebarProvider breakpoint={85}>
       <Flex css={cssRules} height="100vh" overflow="hidden">

@@ -3,10 +3,12 @@ import Layout from "@/layouts/Dashboard/Layout";
 import ProtectRoute from "./ProtectRoute";
 import RestrictRoute from "@/routes/RestrictRoute";
 import { AccountSettings } from "@/features/Account/pages";
-import { UserList } from "@/features/User/pages";
+import { UserList, UserAdd } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
 import { SaleAdd, SaleList } from "@/features/Sale/pages";
 import { SupplierList, SupplierAdd } from "@/features/Supplier/pages";
+import { ErrorBoundary } from "react-error-boundary";
+import errorApp from "@/components/error/errorApp";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -25,7 +27,17 @@ const dashboardRoute: RouteObject = {
             },
             {
               path: "users",
-              children: [{ index: true, element: <UserList /> }],
+              children: [
+                { index: true, element: <UserList /> },
+                {
+                  path: "create",
+                  element: (
+                    <ErrorBoundary fallbackRender={errorApp}>
+                      <UserAdd />
+                    </ErrorBoundary>
+                  ),
+                },
+              ],
             },
             {
               path: "products",

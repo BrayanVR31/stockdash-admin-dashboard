@@ -1,6 +1,7 @@
 import { stockdashInstance } from "./stockdashService";
 import { Account } from "@/types/account";
 import { Results, ConfigResults } from "@/types/stockdash";
+import { UserInputs } from "@/models/userSchema";
 
 export const getUserList = async ({
   page = 1,
@@ -29,4 +30,24 @@ export const bulkUserList = async (ids: string[]) => {
 
 export const deleteUser = async (id: string) => {
   return (await stockdashInstance.delete(`/users/${id}`)).data;
+};
+
+export const createUser = async (user: UserInputs) => {
+  return (await stockdashInstance.post("/users", user)).data;
+};
+
+export const updateUser = async ({
+  id,
+  user,
+}: {
+  id: string;
+  user: UserInputs;
+}) => {
+  return (await stockdashInstance.put(`/users/${id}`, user)).data;
+};
+
+export const getUserById = async (id: string) => {
+  return (
+    await stockdashInstance.put<Account & { password: string }>(`/users/${id}`)
+  ).data;
 };

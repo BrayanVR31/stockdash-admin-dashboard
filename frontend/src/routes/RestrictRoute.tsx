@@ -1,5 +1,4 @@
 import { NavLink, Outlet, useLocation } from "react-router";
-import { ErrorBoundary } from "react-error-boundary";
 import {
   Button,
   ButtonGroup,
@@ -9,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import useSystemErrorStore from "@/store/systemErrorStore";
 import { Text, VStack } from "@chakra-ui/react";
+import { concatSiblingPaths, getPrevPath } from "@/utils/paths";
 
 const statusHeading = defineStyle({
   colorPalette: "blue",
@@ -32,7 +32,11 @@ const RestrictRoute = () => {
   const errors = useSystemErrorStore((state) => state.errors);
   const location = useLocation();
   const paths = location.pathname.split("/").filter((p) => p);
-  const error = errors.find((e) => paths.includes(e.resource));
+  console.log("paths: ", paths);
+  const error = errors.find((e) => {
+    console.log("e resource: ", e.resource);
+    paths.includes(e.resource);
+  });
   if (error)
     return (
       <VStack>
@@ -53,11 +57,7 @@ const RestrictRoute = () => {
         <Image mt="8" height="200px" src={error.image} />
       </VStack>
     );
-  return (
-    <ErrorBoundary fallback={<div>Error...</div>}>
-      <Outlet />
-    </ErrorBoundary>
-  );
+  return <Outlet />;
 };
 
 export default RestrictRoute;

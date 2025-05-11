@@ -4,11 +4,38 @@ import {
   bulkUserList,
   deleteUser,
   getUsers,
+  createUser,
+  updateUser,
+  getUserById,
 } from "@/services/user";
 import { useTable } from "@/components/table";
 import { getQueryClient } from "@/QueryClient";
 
 const client = getQueryClient();
+
+export const useCreateUser = () => {
+  const { currentPage, perPage } = useTable();
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      client.invalidateQueries({
+        queryKey: ["users", { currentPage, perPage }],
+      });
+    },
+  });
+};
+
+export const useUpdateUser = () => {
+  const { currentPage, perPage } = useTable();
+  return useMutation({
+    mutationFn: updateUser,
+    onSuccess: () => {
+      client.invalidateQueries({
+        queryKey: ["users", { currentPage, perPage }],
+      });
+    },
+  });
+};
 
 export const useUserList = () => {
   const { currentPage, perPage } = useTable();
@@ -19,6 +46,13 @@ export const useUserList = () => {
         page: currentPage,
         perPage,
       }),
+  });
+};
+
+export const useGetUser = (id: string) => {
+  return useSuspenseQuery({
+    queryKey: ["user", id],
+    queryFn: () => getUserById(id),
   });
 };
 

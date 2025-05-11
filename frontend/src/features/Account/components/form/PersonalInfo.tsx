@@ -1,20 +1,21 @@
-import { useFormContext } from "react-hook-form";
-import { Flex, Input, Text, Field, Stack, Badge } from "@chakra-ui/react";
-import { AccountInputs } from "../../models/accountSchema";
+import { useFormContext, Controller } from "react-hook-form";
+import { Input, Text, Field, Stack, Badge, Checkbox } from "@chakra-ui/react";
+import { UserInputs } from "@/models/userSchema";
 
 const PersonalInfo = () => {
   const {
     register,
     formState: { errors },
-  } = useFormContext<AccountInputs>();
+    control,
+  } = useFormContext<UserInputs>();
   return (
-    <Flex direction="column" gapY="5">
+    <Stack direction="column" gap="6">
       <Text
         textAlign={{
           base: "center",
           md: "start",
         }}
-        fontWeight="semibold"
+        fontWeight="normal"
         fontSize="md"
       >
         Información personal
@@ -49,6 +50,24 @@ const PersonalInfo = () => {
           <Field.ErrorText>{errors.profile?.lastName?.message}</Field.ErrorText>
         </Field.Root>
       </Stack>
+      <Controller
+        control={control}
+        name="hasUsername"
+        render={({ field }) => (
+          <Checkbox.Root
+            checked={field.value}
+            onCheckedChange={(e) => field.onChange(!!e.checked)}
+            variant="solid"
+            colorPalette="blue"
+          >
+            <Checkbox.HiddenInput />
+            <Checkbox.Control />
+            <Checkbox.Label>
+              ¿Desea agregar el nombre de usuario?
+            </Checkbox.Label>
+          </Checkbox.Root>
+        )}
+      />
       <Stack
         direction={{
           base: "column",
@@ -61,7 +80,7 @@ const PersonalInfo = () => {
             Nombre de usuario
             <Field.RequiredIndicator
               fallback={
-                <Badge size="xs" variant="surface">
+                <Badge colorPalette="blue" size="xs" variant="surface">
                   Opcional
                 </Badge>
               }
@@ -69,12 +88,12 @@ const PersonalInfo = () => {
           </Field.Label>
           <Input
             {...register("profile.username")}
-            placeholder="Escribe tus nombre de usuario"
+            placeholder="Escribe el nombre de usuario"
           />
           <Field.ErrorText>{errors.profile?.username?.message}</Field.ErrorText>
         </Field.Root>
       </Stack>
-    </Flex>
+    </Stack>
   );
 };
 

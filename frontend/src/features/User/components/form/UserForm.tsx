@@ -2,82 +2,108 @@ import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
-  Flex,
+  ButtonGroup,
   Stack,
   StackSeparator,
   Checkbox,
   Text,
+  Card,
 } from "@chakra-ui/react";
 import { userSchema, UserInputs, defaultUser } from "@/models/userSchema";
-import { useCreateUser, useUpdateUser, useFetchUser } from "@/hooks/userUser";
+import { useCreateUser, useUpdateUser, useGetUser } from "@/hooks/useUser";
 import PersonalInfo from "./PersonalInfo";
 import Address from "./Address";
 import Avatar from "./Avatar";
+import { useParams, NavLink } from "react-router";
+import LoadingOverlaySpinner from "@/components/ui/loading-overlay-spinner";
+import CreatingFields from "./CreatingFields";
+import EditingFields from "./EditingFields";
 
 interface UserFormProps {
   mode: "create" | "edit";
-  userId?: string; // Required for edit mode
+  user: UserInputs;
 }
 
-const UserForm = ({ mode, userId }: UserFormProps) => {
-  const { data: userData, isLoading } = useFetchUser(userId, {
-    enabled: mode === "edit",
-  });
+const EditFields = () => {
+  const params = useParams();
+  const { data } = useGetUser(params);
+  return <></>;
+};
+
+const UserForm = ({ mode, user }: UserFormProps) => {
+  const params = useParams();
   const methods = useForm<UserInputs>({
     resolver: zodResolver(userSchema),
     mode: "all",
-    defaultValues: mode === "edit" ? userData : defaultUser,
+    defaultValues: mode === "edit" ? user : defaultUser,
   });
 
-  const { mutate: createUser, isLoading: isCreating } = useCreateUser();
-  const { mutate: updateUser, isLoading: isUpdating } = useUpdateUser();
+  const { mutate: createUser, isPending: isCreating } = useCreateUser();
+  const { mutate: updateUser, isPending: isEditing } = useUpdateUser();
 
   const onSubmit: SubmitHandler<UserInputs> = (data) => {
     if (mode === "edit") {
-      updateUser({ id: userId, ...data });
+      updateUser({
+        id: params?.id || "",
+        user: data,
+      });
     } else {
       createUser(data);
     }
   };
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
-
   return (
     <FormProvider {...methods}>
-      <Flex direction="column" gap={6}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} autoComplete="off">
-          <Stack gapY="5" separator={<StackSeparator />}>
-            <Checkbox
-              isChecked={methods.watch("hasProfile")}
-              onChange={(e) => methods.setValue("hasProfile", e.target.checked)}
-            >
-              Add Profile
-            </Checkbox>
-            {methods.watch("hasProfile") && <PersonalInfo />}
-            <Checkbox
-              isChecked={methods.watch("hasAddress")}
-              onChange={(e) => methods.setValue("hasAddress", e.target.checked)}
-            >
-              Add Address
-            </Checkbox>
-            {methods.watch("hasAddress") && <Address />}
-            <Checkbox
-              isChecked={methods.watch("hasAvatar")}
-              onChange={(e) => methods.setValue("hasAvatar", e.target.checked)}
-            >
-              Add Avatar
-            </Checkbox>
-            {methods.watch("hasAvatar") && <Avatar />}
+      <Card.Root
+        onSubmit={methods.handleSubmit(onSubmit)}
+        as="form"
+        mx="auto"
+        maxW="5xl"
+      >
+        <Card.Header
+          mx="auto"
+          w={{
+            base: "full",
+            md: "80%",
+          }}
+        >
+          <Card.Title>{`${mode === "edit" ? "Editar" : "Crear"} usuario`}</Card.Title>
+          <Card.Description>
+            Agrega todos datos que sean requeridos para registrar un usuario
+          </Card.Description>
+        </Card.Header>
+        <Card.Body
+          mx="auto"
+          w={{
+            base: "full",
+            md: "80%",
+          }}
+        >
+          <Stack gap="8" w="full">
+            {/** Form input fields here */}
+            {mode === "edit" ? <EditingFields /> : <CreatingFields />}
           </Stack>
-          <Flex justify="flex-end" gap={4} mt={6}>
-            <Button type="submit" isLoading={isCreating || isUpdating}>
-              {mode === "edit" ? "Update User" : "Create User"}
+        </Card.Body>
+        <Card.Footer
+          mt="6"
+          mx="auto"
+          w={{
+            base: "full",
+            md: "80%",
+          }}
+          justifyContent="end"
+        >
+          <ButtonGroup>
+            <Button asChild>
+              <NavLink to="..">Cancelar</NavLink>
             </Button>
-          </Flex>
-        </form>
-      </Flex>
+            <Button colorPalette="purple" type="submit">
+              Guardar
+            </Button>
+          </ButtonGroup>
+        </Card.Footer>
+        {(isCreating || isEditing) && <LoadingOverlaySpinner />}
+      </Card.Root>
     </FormProvider>
   );
 };

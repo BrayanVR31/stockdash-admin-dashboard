@@ -42,9 +42,19 @@ const profileSchema = z.discriminatedUnion("hasProfile", [
     hasProfile: z.literal(true),
     profile: z
       .object({
-        name: z.string().min(1),
-        lastName: z.string().min(1),
-        phoneNumber: z.string().min(10_000).max(99_999),
+        name: z.string().min(1, { message: "Este campo es obligatorio." }),
+        lastName: z.string().min(1, { message: "Este campo es obligatorio." }),
+        phoneNumber: z
+          .string()
+          .regex(/^[0-9]+$/, {
+            message: "El número de teléfono debe tener dígitos.",
+          })
+          .min(10, {
+            message: "El número de teléfono tener 10 dígitos.",
+          })
+          .max(10, {
+            message: "El número de teléfono tener 10 dígitos.",
+          }),
       })
       .and(addressSchema)
       .and(avatarSchema),
@@ -53,8 +63,13 @@ const profileSchema = z.discriminatedUnion("hasProfile", [
 
 export const userSchema = z
   .object({
-    email: z.string().min(1).email(),
-    password: z.string().min(8),
+    email: z
+      .string()
+      .min(1, { message: "Este campo es obligatorio." })
+      .email("El correo electrónico no es válido"),
+    password: z.string().min(8, {
+      message: "La contraseña debe contener al menos 8 caracteres.",
+    }),
     rol: z.string().min(1).max(1),
     status: z.boolean(),
   })
