@@ -13,7 +13,7 @@ import {
   Checkbox,
   InputGroup,
 } from "@chakra-ui/react";
-import { AccountInputs } from "../../models/accountSchema";
+import { AccountInputs } from "@/models/accountSchema";
 
 type Profile = Pick<AccountInputs, "profile">;
 type ProfileContact = Extract<Profile["profile"], { hasContact: true }>;
@@ -27,6 +27,10 @@ const Contact = () => {
   const hasContact = useWatch({
     control,
     name: "profile.hasContact",
+  });
+  const isAdmin = useWatch({
+    control,
+    name: "isAdmin",
   });
   const fullErrors = errors as FieldErrors<{ profile: ProfileContact }>;
   return (
@@ -46,6 +50,7 @@ const Contact = () => {
         name="profile.hasContact"
         render={({ field }) => (
           <Checkbox.Root
+            disabled={!isAdmin}
             checked={field.value}
             onCheckedChange={(e) => field.onChange(!!e.checked)}
             variant="solid"
@@ -62,7 +67,10 @@ const Contact = () => {
 
       {hasContact && (
         <HStack spaceX="5">
-          <Field.Root invalid={!!fullErrors?.profile?.phoneNumber}>
+          <Field.Root
+            disabled={!isAdmin}
+            invalid={!!fullErrors?.profile?.phoneNumber}
+          >
             <Field.Label>Número de teléfono</Field.Label>
             <InputGroup startElement="+52">
               <Input

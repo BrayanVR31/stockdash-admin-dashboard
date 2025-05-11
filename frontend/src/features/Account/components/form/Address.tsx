@@ -13,7 +13,7 @@ import {
   Checkbox,
   Stack,
 } from "@chakra-ui/react";
-import { AccountInputs } from "../../models/accountSchema";
+import { AccountInputs } from "@/models/accountSchema";
 
 type Profile = Pick<AccountInputs, "profile">;
 type ProfileAddress = Extract<Profile["profile"], { hasAddress: true }>;
@@ -27,6 +27,10 @@ const Address = () => {
   const hasAddress = useWatch({
     control,
     name: "profile.hasAddress",
+  });
+  const isAdmin = useWatch({
+    control,
+    name: "isAdmin",
   });
   const fullErrors = errors as FieldErrors<{ profile: ProfileAddress }>;
   return (
@@ -46,6 +50,7 @@ const Address = () => {
         name="profile.hasAddress"
         render={({ field }) => (
           <Checkbox.Root
+            disabled={!isAdmin}
             checked={field.value}
             onCheckedChange={(e) => field.onChange(!!e.checked)}
             variant="solid"
@@ -70,6 +75,7 @@ const Address = () => {
             <Field.Root invalid={!!fullErrors?.profile?.address?.state}>
               <Field.Label>Calle</Field.Label>
               <Input
+                disabled={!isAdmin}
                 {...register("profile.address.street")}
                 placeholder="Escribe tu calle"
               />
@@ -80,6 +86,7 @@ const Address = () => {
             <Field.Root invalid={!!fullErrors?.profile?.address?.state}>
               <Field.Label>Ciudad</Field.Label>
               <Input
+                disabled={!isAdmin}
                 {...register("profile.address.city")}
                 placeholder="Escribe tu ciudad"
               />
@@ -98,6 +105,7 @@ const Address = () => {
             <Field.Root invalid={!!fullErrors?.profile?.address?.state}>
               <Field.Label>Estado</Field.Label>
               <Input
+                disabled={!isAdmin}
                 {...register("profile.address.state")}
                 placeholder="Escribe tu estado"
               />
@@ -108,6 +116,7 @@ const Address = () => {
             <Field.Root invalid={!!fullErrors?.profile?.address?.zipCode}>
               <Field.Label>Código postal</Field.Label>
               <Input
+                disabled={!isAdmin}
                 {...register("profile.address.zipCode")}
                 type="number"
                 placeholder="Escribe tu código postal"
@@ -121,6 +130,7 @@ const Address = () => {
             <Field.Root invalid={!!fullErrors?.profile?.address?.country}>
               <Field.Label>País</Field.Label>
               <Input
+                disabled={!isAdmin}
                 {...register("profile.address.country")}
                 placeholder="Escribe tu país"
               />

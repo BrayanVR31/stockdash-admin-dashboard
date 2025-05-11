@@ -1,13 +1,17 @@
-import { useFormContext, Controller } from "react-hook-form";
-import { Input, Text, Field, Stack, Badge, Checkbox } from "@chakra-ui/react";
-import { UserInputs } from "@/models/userSchema";
+import { useFormContext, useWatch } from "react-hook-form";
+import { Input, Text, Field, Stack, Badge } from "@chakra-ui/react";
+import { AccountInputs } from "@/models/accountSchema";
 
 const PersonalInfo = () => {
   const {
     register,
     formState: { errors },
     control,
-  } = useFormContext<UserInputs>();
+  } = useFormContext<AccountInputs>();
+  const isAdmin = useWatch({
+    control,
+    name: "isAdmin",
+  });
   return (
     <Stack direction="column" gap="6">
       <Text
@@ -27,7 +31,11 @@ const PersonalInfo = () => {
         }}
         gap="5"
       >
-        <Field.Root required invalid={!!errors.profile?.name}>
+        <Field.Root
+          disabled={!isAdmin}
+          required
+          invalid={!!errors.profile?.name}
+        >
           <Field.Label>
             Nombre
             <Field.RequiredIndicator />
@@ -38,7 +46,11 @@ const PersonalInfo = () => {
           />
           <Field.ErrorText>{errors.profile?.name?.message}</Field.ErrorText>
         </Field.Root>
-        <Field.Root required invalid={!!errors.profile?.lastName}>
+        <Field.Root
+          disabled={!isAdmin}
+          required
+          invalid={!!errors.profile?.lastName}
+        >
           <Field.Label>
             Apellidos
             <Field.RequiredIndicator />
@@ -50,24 +62,6 @@ const PersonalInfo = () => {
           <Field.ErrorText>{errors.profile?.lastName?.message}</Field.ErrorText>
         </Field.Root>
       </Stack>
-      <Controller
-        control={control}
-        name="hasUsername"
-        render={({ field }) => (
-          <Checkbox.Root
-            checked={field.value}
-            onCheckedChange={(e) => field.onChange(!!e.checked)}
-            variant="solid"
-            colorPalette="blue"
-          >
-            <Checkbox.HiddenInput />
-            <Checkbox.Control />
-            <Checkbox.Label>
-              ¿Desea agregar el nombre de usuario?
-            </Checkbox.Label>
-          </Checkbox.Root>
-        )}
-      />
       <Stack
         direction={{
           base: "column",
@@ -87,6 +81,7 @@ const PersonalInfo = () => {
             />
           </Field.Label>
           <Input
+            disabled={!isAdmin}
             {...register("profile.username")}
             placeholder="Escribe el nombre de usuario"
           />

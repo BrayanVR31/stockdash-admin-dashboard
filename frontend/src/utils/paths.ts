@@ -22,3 +22,7 @@ export const getPrevPath: PrevPathFn = (pathname, startPath) => {
   if (startIndex === -1 || startIndex === 0) return "";
   return splitPaths?.[startIndex - 1] || "";
 };
+
+export const extractPaths = (pathname: string): string[] => {
+  return pathname.split("/").filter((path) => path);
+};

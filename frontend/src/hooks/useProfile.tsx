@@ -1,9 +1,16 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { toaster } from "@/components/ui/toaster";
 import { getAccount, updateAccount } from "@/services/account";
 import { getQueryClient } from "@/QueryClient";
 
 const client = getQueryClient();
+
+export const useAccount = () => {
+  return useQuery({
+    queryKey: ["account"],
+    queryFn: getAccount,
+  });
+};
 
 export const useProfileSession = () => {
   return useSuspenseQuery({

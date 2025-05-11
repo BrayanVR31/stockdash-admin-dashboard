@@ -2,7 +2,7 @@ import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Flex, Stack, StackSeparator } from "@chakra-ui/react";
 import { NavLink } from "react-router";
-import { accountSchema, AccountInputs } from "../../models/accountSchema";
+import { accountSchema, AccountInputs } from "@/models/accountSchema";
 import PersonalInfo from "./PersonalInfo";
 import Contact from "./Contact";
 import Address from "./Address";
@@ -16,6 +16,7 @@ const Form = () => {
     resolver: zodResolver(accountSchema),
     mode: "all",
     defaultValues: {
+      isAdmin: data?.rol === "admin",
       profile: {
         name: data.profile.name,
         lastName: data.profile.lastName,
@@ -28,7 +29,7 @@ const Form = () => {
           zipCode: `${data?.profile?.address?.zipCode || ""}`,
         },
         hasContact: !!data.profile?.phoneNumber,
-        phoneNumber: data.profile?.phoneNumber || null,
+        phoneNumber: data.profile?.phoneNumber || "",
         avatar: data?.profile?.avatar?._id || null,
         username: data?.username || null,
       },
@@ -37,27 +38,28 @@ const Form = () => {
   const { mutate, isPending } = useUpdateAccount();
 
   const onSubmit: SubmitHandler<AccountInputs> = (account) => {
-    console.log(data);
-    mutate({
-      profile: {
-        name: account.profile.name,
-        lastName: account.profile.lastName,
-        avatar: account.profile?.avatar,
-        address: account.profile?.hasAddress
-          ? {
-              city: account.profile?.address?.city,
-              state: account.profile?.address?.state,
-              street: account.profile?.address?.street,
-              zipCode: account.profile?.address?.zipCode,
-              country: account.profile?.address?.country,
-            }
-          : data.profile?.address,
-        phoneNumber: account.profile?.hasContact
-          ? account.profile?.phoneNumber
-          : null,
-      },
-      username: account?.profile?.username,
-    });
+    if (data?.rol === "admin") {
+      mutate({
+        profile: {
+          name: account.profile.name,
+          lastName: account.profile.lastName,
+          avatar: account.profile?.avatar,
+          address: account.profile?.hasAddress
+            ? {
+                city: account.profile?.address?.city,
+                state: account.profile?.address?.state,
+                street: account.profile?.address?.street,
+                zipCode: account.profile?.address?.zipCode,
+                country: account.profile?.address?.country,
+              }
+            : data.profile?.address,
+          phoneNumber: account.profile?.hasContact
+            ? account.profile?.phoneNumber
+            : null,
+        },
+        username: account?.profile?.username,
+      });
+    }
   };
   return (
     <>
@@ -84,7 +86,11 @@ const Form = () => {
               <Button variant="solid" asChild>
                 <NavLink to="/dashboard">Cancelar</NavLink>
               </Button>
-              <Button type="submit" colorPalette="purple">
+              <Button
+                disabled={!(data?.rol === "admin")}
+                type="submit"
+                colorPalette="purple"
+              >
                 Guardar
               </Button>
             </Flex>

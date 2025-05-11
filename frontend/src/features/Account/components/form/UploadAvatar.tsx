@@ -1,27 +1,16 @@
-import {
-  useFormContext,
-  useWatch,
-  Controller,
-  FieldErrors,
-} from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import {
   Button,
   Flex,
-  Input,
   Text,
   Stack,
-  SkeletonCircle,
   FileUpload,
-  CloseButton,
-  InputGroup,
   useFileUpload,
   Code,
 } from "@chakra-ui/react";
-import { AccountInputs } from "../../models/accountSchema";
-import { ErrorBoundary } from "react-error-boundary";
-import { lazy, Suspense } from "react";
+import { AccountInputs } from "@/models/accountSchema";
+import { lazy } from "react";
 import { FiUpload } from "react-icons/fi";
-import { NotFoundAvatar } from "./AccountAvatar";
 import delay from "@/utils/delay";
 import FileUploadList from "@/components/ui/FileUploadList";
 import { useAttachFile } from "@/hooks/useUpload";
@@ -42,6 +31,10 @@ const UploadAvatar = ({ defaultPath }: Props) => {
   const avatar = useWatch({
     control,
     name: "profile.avatar",
+  });
+  const isAdmin = useWatch({
+    control,
+    name: "isAdmin",
   });
   const username = useWatch({
     control,
@@ -136,6 +129,7 @@ const UploadAvatar = ({ defaultPath }: Props) => {
           />
           <FileUpload.Trigger asChild>
             <Button
+              disabled={!isAdmin}
               w={{
                 base: "full",
                 md: "auto",

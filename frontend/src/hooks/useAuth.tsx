@@ -1,10 +1,13 @@
-import { useMutation, QueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router";
 import { memoryToken } from "@/services/stockdashService";
 import { login, logout } from "@/services/authentication";
 import { useAuthenticationStore } from "@/store/authenticationStore";
+import { getQueryClient } from "@/QueryClient";
+import useSystemErrorStore from "@/store/systemErrorStore";
+
+const client = getQueryClient();
 
 interface FormattedError {
   key: "email" | "password";
@@ -32,7 +35,6 @@ export const useSignIn = () => {
     ...useMutation({
       mutationFn: login,
       onError: (error) => {
-        console.log(error);
         if (error instanceof AxiosError) {
           const resError = error?.response?.data;
           const keyError = resError?.error?.type as ErrorKeys;
@@ -48,19 +50,19 @@ export const useSignIn = () => {
 };
 
 export const useLogOut = () => {
-  const queryClient = new QueryClient();
   const setIsLogged = useAuthenticationStore((state) => state.setIsLogged);
-
+  const resetSysErrors = useSystemErrorStore((state) => state.resetSysErrors);
   const quitSession = async () => {
     try {
-      const data = await queryClient.fetchQuery({
+      await client.fetchQuery({
         queryKey: [],
         queryFn: logout,
       });
-      console.log(data);
+      client.clear();
       setIsLogged(false);
-    } catch (error) {
-      console.log(error);
+      resetSysErrors();
+    } catch (e) {
+      // error
     }
   };
   return quitSession;
