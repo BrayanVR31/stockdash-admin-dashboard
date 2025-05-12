@@ -27,9 +27,15 @@ type PriceCell = HeaderCell & {
   type: "price";
 };
 
+type StatusCell = HeaderCell & {
+  path: string;
+  type: "status";
+};
+
 export type HeadCol =
   | AvatarCell
   | TextCell
   | BadgeCell
   | ImagesCell
-  | PriceCell;
+  | PriceCell
+  | StatusCell;

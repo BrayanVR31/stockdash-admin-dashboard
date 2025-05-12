@@ -110,6 +110,22 @@ const PriceCell = <T,>({ path, item }: PriceCellProps<T>) => {
   );
 };
 
+type StatusCellProps<T> = Omit<
+  Extract<HeadCol, { type: "status" }>,
+  "type" | "title"
+> & { item: T };
+
+const StatusCell = <T,>({ path, item }: StatusCellProps<T>) => {
+  const status = _.get(item, path, false) as boolean;
+  return (
+    <Table.Cell>
+      <Badge colorPalette={status ? "green" : "red"}>
+        {status ? "Activo" : "No activo"}
+      </Badge>
+    </Table.Cell>
+  );
+};
+
 const Row = memo(
   <T extends Record<string, unknown>>({
     fields,
@@ -161,6 +177,10 @@ const Row = memo(
           else if (type === "price")
             return (
               <PriceCell item={item} key={`row-data-${path}`} path={path} />
+            );
+          else if (type === "status")
+            return (
+              <StatusCell item={item} key={`row-data-${path}`} path={path} />
             );
         })}
         <Table.Cell>
