@@ -23,7 +23,6 @@ import { useTable } from "./useTable";
 import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
 import { HeadCol } from "@/types/table";
-import { matchPath } from "react-router";
 
 interface Props<T> {
   fields: HeadCol[];
@@ -205,7 +204,7 @@ const Row = memo(
     item,
     onDeleteItem,
   }: Props<T>) => {
-    const { selection, setSelection, pathKey } = useTable();
+    const { selection, setSelection, pathKey, setCurrentPage } = useTable();
     const [open, setOpen] = useState(false);
     const id = _.get(item, pathKey) as string;
     const isSelected = selection.has(id);
@@ -352,6 +351,7 @@ const Row = memo(
                               <Button
                                 onClick={() => {
                                   setOpen(false);
+                                  setCurrentPage(1);
                                   onDeleteItem();
                                 }}
                                 colorPalette="red"

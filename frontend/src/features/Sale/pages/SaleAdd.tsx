@@ -23,7 +23,6 @@ const SaleAdd = () => {
   });
   const { mutate, isPending } = useCreateSale();
   const onSubmit: SubmitHandler<SaleInputs> = (data) => {
-    console.log(data);
     const addedSale = produce(data, (draft) => {
       if (draft.hasSaleDate) {
         console.log(format(draft.saleDate, "yyyy-MM-dd"));
@@ -44,6 +43,7 @@ const SaleAdd = () => {
         as="form"
         mx="auto"
         maxW="5xl"
+        zIndex="base"
       >
         <Card.Header
           mx="auto"
