@@ -2,10 +2,11 @@ import { memo } from "react";
 import _ from "lodash";
 import Row from "./Row";
 import { useTable } from "./useTable";
+import { HeadCol } from "@/types/table";
 
 interface Props<T> {
   data: T[];
-  fields: string[];
+  fields: HeadCol[];
   onDeleteItem: (id: string) => void;
 }
 

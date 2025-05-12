@@ -1,4 +1,5 @@
 import {
+  Text,
   Table,
   Checkbox,
   Menu,
@@ -7,6 +8,9 @@ import {
   Dialog,
   CloseButton,
   Box,
+  Avatar,
+  HStack,
+  defineStyle,
 } from "@chakra-ui/react";
 import { memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
@@ -14,12 +18,42 @@ import _ from "lodash";
 import { useTable } from "./useTable";
 import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
+import { HeadCol } from "@/types/table";
+import { matchPath } from "react-router";
 
 interface Props<T> {
-  fields: string[];
+  fields: HeadCol[];
   item: T;
   onDeleteItem: () => void;
 }
+
+type AvatarCellProps<T> = Omit<
+  Extract<HeadCol, { type: "avatar" }>,
+  "type" | "title"
+> & { item: T };
+
+const AvatarCell = <T,>({ path, item }: AvatarCellProps<T>) => {
+  const [image, text] = path;
+  const textName = _.get(item, text, "Anónimo") as string;
+  const imgSrc = _.get(item, image, null) as string;
+  const ringCss = defineStyle({
+    outlineWidth: "2px",
+    outlineColor: "colorPalette.500",
+    outlineOffset: "2px",
+    outlineStyle: "solid",
+  });
+  return (
+    <Table.Cell>
+      <HStack gap="4">
+        <Avatar.Root css={ringCss} colorPalette="blue" variant="subtle">
+          <Avatar.Fallback name={textName} />
+          <Avatar.Image src={imgSrc} />
+        </Avatar.Root>
+        <Text>{textName}</Text>
+      </HStack>
+    </Table.Cell>
+  );
+};
 
 const Row = memo(
   <T extends Record<string, unknown>>({
@@ -50,11 +84,18 @@ const Row = memo(
             <Checkbox.Control />
           </Checkbox.Root>
         </Table.Cell>
-        {fields.map((field) => (
-          <Table.Cell key={`row-data-${field}`}>
-            {_.get(item, field, "Sin especificar") as string}
-          </Table.Cell>
-        ))}
+        {fields.map(({ path, type }) => {
+          if (type === "avatar")
+            return (
+              <AvatarCell item={item} key={`row-data-${path}`} path={path} />
+            );
+          else if (type === "text")
+            return (
+              <Table.Cell key={`row-data-${path}`}>
+                {_.get(item, path, "Sin especificar") as string}
+              </Table.Cell>
+            );
+        })}
         <Table.Cell>
           <Menu.Root>
             <Menu.Trigger asChild>

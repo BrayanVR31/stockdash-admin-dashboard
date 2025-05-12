@@ -1,13 +1,15 @@
 import { HeadingCol, TableLayout } from "@/components/table";
 import { useUserList, useBulkUsers, useDestroyUser } from "@/hooks/useUser";
+import { HeadCol } from "@/types/table";
 
-export const cols: HeadingCol[] = [
-  { path: "email", content: "Email" },
-  { path: "profile.name", content: "Nombre" },
-  { path: "profile.lastName", content: "Apellidos" },
+export const cols: HeadCol[] = [
+  { path: ["profile.avatar.path", "email"], title: "Email", type: "avatar" },
+  { path: "profile.name", title: "Nombre", type: "text" },
+  { path: "profile.lastName", title: "Apellidos", type: "text" },
   {
     path: "rol",
-    content: "Rol",
+    title: "Rol",
+    type: "text",
   },
 ];
 
@@ -15,7 +17,7 @@ const SuspenseTable = () => {
   const { data } = useUserList();
   const { mutate: destroyAll } = useBulkUsers();
   const { mutate: destroyUser } = useDestroyUser();
-
+  console.log("suspensed: ", cols);
   return (
     <TableLayout
       totalItems={data.total}

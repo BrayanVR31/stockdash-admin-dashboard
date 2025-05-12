@@ -1,17 +1,18 @@
 import { Table } from "@chakra-ui/react";
-import { HeadingCol } from "./Table";
+import { HeadCol } from "@/types/table";
 import { memo } from "react";
 
 interface Props {
-  fields: HeadingCol[];
+  fields: HeadCol[];
 }
 
 const HeaderList = memo(({ fields }: Props) => {
   return (
     <>
-      {fields.map(({ path, content }) => (
-        <Table.ColumnHeader key={path}>{content}</Table.ColumnHeader>
-      ))}
+      {fields.map(({ path, title, type }) => {
+        const keyPath = type === "avatar" ? path.join("_") : path;
+        return <Table.ColumnHeader key={keyPath}>{title}</Table.ColumnHeader>;
+      })}
     </>
   );
 });
