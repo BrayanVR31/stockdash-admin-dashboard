@@ -1,9 +1,6 @@
-import { HeadingCol } from "@/components/table";
+import { HeadCol } from "@/types/table";
 
-export const cols: HeadingCol[] = [
-  { path: "products", content: "Productos" },
-  { path: "user", content: "Usuario" },
-  { path: "status", content: "Status" },
-  { path: "totalAmount", content: "Cantidad total" },
-  { path: "Fecha", content: "saleDate" },
+export const cols: HeadCol[] = [
+  { path: "totalAmount", title: "Cantidad total", type: "text" },
+  { path: "status", title: "Status", type: "status" },
 ];
