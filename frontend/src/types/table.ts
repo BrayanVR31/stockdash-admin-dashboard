@@ -39,6 +39,13 @@ type ImageGroupCell = HeaderCell & {
   type: "image-group";
 };
 
+type ImageStackCell = HeaderCell & {
+  path: [arrayPath: string, nestedPath: string];
+  type: "stack-image";
+  nestedType: "single" | "multiple";
+  alternativePath: string;
+};
+
 export type HeadCol =
   | AvatarCell
   | TextCell
@@ -46,4 +53,5 @@ export type HeadCol =
   | ImagesCell
   | PriceCell
   | StatusCell
-  | ImageGroupCell;
+  | ImageGroupCell
+  | ImageStackCell;

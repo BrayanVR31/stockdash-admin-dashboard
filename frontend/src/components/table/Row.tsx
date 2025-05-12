@@ -12,6 +12,8 @@ import {
   HStack,
   defineStyle,
   Badge,
+  Stack,
+  AvatarGroup,
 } from "@chakra-ui/react";
 import { memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
@@ -126,6 +128,77 @@ const StatusCell = <T,>({ path, item }: StatusCellProps<T>) => {
   );
 };
 
+type StackImageCellProps<T> = Omit<
+  Extract<HeadCol, { type: "stack-image" }>,
+  "type" | "title"
+> & { item: T };
+
+const StackImageCell = <T,>({
+  path,
+  item,
+  nestedType,
+  alternativePath,
+}: StackImageCellProps<T>) => {
+  const [arrayPath, nestedPath] = path;
+  const arrayResults = _.get(item, arrayPath, []) as [];
+  return (
+    <Table.Cell>
+      {arrayResults.length === 0 && (
+        <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
+          <Avatar.Fallback>
+            <MdOutlineHideImage />
+          </Avatar.Fallback>
+          <Avatar.Image src={null as unknown as undefined} />
+        </Avatar.Root>
+      )}
+      {arrayResults.length >= 1 && (
+        <Stack>
+          <AvatarGroup colorPalette="blue" stacking="first-on-top">
+            {arrayResults.length >= 4
+              ? arrayResults.slice(0, 3).map((result, index) => {
+                  const altText = _.get(
+                    result,
+                    alternativePath,
+                    null,
+                  ) as unknown as string;
+                  if (nestedType === "multiple")
+                    return (
+                      <Avatar.Root
+                        key={`${_.get(result, `${nestedPath}[${index}].path`, altText) as string}`}
+                      >
+                        <Avatar.Fallback name={altText} />
+                        <Avatar.Image src={_.get(result, nestedPath)} />
+                      </Avatar.Root>
+                    );
+                })
+              : arrayResults.map((result, index) => {
+                  const altText = _.get(
+                    result,
+                    alternativePath,
+                    null,
+                  ) as unknown as string;
+                  if (nestedType === "multiple")
+                    return (
+                      <Avatar.Root
+                        key={`${_.get(result, `${nestedPath}[${index}].path`, altText) as string}`}
+                      >
+                        <Avatar.Fallback name={altText} />
+                        <Avatar.Image src={_.get(result, nestedPath)} />
+                      </Avatar.Root>
+                    );
+                })}
+            {arrayResults.length >= 4 && (
+              <Avatar.Root>
+                <Avatar.Fallback>+{arrayResults.length - 3}</Avatar.Fallback>
+              </Avatar.Root>
+            )}
+          </AvatarGroup>
+        </Stack>
+      )}
+    </Table.Cell>
+  );
+};
+
 const Row = memo(
   <T extends Record<string, unknown>>({
     fields,
@@ -155,32 +228,62 @@ const Row = memo(
             <Checkbox.Control />
           </Checkbox.Root>
         </Table.Cell>
-        {fields.map(({ path, type }) => {
-          if (type === "avatar")
+        {fields.map((field) => {
+          if (field.type === "avatar")
             return (
-              <AvatarCell item={item} key={`row-data-${path}`} path={path} />
+              <AvatarCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
             );
-          else if (type === "text")
+          else if (field.type === "text")
             return (
-              <Table.Cell key={`row-data-${path}`}>
-                {_.get(item, path, "Sin especificar") as string}
+              <Table.Cell key={`row-data-${field.path}`}>
+                {_.get(item, field.path, "Sin especificar") as string}
               </Table.Cell>
             );
-          else if (type === "badge")
+          else if (field.type === "badge")
             return (
-              <BadgeCell item={item} key={`row-data-${path}`} path={path} />
+              <BadgeCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
             );
-          else if (type === "images")
+          else if (field.type === "images")
             return (
-              <ImagesCell item={item} key={`row-data-${path}`} path={path} />
+              <ImagesCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
             );
-          else if (type === "price")
+          else if (field.type === "price")
             return (
-              <PriceCell item={item} key={`row-data-${path}`} path={path} />
+              <PriceCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
             );
-          else if (type === "status")
+          else if (field.type === "status")
             return (
-              <StatusCell item={item} key={`row-data-${path}`} path={path} />
+              <StatusCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
+            );
+          else if (field.type === "stack-image")
+            return (
+              <StackImageCell
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+                nestedType={field.nestedType}
+                alternativePath={field.alternativePath}
+              />
             );
         })}
         <Table.Cell>
