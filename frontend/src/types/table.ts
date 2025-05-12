@@ -32,10 +32,18 @@ type StatusCell = HeaderCell & {
   type: "status";
 };
 
+type ImageGroupCell = HeaderCell & {
+  path: {
+    arrayPath: string;
+  };
+  type: "image-group";
+};
+
 export type HeadCol =
   | AvatarCell
   | TextCell
   | BadgeCell
   | ImagesCell
   | PriceCell
-  | StatusCell;
+  | StatusCell
+  | ImageGroupCell;

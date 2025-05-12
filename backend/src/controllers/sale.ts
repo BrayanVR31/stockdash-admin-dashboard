@@ -1,20 +1,26 @@
-import { Sale, ISale } from "@/models";
-import { Controller, ServerError, JSONResponse } from "@/types";
-import { HTTP_STATUS_TYPES, HTTP_STATUS_CODES } from "@/enums";
+import { Sale } from "@/models";
+import { Controller } from "@/types";
+import { HTTP_STATUS_TYPES, getServerError } from "@/utils/statusCodes";
+import { handleServerError } from "@/utils/error";
 import { paginateDocs } from "@/utils";
 
-// Types
-type SaleController = Controller<JSONResponse<ISale>>;
-
 // Get all resources
-export const home: SaleController = async (request, response, next) => {
+export const home: Controller = async (request, response, next) => {
   try {
     // Pagination configuration
     const total = await Sale.countDocuments();
     const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
-    const results = await Sale.find().skip(skipDocument).limit(perPage);
-    return response.status(HTTP_STATUS_CODES.OK).json({
+    const results = await Sale.find()
+      .skip(skipDocument)
+      .limit(perPage)
+      .populate({
+        path: "products",
+      })
+      .populate({
+        path: "user",
+      });
+    return response.status(200).json({
       results,
       total,
       subtotal: results.length,
@@ -22,13 +28,8 @@ export const home: SaleController = async (request, response, next) => {
       per_page: perPage,
     });
   } catch (error) {
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
@@ -36,90 +37,57 @@ export const home: SaleController = async (request, response, next) => {
 export const create: Controller = async (request, response, next) => {
   try {
     const result = await Sale.create(request.body);
-    return response.status(HTTP_STATUS_CODES.CREATED).json(result);
+    return response.status(201).json(result);
   } catch (error) {
-    console.log(error)
-    const serverError = new Error("") as ServerError;
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
 // Edit a specific resource
 export const edit: Controller = async (request, response, next) => {
-  const serverError = new Error("") as ServerError;
   try {
     const result = await Sale.findById(request.params.id);
     if (!result) {
-      // Returns an error when the resource was not found it
-      serverError.title = "Document not found it";
-      serverError.message = HTTP_STATUS_TYPES.NOT_FOUND;
-      serverError.status = HTTP_STATUS_CODES.NOT_FOUND;
-      serverError.jsonKey = "error";
-      return next(serverError);
+      const [status, serverError] = getServerError(HTTP_STATUS_TYPES.NOT_FOUND);
+      return response.status(status).json(serverError);
     }
-    return response.status(HTTP_STATUS_CODES.OK).json(result);
+    return response.status(200).json(result);
   } catch (error) {
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
 // Update a specific resource
 export const update: Controller = async (request, response, next) => {
-  const serverError = new Error("") as ServerError;
   try {
     const { id } = request.params;
     const result = await Sale.findByIdAndUpdate(id, request.body, {
       returnDocument: "after",
     });
     if (!result) {
-      // Error when it's impossible to delete document
-      serverError.title = "Error updating document";
-      serverError.message = HTTP_STATUS_TYPES.NOT_FOUND;
-      serverError.status = HTTP_STATUS_CODES.NOT_FOUND;
-      serverError.jsonKey = "error";
-      return next(serverError);
+      const [status, serverError] = getServerError(HTTP_STATUS_TYPES.NOT_FOUND);
+      return response.status(status).json(serverError);
     }
-    return response.status(HTTP_STATUS_CODES.OK).json(result);
+    return response.status(200).json(result);
   } catch (error) {
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
 
 // Delete a specific resource
 export const destroy: Controller = async (request, response, next) => {
-  const serverError = new Error("") as ServerError;
   try {
     const isDeleted = await Sale.findByIdAndDelete(request.params.id);
     if (!isDeleted) {
-      // Error when it's impossible to delete document
-      serverError.title = "Document deletion error";
-      serverError.message = HTTP_STATUS_TYPES.NOT_FOUND;
-      serverError.status = HTTP_STATUS_CODES.NOT_FOUND;
-      serverError.jsonKey = "error";
-      return next(serverError);
+      const [status, serverError] = getServerError(HTTP_STATUS_TYPES.NOT_FOUND);
+      return response.status(status).json(serverError);
     }
-    return response.status(HTTP_STATUS_CODES.NO_CONTENT).end();
+    return response.status(204).end();
   } catch (error) {
-    // Default server error
-    serverError.title = "Internal server error";
-    serverError.message = HTTP_STATUS_TYPES.SERVER_ERROR;
-    serverError.status = HTTP_STATUS_CODES.SERVER_ERROR;
-    serverError.jsonKey = "error";
-    return next(serverError);
+    const [status, serverError] = handleServerError(error);
+    return response.status(status).json(serverError);
   }
 };
