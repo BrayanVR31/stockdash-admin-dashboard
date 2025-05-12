@@ -1,4 +1,4 @@
-import { Field, Fieldset, HStack, RadioGroup } from "@chakra-ui/react";
+import { Fieldset, HStack, RadioGroup } from "@chakra-ui/react";
 import { useFormContext, Controller } from "react-hook-form";
 import { SaleInputs } from "@/models/saleSchema";
 

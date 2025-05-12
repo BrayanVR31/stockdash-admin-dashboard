@@ -23,6 +23,7 @@ import { useTable } from "./useTable";
 import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
 import { HeadCol } from "@/types/table";
+import { useNavigate } from "react-router";
 
 interface Props<T> {
   fields: HeadCol[];
@@ -158,12 +159,18 @@ const StackImageCell = <T,>({
                   const altText = _.get(
                     result,
                     alternativePath,
-                    null,
+                    null
                   ) as unknown as string;
                   if (nestedType === "multiple")
                     return (
                       <Avatar.Root
-                        key={`${_.get(result, `${nestedPath}[${index}].path`, altText) as string}`}
+                        key={`${
+                          _.get(
+                            result,
+                            `${nestedPath}[${index}].path`,
+                            altText
+                          ) as string
+                        }`}
                       >
                         <Avatar.Fallback name={altText} />
                         <Avatar.Image src={_.get(result, nestedPath)} />
@@ -174,12 +181,18 @@ const StackImageCell = <T,>({
                   const altText = _.get(
                     result,
                     alternativePath,
-                    null,
+                    null
                   ) as unknown as string;
                   if (nestedType === "multiple")
                     return (
                       <Avatar.Root
-                        key={`${_.get(result, `${nestedPath}[${index}].path`, altText) as string}`}
+                        key={`${
+                          _.get(
+                            result,
+                            `${nestedPath}[${index}].path`,
+                            altText
+                          ) as string
+                        }`}
                       >
                         <Avatar.Fallback name={altText} />
                         <Avatar.Image src={_.get(result, nestedPath)} />
@@ -208,6 +221,7 @@ const Row = memo(
     const [open, setOpen] = useState(false);
     const id = _.get(item, pathKey) as string;
     const isSelected = selection.has(id);
+    const navigate = useNavigate();
     return (
       <Table.Row data-selected={isSelected ? "" : undefined}>
         <Table.Cell>
@@ -302,6 +316,9 @@ const Row = memo(
                       color: "fg.info",
                     }}
                     value={`edit-${id}`}
+                    onClick={() => {
+                      navigate(`./${id}/edit`);
+                    }}
                   >
                     <VscEdit />
                     Editar
@@ -374,7 +391,7 @@ const Row = memo(
         </Table.Cell>
       </Table.Row>
     );
-  },
+  }
 );
 
 export default Row;

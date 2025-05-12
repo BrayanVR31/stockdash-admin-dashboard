@@ -5,7 +5,7 @@ import RestrictRoute from "@/routes/RestrictRoute";
 import { AccountSettings } from "@/features/Account/pages";
 import { UserList, UserAdd } from "@/features/User/pages";
 import { ProductList, ProductForm } from "@/features/Product/pages";
-import { SaleAdd, SaleList } from "@/features/Sale/pages";
+import { SaleAdd, SaleList, SaleEdit } from "@/features/Sale/pages";
 import { SupplierList, SupplierAdd } from "@/features/Supplier/pages";
 import { ErrorBoundary } from "react-error-boundary";
 import errorApp from "@/components/error/errorApp";
@@ -56,6 +56,10 @@ const dashboardRoute: RouteObject = {
                 {
                   path: "create",
                   element: <SaleAdd />,
+                },
+                {
+                  path: ":id/edit",
+                  element: <SaleEdit />,
                 },
               ],
             },
