@@ -17,4 +17,9 @@ type BadgeCell = HeaderCell & {
   type: "badge";
 };
 
-export type HeadCol = AvatarCell | TextCell | BadgeCell;
+type ImagesCell = HeaderCell & {
+  path: [image: string, text: string];
+  type: "images";
+};
+
+export type HeadCol = AvatarCell | TextCell | BadgeCell | ImagesCell;

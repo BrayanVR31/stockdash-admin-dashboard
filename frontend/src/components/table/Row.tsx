@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
+import { MdOutlineHideImage } from "react-icons/md";
 import _ from "lodash";
 import { useTable } from "./useTable";
 import { FaTrash } from "react-icons/fa";
@@ -70,6 +71,31 @@ const BadgeCell = <T,>({ path, item }: BadgeCellProps<T>) => {
   );
 };
 
+type ImagesCellProps<T> = Omit<
+  Extract<HeadCol, { type: "images" }>,
+  "type" | "title"
+> & { item: T };
+
+const ImagesCell = <T,>({ path, item }: ImagesCellProps<T>) => {
+  const [image, text] = path;
+  const textName = _.get(item, text, "Anónimo") as string;
+  const imgSrc = _.get(item, image, null) as string[];
+  const firstImg = ([...imgSrc]?.shift()?.path || null) as string;
+  return (
+    <Table.Cell>
+      <HStack gap="4">
+        <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
+          <Avatar.Fallback>
+            <MdOutlineHideImage />
+          </Avatar.Fallback>
+          <Avatar.Image src={firstImg} />
+        </Avatar.Root>
+        <Text>{textName}</Text>
+      </HStack>
+    </Table.Cell>
+  );
+};
+
 const Row = memo(
   <T extends Record<string, unknown>>({
     fields,
@@ -113,6 +139,10 @@ const Row = memo(
           else if (type === "badge")
             return (
               <BadgeCell item={item} key={`row-data-${path}`} path={path} />
+            );
+          else if (type === "images")
+            return (
+              <ImagesCell item={item} key={`row-data-${path}`} path={path} />
             );
         })}
         <Table.Cell>
