@@ -7,6 +7,6 @@ export const cols: HeadCol[] = [
   {
     path: "rol",
     title: "Rol",
-    type: "text",
+    type: "badge",
   },
 ];

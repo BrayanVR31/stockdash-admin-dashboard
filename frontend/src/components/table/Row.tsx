@@ -11,6 +11,7 @@ import {
   Avatar,
   HStack,
   defineStyle,
+  Badge,
 } from "@chakra-ui/react";
 import { memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
@@ -55,6 +56,20 @@ const AvatarCell = <T,>({ path, item }: AvatarCellProps<T>) => {
   );
 };
 
+type BadgeCellProps<T> = Omit<
+  Extract<HeadCol, { type: "badge" }>,
+  "type" | "title"
+> & { item: T };
+
+const BadgeCell = <T,>({ path, item }: BadgeCellProps<T>) => {
+  const text = _.get(item, path, "Sin definir") as string;
+  return (
+    <Table.Cell>
+      <Badge colorPalette="blue">{text}</Badge>
+    </Table.Cell>
+  );
+};
+
 const Row = memo(
   <T extends Record<string, unknown>>({
     fields,
@@ -94,6 +109,10 @@ const Row = memo(
               <Table.Cell key={`row-data-${path}`}>
                 {_.get(item, path, "Sin especificar") as string}
               </Table.Cell>
+            );
+          else if (type === "badge")
+            return (
+              <BadgeCell item={item} key={`row-data-${path}`} path={path} />
             );
         })}
         <Table.Cell>

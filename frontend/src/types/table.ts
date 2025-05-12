@@ -12,4 +12,9 @@ type TextCell = HeaderCell & {
   type: "text";
 };
 
-export type HeadCol = AvatarCell | TextCell;
+type BadgeCell = HeaderCell & {
+  path: string;
+  type: "badge";
+};
+
+export type HeadCol = AvatarCell | TextCell | BadgeCell;
