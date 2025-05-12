@@ -22,4 +22,14 @@ type ImagesCell = HeaderCell & {
   type: "images";
 };
 
-export type HeadCol = AvatarCell | TextCell | BadgeCell | ImagesCell;
+type PriceCell = HeaderCell & {
+  path: string;
+  type: "price";
+};
+
+export type HeadCol =
+  | AvatarCell
+  | TextCell
+  | BadgeCell
+  | ImagesCell
+  | PriceCell;

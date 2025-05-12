@@ -96,6 +96,20 @@ const ImagesCell = <T,>({ path, item }: ImagesCellProps<T>) => {
   );
 };
 
+type PriceCellProps<T> = Omit<
+  Extract<HeadCol, { type: "price" }>,
+  "type" | "title"
+> & { item: T };
+
+const PriceCell = <T,>({ path, item }: PriceCellProps<T>) => {
+  const price = _.get(item, path, 0) as string;
+  return (
+    <Table.Cell>
+      <Text>$ {price}</Text>
+    </Table.Cell>
+  );
+};
+
 const Row = memo(
   <T extends Record<string, unknown>>({
     fields,
@@ -143,6 +157,10 @@ const Row = memo(
           else if (type === "images")
             return (
               <ImagesCell item={item} key={`row-data-${path}`} path={path} />
+            );
+          else if (type === "price")
+            return (
+              <PriceCell item={item} key={`row-data-${path}`} path={path} />
             );
         })}
         <Table.Cell>
