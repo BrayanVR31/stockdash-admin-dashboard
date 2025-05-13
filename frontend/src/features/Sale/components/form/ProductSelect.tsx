@@ -41,6 +41,7 @@ const ProductSelect = () => {
             onInteractOutside={() => field.onBlur()}
             disabled={(data?.length || 0) <= 0}
             collection={collection}
+            positioning={{ flip: false }}
           >
             <Select.HiddenSelect />
             <Select.Control>

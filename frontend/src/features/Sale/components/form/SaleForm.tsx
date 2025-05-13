@@ -65,7 +65,6 @@ const SaleForm = ({ mode }: SaleFormProps) => {
         as="form"
         mx="auto"
         maxW="5xl"
-        zIndex="base"
       >
         <Card.Header
           mx="auto"

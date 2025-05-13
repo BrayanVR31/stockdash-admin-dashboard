@@ -9,5 +9,5 @@ export const cols: HeadCol[] = [
     alternativePath: "name",
   },
   { path: "totalAmount", title: "Cantidad total", type: "text" },
-  { path: "status", title: "Status", type: "status" },
+  { path: "status", title: "Status", type: "sale-status" },
 ];

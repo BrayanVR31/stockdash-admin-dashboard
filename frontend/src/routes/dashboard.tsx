@@ -9,6 +9,7 @@ import { SaleAdd, SaleList, SaleEdit } from "@/features/Sale/pages";
 import { SupplierList, SupplierAdd } from "@/features/Supplier/pages";
 import { ErrorBoundary } from "react-error-boundary";
 import errorApp from "@/components/error/errorApp";
+import Dashboard from "@/features/home/pages/Dashboard";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -20,7 +21,7 @@ const dashboardRoute: RouteObject = {
         {
           element: <RestrictRoute />,
           children: [
-            { index: true, element: <div>Dashboard</div> },
+            { index: true, element: <Dashboard /> },
             {
               path: "account",
               element: <AccountSettings />,

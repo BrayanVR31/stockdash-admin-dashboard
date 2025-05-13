@@ -9,7 +9,6 @@ const Container = ({ children }: Props) => {
   return (
     <Stack
       rounded="md"
-      h="490px"
       mx="auto"
       maxW="6xl"
       bg={{

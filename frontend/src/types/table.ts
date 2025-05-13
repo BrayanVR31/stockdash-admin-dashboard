@@ -46,6 +46,11 @@ type ImageStackCell = HeaderCell & {
   alternativePath: string;
 };
 
+type SaleStatusCell = HeaderCell & {
+  path: string;
+  type: "sale-status";
+};
+
 export type HeadCol =
   | AvatarCell
   | TextCell
@@ -54,4 +59,5 @@ export type HeadCol =
   | PriceCell
   | StatusCell
   | ImageGroupCell
-  | ImageStackCell;
+  | ImageStackCell
+  | SaleStatusCell;

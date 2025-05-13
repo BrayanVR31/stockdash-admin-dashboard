@@ -6,7 +6,7 @@ const Header = () => {
     <>
       <Breadcrumbs />
       <Text mt="2" fontSize="lg" fontWeight="semibold">
-        Gestión de productos
+        Gestión de ventas
       </Text>
     </>
   );

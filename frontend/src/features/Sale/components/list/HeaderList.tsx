@@ -8,8 +8,10 @@ import {
 } from "@chakra-ui/react";
 import { NavLink } from "react-router";
 import { GoPlus, GoSearch } from "react-icons/go";
+import { useTable } from "@/components/table";
 
 const HeaderList = () => {
+  const { totalItems } = useTable();
   return (
     <Stack
       align="center"
@@ -28,9 +30,9 @@ const HeaderList = () => {
           fontWeight="semibold"
           fontSize="md"
         >
-          Todos los productos
+          Todos los ventas
           <Badge ml="1" variant="surface" colorPalette="purple">
-            100
+            {totalItems}
           </Badge>
         </Text>
       </Stack>

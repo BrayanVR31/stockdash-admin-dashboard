@@ -55,20 +55,36 @@ export const useDestroySale = () => {
   const { currentPage, perPage } = useTable();
   return useMutation({
     mutationFn: removeSaleById,
-    onSuccess: () =>
+    onSuccess: () => {
       client.invalidateQueries({
         queryKey: ["sales", { currentPage, perPage }],
-      }),
+      });
+      toaster.create({
+        title: "Venta eliminada correctamente",
+        description:
+          "La venta ha sido eliminado de forma satisfactoria del sistema.",
+        type: "success",
+      });
+    },
   });
 };
 
 export const useUpdateSale = () => {
   const { currentPage, perPage } = useTable();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: updateSaleById,
-    onSuccess: () =>
+    onSuccess: () => {
       client.invalidateQueries({
         queryKey: ["sales", { currentPage, perPage }],
-      }),
+      });
+      toaster.create({
+        title: "Venta actualizada correctamente",
+        description:
+          "La información de la venta ha sido actualizada exitosamente.",
+        type: "success",
+      });
+      navigate("..");
+    },
   });
 };

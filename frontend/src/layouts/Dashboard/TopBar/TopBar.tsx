@@ -17,6 +17,10 @@ export const TopBar = () => {
       }}
       borderBottomWidth="1.5px"
       data-container="top-bar"
+      position="sticky"
+      top="0"
+      left="0"
+      zIndex="banner"
     >
       <HStack>
         <Flex justify="flex-end" p={2}>

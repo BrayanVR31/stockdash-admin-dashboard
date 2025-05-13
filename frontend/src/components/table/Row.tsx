@@ -24,6 +24,7 @@ import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
 import { HeadCol } from "@/types/table";
 import { useNavigate } from "react-router";
+import { SaleStatus } from "./cells";
 
 interface Props<T> {
   fields: HeadCol[];
@@ -296,6 +297,14 @@ const Row = memo(
                 path={field.path}
                 nestedType={field.nestedType}
                 alternativePath={field.alternativePath}
+              />
+            );
+          else if (field.type === "sale-status")
+            return (
+              <SaleStatus
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
               />
             );
         })}

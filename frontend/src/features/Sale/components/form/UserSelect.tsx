@@ -40,6 +40,7 @@ const UserSelect = () => {
               console.log(value);
               field.onChange(value);
             }}
+            positioning={{ flip: false }}
             onInteractOutside={() => field.onBlur()}
             disabled={isError || (data?.length || 0) <= 0}
             collection={collection}

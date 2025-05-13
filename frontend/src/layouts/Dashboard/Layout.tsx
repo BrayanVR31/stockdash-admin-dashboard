@@ -62,15 +62,14 @@ const Layout = () => {
   }, [location.pathname]);
   return (
     <SidebarProvider breakpoint={85}>
-      <Flex css={cssRules} height="100vh" overflow="hidden">
+      <Flex css={cssRules} h="100vh" overflow="hidden">
         <Sidebar />
-        <Flex flex="1" direction="column">
+        <Flex overflow="auto" position="relative" flex="1" direction="column">
           <TopBar />
           <Box
+            p="10"
+            flex="1"
             as="main"
-            p={6}
-            overflowY="auto"
-            height="full"
             bg={{
               base: "gray.200",
               _dark: "gray.950",
