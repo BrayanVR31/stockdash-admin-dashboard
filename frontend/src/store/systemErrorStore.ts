@@ -7,7 +7,9 @@ import serverError from "@/assets/error/serverError.svg";
 export type SysError =
   | "EXPIRED_SESSION"
   | "ROL_FORBIDDEN"
-  | "INTERNAL_SERVER_ERROR";
+  | "INTERNAL_SERVER_ERROR"
+  | "INVALID_EMAIL"
+  | "INVALID_PASSWORD";
 
 export type ResourceError = {
   type: SysError;
@@ -23,6 +25,8 @@ const getImgError = (error: SysError) => {
     EXPIRED_SESSION: expiredSvg,
     ROL_FORBIDDEN: securitySvg,
     INTERNAL_SERVER_ERROR: serverError,
+    INVALID_EMAIL: "",
+    INVALID_PASSWORD: "",
   };
   return imgErrors[error];
 };
@@ -32,6 +36,8 @@ const getStatusError = (error: SysError) => {
     EXPIRED_SESSION: 401,
     ROL_FORBIDDEN: 403,
     INTERNAL_SERVER_ERROR: 500,
+    INVALID_EMAIL: 401,
+    INVALID_PASSWORD: 401,
   };
   return status[error];
 };
@@ -43,6 +49,8 @@ const getMessageError = (error: SysError) => {
       "Acceso restringido. Su rol actual no autoriza el uso de esta sección.",
     INTERNAL_SERVER_ERROR:
       "Lamentamos informarle que ha ocurrido un problema al procesar su solicitud",
+    INVALID_EMAIL: "El correo eléctronico no existe.",
+    INVALID_PASSWORD: "La contraseña de usuario es incorrecta.",
   };
   return status[error];
 };
@@ -52,6 +60,8 @@ const getTitleError = (error: SysError) => {
     EXPIRED_SESSION: "",
     ROL_FORBIDDEN: "Página no autorizada",
     INTERNAL_SERVER_ERROR: "Error del servidor",
+    INVALID_EMAIL: "",
+    INVALID_PASSWORD: "",
   };
   return imgErrors[error];
 };

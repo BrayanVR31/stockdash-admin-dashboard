@@ -9,43 +9,16 @@ import useSystemErrorStore from "@/store/systemErrorStore";
 
 const client = getQueryClient();
 
-interface FormattedError {
-  key: "email" | "password";
-  message: string;
-}
-
-type ErrorKeys = "INVALID_PASSWORD" | "INVALID_EMAIL";
-
-type MatchError = Record<ErrorKeys, FormattedError>;
-
-const matchError: MatchError = {
-  INVALID_PASSWORD: {
-    key: "password",
-    message: "La contraseña de usuario es incorrecta.",
-  },
-  INVALID_EMAIL: {
-    key: "email",
-    message: "El correo eléctronico no existe.",
-  },
-};
-
 export const useSignIn = () => {
-  const [matchedError, setMatchedError] = useState<FormattedError>();
+  const resetSysErrors = useSystemErrorStore((state) => state.resetSysErrors);
   return {
     ...useMutation({
       mutationFn: login,
-      onError: (error) => {
-        if (error instanceof AxiosError) {
-          const resError = error?.response?.data;
-          const keyError = resError?.error?.type as ErrorKeys;
-          setMatchedError(matchError[keyError]);
-        }
-      },
       onSuccess: (data) => {
         memoryToken.refresh = data.token;
+        resetSysErrors();
       },
     }),
-    matchedError,
   };
 };
 

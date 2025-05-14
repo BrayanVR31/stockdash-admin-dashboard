@@ -8,7 +8,7 @@ abstract class ProductSeeder extends Seeder {
     if (!this.instance) {
       this.instance = new ProductFactory();
     }
-    await this.instance.create({ count: 120 });
+    await this.instance.create({ count: 5_500 });
   }
 
   public static async down() {

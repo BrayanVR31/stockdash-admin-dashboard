@@ -23,3 +23,23 @@ export type GroupedProductsByCategory = {
   count: number;
   category: string;
 };
+
+export type TypeStatus = "canceled" | "pending" | "completed";
+
+type StatusCount = {
+  status: TypeStatus;
+  count: number;
+};
+
+export type ChartStatus = {
+  completed: number;
+  canceled: number;
+  pending: number;
+  month: string;
+};
+
+export type SaleChart = {
+  totalSales: number;
+  statusCounts: StatusCount[];
+  month: number;
+};

@@ -3,6 +3,7 @@ import {
   WeeklySales,
   WeeklyStatusProducts,
   GroupedProductsByCategory,
+  SaleChart,
 } from "@/types/analytic";
 
 export const getWeeklySale = async () => {
@@ -22,6 +23,14 @@ export const getGroupedProductsByCategory = async () => {
   return (
     await stockdashInstance.get<GroupedProductsByCategory[]>(
       "/analytics/group-products-by-category",
+    )
+  ).data;
+};
+
+export const getSaleChartByYear = async (year: string) => {
+  return (
+    await stockdashInstance.get<SaleChart[]>(
+      `/analytics/sale-chart-by-year?year=${year}`,
     )
   ).data;
 };

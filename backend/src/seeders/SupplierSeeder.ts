@@ -7,7 +7,7 @@ abstract class SupplierSeeder {
     if (!this.instance) {
       this.instance = new SupplierFactory();
     }
-    await this.instance.create({ count: 120 });
+    await this.instance.create({ count: 1_000 });
   }
 
   public static async down() {

@@ -13,12 +13,7 @@ import {
 import { ColorModeButton } from "@/components/ui/color-mode";
 import { FcGoogle } from "react-icons/fc";
 import { FiLogIn } from "react-icons/fi";
-import {
-  useForm,
-  SubmitHandler,
-  useWatch,
-  FormProvider,
-} from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -34,9 +29,9 @@ export default function LoginPage() {
   });
   const { mutate, matchedError, status, isPending } = useSignIn();
   const onSubmit: SubmitHandler<UserInputs> = (user) => {
-    console.log(user);
     mutate(user);
   };
+
   const setIsLogged = useAuthenticationStore((state) => state.setIsLogged);
   const navigate = useNavigate();
 

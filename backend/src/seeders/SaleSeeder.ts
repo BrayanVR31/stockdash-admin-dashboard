@@ -7,7 +7,7 @@ abstract class SaleSeeder {
     if (!this.instance) {
       this.instance = new SaleFactory();
     }
-    await this.instance.create({ count: 120 });
+    await this.instance.create({ count: 5_000 });
   }
 
   public static async down() {

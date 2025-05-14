@@ -76,6 +76,11 @@ class ProductFactory extends Factory<IProduct> {
       images: faker.helpers.arrayElements(this.images),
       suppliers: randSuppliers,
       categories: randCategories,
+      createdAt: faker.helpers.arrayElement([
+        faker.date.past(),
+        faker.date.recent(),
+        faker.date.future(),
+      ]),
     };
   }
 

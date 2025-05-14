@@ -7,7 +7,7 @@ abstract class PurchaseSeeder {
     if (!this.instance) {
       this.instance = new PurchaseFactory();
     }
-    await this.instance.create({ count: 120 });
+    await this.instance.create({ count: 620 });
   }
 
   public static async down() {

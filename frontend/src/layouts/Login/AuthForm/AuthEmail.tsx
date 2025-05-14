@@ -2,14 +2,17 @@ import { Field, InputGroup, Input } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 import { MdOutlineEmail } from "react-icons/md";
 import { UserInputs } from "../userSchema";
+import useSystemErrorStore from "@/store/systemErrorStore";
 
 const AuthEmail = () => {
   const {
     register,
     formState: { errors },
   } = useFormContext<UserInputs>();
+  const sysErrors = useSystemErrorStore((state) => state.errors);
+  const emailError = sysErrors.find((e) => e.type === "INVALID_EMAIL");
   return (
-    <Field.Root mb={4} required invalid={!!errors.email}>
+    <Field.Root mb={4} required invalid={!!errors.email || !!emailError}>
       <Field.Label>
         Email
         <Field.RequiredIndicator />
@@ -29,7 +32,9 @@ const AuthEmail = () => {
           }}
         />
       </InputGroup>
-      <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
+      <Field.ErrorText>
+        {errors.email?.message || emailError?.message}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

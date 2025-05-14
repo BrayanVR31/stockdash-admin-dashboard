@@ -18,7 +18,7 @@ class PurchaseFactory extends Factory<IPurchase> {
         {},
         {
           _id: 1,
-        }
+        },
       ).lean();
       this.products = productDocs.map((doc) => doc._id);
     }
@@ -27,7 +27,7 @@ class PurchaseFactory extends Factory<IPurchase> {
         {},
         {
           _id: 1,
-        }
+        },
       ).lean();
       this.user = userDoc._id;
     }
@@ -40,7 +40,7 @@ class PurchaseFactory extends Factory<IPurchase> {
         {},
         {
           _id: 1,
-        }
+        },
       ).lean();
       this.supplier = supplierDoc._id;
     }
@@ -55,7 +55,11 @@ class PurchaseFactory extends Factory<IPurchase> {
       }),
       totalQuantity: faker.number.int({ min: 1, max: 10 }),
       totalPrice: faker.number.float({ min: 100, max: 1000 }),
-      purchaseDate: faker.date.past(),
+      purchaseDate: faker.helpers.arrayElement([
+        faker.date.past(),
+        faker.date.recent(),
+        faker.date.future(),
+      ]),
       ticketImages: faker.helpers.arrayElements(this.images, {
         min: 1,
         max: 5,

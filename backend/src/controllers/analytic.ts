@@ -135,3 +135,55 @@ export const productGroupByCategories: Controller = async (req, res) => {
     return res.status(status).json(jsonRes);
   }
 };
+
+export const saleChartByYear: Controller = async (req, res) => {
+  try {
+    const { year = 2024 } = req.query;
+    const sales = await Sale.aggregate([
+      {
+        $match: {
+          saleDate: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$saleDate" },
+            status: "$status",
+          },
+          totalSales: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.month",
+          totalSales: { $sum: "$totalSales" },
+          statusCounts: {
+            $push: {
+              status: "$_id.status",
+              count: "$totalSales",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          month: "$_id",
+          totalSales: 1,
+          statusCounts: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: { month: 1 },
+      },
+    ]);
+    return res.status(200).json(sales);
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
