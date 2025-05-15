@@ -7,6 +7,7 @@ import {
   getSalesYear,
   getGroupProductsByCategory,
   getPurchasePriceHistory,
+  getOverviewCount,
 } from "@/services/analytic";
 import _ from "lodash";
 import { ChartStatus } from "@/types/analytic";
@@ -104,5 +105,12 @@ export const useAnnualPurchasePrice = () => {
   return useSuspenseQuery({
     queryKey: ["annual-purchase-price"],
     queryFn: getPurchasePriceHistory,
+  });
+};
+
+export const useOverviewCount = () => {
+  return useSuspenseQuery({
+    queryKey: ["overview-count"],
+    queryFn: getOverviewCount,
   });
 };

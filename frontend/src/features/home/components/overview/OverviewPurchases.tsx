@@ -1,12 +1,12 @@
 import OverviewCard from "./OverviewCard";
-import { useProductList } from "@/hooks/useProduct";
+import { useOverviewCount } from "@/hooks/useAnalytic";
 
 const OverviewPurchases = () => {
-  const { data } = useProductList();
+  const { data } = useOverviewCount();
   return (
     <OverviewCard
       type="purchases"
-      value={data.total}
+      value={data.purchase.allCount}
       title="Cantidad de compras"
     />
   );

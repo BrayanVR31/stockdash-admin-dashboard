@@ -6,6 +6,7 @@ import {
   SaleChart,
   GroupProductByCategory,
   PurchasePriceHistory,
+  OverviewCount,
 } from "@/types/analytic";
 
 export const getWeeklySale = async () => {
@@ -56,5 +57,11 @@ export const getPurchasePriceHistory = async () => {
     await stockdashInstance.get<PurchasePriceHistory>(
       `/analytics/annual-purchases`,
     )
+  ).data;
+};
+
+export const getOverviewCount = async () => {
+  return (
+    await stockdashInstance.get<OverviewCount>(`/analytics/count-overview`)
   ).data;
 };

@@ -1,6 +1,8 @@
-import { Grid, GridItem, VStack, Flex } from "@chakra-ui/react";
+import { Grid, GridItem, VStack, Flex, Box } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
 import { SkeletonOverview } from "../components/overview";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import { ErrorBoundary } from "react-error-boundary";
 
 const WeeklySales = lazy(() => import("../components/WeeklySales"));
 const ActiveProducts = lazy(() => import("../components/ActiveProducts"));
@@ -44,47 +46,55 @@ const PurchasePricesDonut = lazy(
 
 const Dashboard = () => {
   return (
-    <Grid p="6" templateColumns="repeat(3, 1fr)" alignItems="start" gap={4}>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewProducts />
-      </Suspense>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewCategories />
-      </Suspense>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewSales />
-      </Suspense>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewSuppliers />
-      </Suspense>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewPurchases />
-      </Suspense>
-      <Suspense fallback={<SkeletonOverview />}>
-        <OverviewUsers />
-      </Suspense>
-      <GridItem colSpan={2}>
-        <Suspense fallback={<SkeletonOverview />}>
-          <SaleChartByYear />
-        </Suspense>
-      </GridItem>
-      <Flex direction="column" gap={4} h="100%">
-        <Suspense fallback={<SkeletonOverview />}>
-          <ActiveProducts />
-        </Suspense>
-        <Suspense fallback={<SkeletonOverview />}>
-          <WeeklySales />
-        </Suspense>
-        <Suspense fallback={<SkeletonOverview />}>
-          <PurchasePricesDonut />
-        </Suspense>
-      </Flex>
-      <GridItem colSpan={3}>
-        <Suspense fallback={<SkeletonOverview />}>
-          <ProductGroupByCategories />
-        </Suspense>
-      </GridItem>
-    </Grid>
+    <>
+      <ErrorBoundary fallback="error to load">
+        <Box px="6">
+          <Breadcrumbs />
+        </Box>
+        <Grid p="6" templateColumns="repeat(3, 1fr)" alignItems="start" gap={4}>
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewProducts />
+          </Suspense>
+
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewCategories />
+          </Suspense>
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewSales />
+          </Suspense>
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewSuppliers />
+          </Suspense>
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewPurchases />
+          </Suspense>
+          <Suspense fallback={<SkeletonOverview />}>
+            <OverviewUsers />
+          </Suspense>
+          <GridItem colSpan={2}>
+            <Suspense fallback={<SkeletonOverview />}>
+              <SaleChartByYear />
+            </Suspense>
+          </GridItem>
+          <Flex direction="column" gap={4} h="100%">
+            <Suspense fallback={<SkeletonOverview />}>
+              <ActiveProducts />
+            </Suspense>
+            <Suspense fallback={<SkeletonOverview />}>
+              <WeeklySales />
+            </Suspense>
+            <Suspense fallback={<SkeletonOverview />}>
+              <PurchasePricesDonut />
+            </Suspense>
+          </Flex>
+          <GridItem colSpan={3}>
+            <Suspense fallback={<SkeletonOverview />}>
+              <ProductGroupByCategories />
+            </Suspense>
+          </GridItem>
+        </Grid>
+      </ErrorBoundary>
+    </>
   );
 };
 

@@ -1,12 +1,12 @@
 import OverviewCard from "./OverviewCard";
-import { useCategoryList } from "@/hooks/useCategory";
+import { useOverviewCount } from "@/hooks/useAnalytic";
 
 const OverviewCategories = () => {
-  const { data } = useCategoryList();
+  const { data } = useOverviewCount();
   return (
     <OverviewCard
       type="categories"
-      value={data.total}
+      value={data.category.allCount}
       title="Cantidad de categorías"
     />
   );

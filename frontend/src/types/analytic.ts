@@ -59,3 +59,9 @@ export type PurchasePriceHistory = {
   allPurchasePrice: number;
   history: PriceHistory[];
 };
+
+type Count = {
+  allCount: number;
+  activeCount?: number;
+};
+export type OverviewCount = Record<string, Count>;

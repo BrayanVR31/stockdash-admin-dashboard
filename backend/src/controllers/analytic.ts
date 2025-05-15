@@ -4,6 +4,9 @@ import { handleServerError } from "@/utils/error";
 import { Sale } from "@/models/sale";
 import { Product } from "@/models/product";
 import { Purchase } from "@/models/purchase";
+import { Category } from "@/models/category";
+import { Supplier } from "@/models/supplier";
+import { User } from "@/models/user";
 
 export const weeklySales: Controller = async (req, res) => {
   try {
@@ -470,6 +473,44 @@ export const getAnnualPurchases: Controller = async (req, res) => {
     return res
       .status(200)
       .json({ allPurchasePrice, history: purchasePriceHistory });
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
+
+export const getCountOverview: Controller = async (req, res) => {
+  try {
+    const productCount = await Product.countDocuments();
+    const categoryCount = await Category.distinct("name").countDocuments();
+    const saleCount = await Sale.distinct("name").countDocuments();
+    const supplierCount = await Supplier.countDocuments();
+    const purchaseCount = await Purchase.countDocuments();
+    const userCount = await User.countDocuments();
+    const activeProductCount = await Product.find({
+      status: true,
+    }).countDocuments();
+    return res.status(200).json({
+      product: {
+        allCount: productCount,
+        activeCount: activeProductCount,
+      },
+      category: {
+        allCount: categoryCount,
+      },
+      sale: {
+        allCount: saleCount,
+      },
+      supplier: {
+        allCount: supplierCount,
+      },
+      purchase: {
+        allCount: purchaseCount,
+      },
+      user: {
+        allCount: userCount,
+      },
+    });
   } catch (e) {
     const [status, jsonRes] = handleServerError(e);
     return res.status(status).json(jsonRes);

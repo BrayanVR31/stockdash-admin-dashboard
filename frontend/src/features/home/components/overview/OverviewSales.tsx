@@ -1,10 +1,14 @@
 import OverviewCard from "./OverviewCard";
-import { useSaleList } from "@/hooks/useSale";
+import { useOverviewCount } from "@/hooks/useAnalytic";
 
 const OverviewSales = () => {
-  const { data } = useSaleList();
+  const { data } = useOverviewCount();
   return (
-    <OverviewCard type="sales" value={data.total} title="Cantidad de ventas" />
+    <OverviewCard
+      type="sales"
+      value={data.sale.allCount}
+      title="Cantidad de ventas"
+    />
   );
 };
 

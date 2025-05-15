@@ -8,6 +8,7 @@ import {
   getCategoriesByProduct,
   getProductBarGroupByCategories,
   getAnnualPurchases,
+  getCountOverview,
 } from "@/controllers/analytic";
 
 const analyticRouter = Router();
@@ -38,6 +39,10 @@ analyticRouter.get(
 analyticRouter.get(
   `${commonPath}/annual-purchases`,
   getAnnualPurchases as RequestHandler,
+);
+analyticRouter.get(
+  `${commonPath}/count-overview`,
+  getCountOverview as RequestHandler,
 );
 
 export { analyticRouter };

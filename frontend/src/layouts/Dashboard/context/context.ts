@@ -8,6 +8,6 @@ type SidebarState = {
 export type SidebarCtx = SidebarState;
 
 export const SidebarContext = createContext<SidebarCtx>({
-  isCollapsed: false,
+  isCollapsed: true,
   sidebarRef: null,
 });

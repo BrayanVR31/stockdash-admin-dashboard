@@ -26,6 +26,7 @@ const SaleYearSelect = () => {
       }}
       collection={collection}
       size="sm"
+      defaultValue={["2025"]}
     >
       <Select.HiddenSelect />
       <Select.Label>Selecciona el año</Select.Label>

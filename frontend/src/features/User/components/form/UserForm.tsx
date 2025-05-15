@@ -59,6 +59,10 @@ const UserForm = ({ mode, user }: UserFormProps) => {
         as="form"
         mx="auto"
         maxW="5xl"
+        variant={{
+          base: "elevated",
+          _dark: "subtle",
+        }}
       >
         <Card.Header
           mx="auto"
@@ -94,10 +98,10 @@ const UserForm = ({ mode, user }: UserFormProps) => {
           justifyContent="end"
         >
           <ButtonGroup>
-            <Button asChild>
+            <Button variant="solid" asChild>
               <NavLink to="..">Cancelar</NavLink>
             </Button>
-            <Button colorPalette="purple" type="submit">
+            <Button colorPalette="blue" type="submit">
               Guardar
             </Button>
           </ButtonGroup>
