@@ -10,6 +10,8 @@ import { SupplierList, SupplierAdd } from "@/features/Supplier/pages";
 import { ErrorBoundary } from "react-error-boundary";
 import errorApp from "@/components/error/errorApp";
 import Dashboard from "@/features/home/pages/Dashboard";
+import { PurchaseList } from "@/features/Purchase/pages/PurchaseList";
+import { PurchaseForm } from "@/features/Purchase/pages/PurchaseForm";
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
@@ -47,6 +49,16 @@ const dashboardRoute: RouteObject = {
                 {
                   path: "create",
                   element: <ProductForm />,
+                },
+              ],
+            },
+            {
+              path: "purchases",
+              children: [
+                { index: true, element: <PurchaseList /> },
+                {
+                  path: "create",
+                  element: <PurchaseForm />,
                 },
               ],
             },

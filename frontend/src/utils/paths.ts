@@ -23,6 +23,12 @@ export const getPrevPath: PrevPathFn = (pathname, startPath) => {
   return splitPaths?.[startIndex - 1] || "";
 };
 
-export const extractPaths = (pathname: string): string[] => {
-  return pathname.split("/").filter((path) => path);
+export const extractPaths = (
+  pathname: string,
+  exclude: string[] = [],
+): string[] => {
+  const paths = pathname.split("/").filter((path) => path);
+  if (exclude.length > 0)
+    return paths.filter((path) => !exclude.includes(path));
+  return paths;
 };

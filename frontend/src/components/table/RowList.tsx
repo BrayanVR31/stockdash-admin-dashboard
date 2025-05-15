@@ -1,35 +1,82 @@
-import { memo } from "react";
+import { ListChildComponentProps, FixedSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import _ from "lodash";
-import Row from "./Row";
-import { useTable } from "./useTable";
 import { HeadCol } from "@/types/table";
+import Row from "./Row";
+import { Box, Flex } from "@chakra-ui/react";
 
-interface Props<T> {
+type RowListProps<T> = {
+  onDeleteItem: (id: string) => void;
   data: T[];
   fields: HeadCol[];
-  onDeleteItem: (id: string) => void;
-}
+};
 
-const RowList = memo(
-  <T extends Record<string, unknown>>({
+const VirtualizedRow =
+  <T extends Record<string, any>>({
     data,
     fields,
     onDeleteItem,
-  }: Props<T>) => {
-    const { pathKey } = useTable();
+  }: RowListProps<T>) =>
+  ({ index, style }: ListChildComponentProps) => {
+    const id = _.get(data[index], "_id") as string;
     return (
-      <>
-        {data.map((item, index) => (
-          <Row
-            onDeleteItem={() => onDeleteItem(_.get(item, pathKey) as string)}
-            key={`row-${index}`}
-            item={item}
-            fields={fields}
-          />
-        ))}
-      </>
+      <Row
+        style={style}
+        onDeleteItem={() => onDeleteItem(id)}
+        fields={fields}
+        item={data[index]}
+      />
     );
-  },
-);
+  };
+
+const RowList = <T extends Record<string, any>>(props: RowListProps<T>) => {
+  return (
+    <Flex
+      bg={{
+        base: "white",
+        _dark: "black",
+      }}
+      w="full"
+      minH="md"
+    >
+      <Flex flex="1 1 auto" asChild>
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeList
+              itemSize={75}
+              width={width}
+              height={height}
+              itemCount={props.data.length}
+            >
+              {VirtualizedRow(props)}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
+      </Flex>
+    </Flex>
+  );
+};
 
 export default RowList;
+
+/**
+ * 
+ * 
+ * 
+ * 
+ 
+<Box style={{ flex: "1 1 auto" }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeList
+              itemSize={35}
+              width={width}
+              height={height}
+              itemCount={props.data.length}
+            >
+              {VirtualizedRow(props)}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
+      </Box>
+ */

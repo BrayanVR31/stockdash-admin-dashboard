@@ -6,9 +6,24 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { Controller, useFormContext } from "react-hook-form";
+import { FixedSizeList as List, ListChildComponentProps } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import _ from "lodash";
 import { SaleInputs } from "@/models/saleSchema";
 import { useUsers } from "@/hooks/useUser";
 import { useMemo } from "react";
+
+const VirualizedItem =
+  <T extends unknown[]>(data: T) =>
+  ({ index, style }: ListChildComponentProps) => {
+    const email = _.get(data[index], "email", "");
+    return (
+      <Select.Item truncate style={style} item={data[index]}>
+        {email}
+        <Select.ItemIndicator />
+      </Select.Item>
+    );
+  };
 
 const UserSelect = () => {
   const { data, isPending, isSuccess, isError } = useUsers();
@@ -60,13 +75,19 @@ const UserSelect = () => {
             <Portal>
               <Select.Positioner>
                 {!isError && (
-                  <Select.Content>
-                    {collection.items.map((user) => (
-                      <Select.Item item={user} key={user._id}>
-                        {user.email}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
+                  <Select.Content overflow="hidden" minW="xs" h="3xs">
+                    <AutoSizer>
+                      {({ height, width }) => (
+                        <List
+                          height={height}
+                          width={width}
+                          itemCount={collection.items.length}
+                          itemSize={45}
+                        >
+                          {VirualizedItem(data ?? [])}
+                        </List>
+                      )}
+                    </AutoSizer>
                   </Select.Content>
                 )}
               </Select.Positioner>

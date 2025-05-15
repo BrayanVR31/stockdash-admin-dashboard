@@ -1,4 +1,4 @@
-import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { toaster } from "@/components/ui/toaster";
 import {
   addProduct,
@@ -27,7 +27,7 @@ export const useProductList = () => {
 };
 
 export const useProducts = () => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });

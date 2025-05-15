@@ -15,7 +15,7 @@ import {
   Stack,
   AvatarGroup,
 } from "@chakra-ui/react";
-import { memo, useState } from "react";
+import { CSSProperties, memo, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import { MdOutlineHideImage } from "react-icons/md";
 import _ from "lodash";
@@ -30,6 +30,7 @@ interface Props<T> {
   fields: HeadCol[];
   item: T;
   onDeleteItem: () => void;
+  style: CSSProperties;
 }
 
 type AvatarCellProps<T> = Omit<
@@ -48,13 +49,19 @@ const AvatarCell = <T,>({ path, item }: AvatarCellProps<T>) => {
     outlineStyle: "solid",
   });
   return (
-    <Table.Cell>
+    <Table.Cell
+      border="none"
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="xs"
+      overflow="hidden"
+    >
       <HStack gap="4">
         <Avatar.Root css={ringCss} colorPalette="blue" variant="subtle">
           <Avatar.Fallback name={textName} />
           <Avatar.Image src={imgSrc} />
         </Avatar.Root>
-        <Text>{textName}</Text>
+        <Text truncate>{textName}</Text>
       </HStack>
     </Table.Cell>
   );
@@ -68,7 +75,7 @@ type BadgeCellProps<T> = Omit<
 const BadgeCell = <T,>({ path, item }: BadgeCellProps<T>) => {
   const text = _.get(item, path, "Sin definir") as string;
   return (
-    <Table.Cell>
+    <Table.Cell border="none">
       <Badge colorPalette="blue">{text}</Badge>
     </Table.Cell>
   );
@@ -85,7 +92,13 @@ const ImagesCell = <T,>({ path, item }: ImagesCellProps<T>) => {
   const imgSrc = _.get(item, image, null) as string[];
   const firstImg = ([...imgSrc]?.shift()?.path || null) as string;
   return (
-    <Table.Cell>
+    <Table.Cell
+      border="none"
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="3xs"
+      overflow="hidden"
+    >
       <HStack gap="4">
         <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
           <Avatar.Fallback>
@@ -93,7 +106,7 @@ const ImagesCell = <T,>({ path, item }: ImagesCellProps<T>) => {
           </Avatar.Fallback>
           <Avatar.Image src={firstImg} />
         </Avatar.Root>
-        <Text>{textName}</Text>
+        <Text truncate>{textName}</Text>
       </HStack>
     </Table.Cell>
   );
@@ -107,8 +120,14 @@ type PriceCellProps<T> = Omit<
 const PriceCell = <T,>({ path, item }: PriceCellProps<T>) => {
   const price = _.get(item, path, 0) as string;
   return (
-    <Table.Cell>
-      <Text>$ {price}</Text>
+    <Table.Cell
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="100px"
+      border="none"
+      overflow="hidden"
+    >
+      <Text truncate>$ {price}</Text>
     </Table.Cell>
   );
 };
@@ -121,7 +140,13 @@ type StatusCellProps<T> = Omit<
 const StatusCell = <T,>({ path, item }: StatusCellProps<T>) => {
   const status = _.get(item, path, false) as boolean;
   return (
-    <Table.Cell>
+    <Table.Cell
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="100px"
+      border="none"
+      overflow="hidden"
+    >
       <Badge colorPalette={status ? "green" : "red"}>
         {status ? "Activo" : "No activo"}
       </Badge>
@@ -143,7 +168,13 @@ const StackImageCell = <T,>({
   const [arrayPath, nestedPath] = path;
   const arrayResults = _.get(item, arrayPath, []) as [];
   return (
-    <Table.Cell>
+    <Table.Cell
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="20%"
+      border="none"
+      overflow="hidden"
+    >
       {arrayResults.length === 0 && (
         <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
           <Avatar.Fallback>
@@ -217,6 +248,7 @@ const Row = memo(
     fields,
     item,
     onDeleteItem,
+    style,
   }: Props<T>) => {
     const { selection, setSelection, pathKey, setCurrentPage } = useTable();
     const [open, setOpen] = useState(false);
@@ -224,8 +256,21 @@ const Row = memo(
     const isSelected = selection.has(id);
     const navigate = useNavigate();
     return (
-      <Table.Row data-selected={isSelected ? "" : undefined}>
-        <Table.Cell>
+      <Table.Row
+        style={{
+          ...style,
+        }}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-around"
+        data-selected={isSelected ? "" : undefined}
+        flexWrap="wrap"
+        borderBottomWidth="thin"
+        _last={{
+          borderBottom: "none",
+        }}
+      >
+        <Table.Cell border="none">
           <Checkbox.Root
             size="sm"
             top="0.5"
@@ -253,8 +298,17 @@ const Row = memo(
             );
           else if (field.type === "text")
             return (
-              <Table.Cell key={`row-data-${field.path}`}>
-                {_.get(item, field.path, "Sin especificar") as string}
+              <Table.Cell
+                flexShrink="0"
+                flexGrow="0"
+                flexBasis="170px"
+                border="none"
+                overflow="hidden"
+                key={`row-data-${field.path}`}
+              >
+                <Text truncate>
+                  {_.get(item, field.path, "Sin especificar") as string}
+                </Text>
               </Table.Cell>
             );
           else if (field.type === "badge")
@@ -308,7 +362,7 @@ const Row = memo(
               />
             );
         })}
-        <Table.Cell>
+        <Table.Cell border="none">
           <Menu.Root>
             <Menu.Trigger asChild>
               <Button variant="outline" size="sm">

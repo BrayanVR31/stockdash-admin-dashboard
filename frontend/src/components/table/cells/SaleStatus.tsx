@@ -24,7 +24,13 @@ const getColorStatus = {
 const SaleStatus = <T,>({ path, item }: Props<T>) => {
   const status = _.get(item, path, "pending") as Status;
   return (
-    <Table.Cell>
+    <Table.Cell
+      flexShrink="0"
+      flexGrow="0"
+      flexBasis="100px"
+      border="none"
+      overflow="hidden"
+    >
       <Badge colorPalette={getColorStatus[status]}>{status}</Badge>
     </Table.Cell>
   );

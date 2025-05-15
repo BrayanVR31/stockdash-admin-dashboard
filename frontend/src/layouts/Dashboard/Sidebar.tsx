@@ -1,15 +1,113 @@
-import { Box, Text, VStack, Flex, Collapsible, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  VStack,
+  Flex,
+  Collapsible,
+  HStack,
+  Menu,
+  Button,
+  Portal,
+} from "@chakra-ui/react";
 import { PiStackBold } from "react-icons/pi";
 import { Fragment } from "react";
 import navLinks from "./navLinks";
 import { CollapseButton, NestedLink } from "@/components/collapsible";
-import { useContainerQuery } from "@/hooks/useContainerQuery";
 import { AvatarMenu } from "./AvatarMenu";
 import { useSidebar } from "./context";
+import { extractPaths } from "@/utils/paths";
+import { useLocation } from "react-router";
+
+const DesktopList = () => {
+  const { isCollapsed } = useSidebar();
+  const props = !isCollapsed ? { open: false } : {};
+  return navLinks.map(({ label, to, icon, subItems, isMain = false }) => (
+    <Fragment key={label}>
+      {subItems ? (
+        <Collapsible.Root {...props}>
+          <CollapseButton
+            parentPath={to}
+            toolMessage={!isCollapsed ? label : ""}
+          >
+            {icon}
+            <Text>{label}</Text>
+          </CollapseButton>
+          <Collapsible.Content>
+            <VStack mt="3" gap="3.5" pl={5}>
+              {subItems.map(({ label, to: subTo }) => (
+                <NestedLink key={`${to}/${subTo}`} path={`${to}/${subTo}`}>
+                  {label}
+                </NestedLink>
+              ))}
+            </VStack>
+          </Collapsible.Content>
+        </Collapsible.Root>
+      ) : (
+        <NestedLink
+          isMain={isMain}
+          toolMessage={!isCollapsed ? label : ""}
+          path={to}
+        >
+          <HStack data-link="sidebar-link">
+            {icon}
+            <Text>{label}</Text>
+          </HStack>
+        </NestedLink>
+      )}
+    </Fragment>
+  ));
+};
+
+const MobileList = () => {
+  const location = useLocation();
+  const currentPath = extractPaths(location.pathname, ["create"]).pop() || "";
+  return navLinks.map(({ label, to, icon, subItems, isMain = false }) => (
+    <Fragment key={label}>
+      {subItems ? (
+        <Menu.Root positioning={{ placement: "right-start" }}>
+          <Menu.Trigger asChild>
+            <Button
+              bg={
+                extractPaths(to, ["dashboard"]).includes(currentPath)
+                  ? "blue.700"
+                  : "colorPalette"
+              }
+              data-link="sidebar-link"
+              size="sm"
+              variant="ghost"
+            >
+              {icon}
+              <Text>{label}</Text>
+            </Button>
+          </Menu.Trigger>
+          <Portal>
+            <Menu.Positioner>
+              <Menu.Content>
+                {subItems.map(({ label, to: subTo }) => (
+                  <Menu.Item asChild value={`${to}/${subTo}`}>
+                    <NestedLink key={`${to}/${subTo}`} path={`${to}/${subTo}`}>
+                      {label}
+                    </NestedLink>
+                  </Menu.Item>
+                ))}
+              </Menu.Content>
+            </Menu.Positioner>
+          </Portal>
+        </Menu.Root>
+      ) : (
+        <NestedLink isMain={isMain} toolMessage={label} path={to}>
+          <HStack data-link="sidebar-link">
+            {icon}
+            <Text>{label}</Text>
+          </HStack>
+        </NestedLink>
+      )}
+    </Fragment>
+  ));
+};
 
 const Sidebar = () => {
   const { isCollapsed, sidebarRef } = useSidebar();
-  const props = !isCollapsed ? { open: false } : {};
   return (
     <Box
       overflowY="auto"
@@ -90,44 +188,7 @@ const Sidebar = () => {
             },
           }}
         >
-          {navLinks.map(({ label, to, icon, subItems, isMain = false }) => (
-            <Fragment key={label}>
-              {subItems ? (
-                <Collapsible.Root {...props}>
-                  <CollapseButton
-                    parentPath={to}
-                    toolMessage={!isCollapsed ? label : ""}
-                  >
-                    {icon}
-                    <Text>{label}</Text>
-                  </CollapseButton>
-                  <Collapsible.Content>
-                    <VStack mt="3" gap="3.5" pl={5}>
-                      {subItems.map(({ label, to: subTo }) => (
-                        <NestedLink
-                          key={`${to}/${subTo}`}
-                          path={`${to}/${subTo}`}
-                        >
-                          {label}
-                        </NestedLink>
-                      ))}
-                    </VStack>
-                  </Collapsible.Content>
-                </Collapsible.Root>
-              ) : (
-                <NestedLink
-                  isMain={isMain}
-                  toolMessage={!isCollapsed ? label : ""}
-                  path={to}
-                >
-                  <HStack data-link="sidebar-link">
-                    {icon}
-                    <Text>{label}</Text>
-                  </HStack>
-                </NestedLink>
-              )}
-            </Fragment>
-          ))}
+          {isCollapsed ? <DesktopList /> : <MobileList />}
         </VStack>
         {/** Avatar menu options */}
         <VStack bg="gray.950" w="full" position="sticky" bottom="0" left="0">

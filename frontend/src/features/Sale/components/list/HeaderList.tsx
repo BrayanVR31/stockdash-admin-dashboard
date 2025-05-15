@@ -30,7 +30,7 @@ const HeaderList = () => {
           fontWeight="semibold"
           fontSize="md"
         >
-          Todos los ventas
+          Todas las ventas
           <Badge ml="1" variant="surface" colorPalette="purple">
             {totalItems}
           </Badge>
