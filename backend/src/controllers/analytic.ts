@@ -3,6 +3,7 @@ import { HTTP_STATUS_TYPES, getServerError } from "@/utils/statusCodes";
 import { handleServerError } from "@/utils/error";
 import { Sale } from "@/models/sale";
 import { Product } from "@/models/product";
+import { Purchase } from "@/models/purchase";
 
 export const weeklySales: Controller = async (req, res) => {
   try {
@@ -182,6 +183,293 @@ export const saleChartByYear: Controller = async (req, res) => {
       },
     ]);
     return res.status(200).json(sales);
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
+
+export const getSalesYear: Controller = async (req, res) => {
+  try {
+    const years = await Sale.aggregate([
+      {
+        $group: {
+          _id: {
+            saleYear: {
+              $year: "$saleDate",
+            },
+          },
+        },
+      },
+      {
+        $set: {
+          year: "$_id.saleYear",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          year: 1,
+        },
+      },
+    ]);
+    return res.status(200).json(years);
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
+
+export const getCategoriesByProduct: Controller = async (req, res) => {
+  try {
+    const years = await Product.aggregate([
+      {
+        $unwind: "$categories",
+      },
+      {
+        $group: {
+          _id: "$categories",
+          productCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "_id",
+          foreignField: "_id",
+          as: "category_results",
+        },
+      },
+      {
+        $unwind: "$category_results",
+      },
+      {
+        $set: {
+          category: "$category_results.name",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category_results: 0,
+        },
+      },
+    ]);
+    return res.status(200).json(years);
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
+
+export const getProductBarGroupByCategories: Controller = async (req, res) => {
+  try {
+    const totalProducts = await Product.aggregate([
+      {
+        $unwind: "$categories",
+      },
+      {
+        $group: {
+          _id: "$categories",
+          productCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "_id",
+          foreignField: "_id",
+          as: "category_results",
+        },
+      },
+      {
+        $unwind: "$category_results",
+      },
+      {
+        $set: {
+          categoryName: "$category_results.name",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category_results: 0,
+        },
+      },
+      {
+        $group: {
+          _id: "$categoryName",
+          totalProducts: {
+            $sum: "$productCount",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalProductsByCategory: {
+            $sum: "$totalProducts",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+    const [totalCount] = totalProducts || [];
+    const { totalProductsByCategory = 1 } = totalCount || {};
+    const groupProducts = await Product.aggregate([
+      {
+        $unwind: "$categories",
+      },
+      {
+        $group: {
+          _id: "$categories",
+          productCount: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "_id",
+          foreignField: "_id",
+          as: "category_results",
+        },
+      },
+      {
+        $unwind: "$category_results",
+      },
+      {
+        $set: {
+          categoryName: "$category_results.name",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category_results: 0,
+        },
+      },
+      {
+        $group: {
+          _id: "$categoryName",
+          totalProducts: {
+            $sum: "$productCount",
+          },
+        },
+      },
+      {
+        $set: {
+          average: {
+            $divide: ["$totalProducts", totalProductsByCategory],
+          },
+        },
+      },
+      {
+        $set: {
+          average: {
+            $multiply: ["$average", 100],
+          },
+        },
+      },
+      {
+        $set: {
+          average: {
+            $round: ["$average", 0],
+          },
+        },
+      },
+      {
+        $sort: {
+          average: -1,
+        },
+      },
+    ]);
+    return res.status(200).json(groupProducts);
+  } catch (e) {
+    const [status, jsonRes] = handleServerError(e);
+    return res.status(status).json(jsonRes);
+  }
+};
+
+export const getAnnualPurchases: Controller = async (req, res) => {
+  try {
+    const totalPurchasePrice = await Purchase.aggregate([
+      {
+        $group: {
+          _id: null,
+          allPurchasePrice: {
+            $sum: "$totalPrice",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $set: {
+          allPurchasePrice: {
+            $round: ["$allPurchasePrice", 0],
+          },
+        },
+      },
+    ]);
+    const [firstTotalPrice] = totalPurchasePrice || [];
+    const { allPurchasePrice = 0 } = firstTotalPrice || {};
+    const purchasePriceHistory = await Purchase.aggregate([
+      {
+        $group: {
+          _id: {
+            yearPrice: {
+              $year: "$purchaseDate",
+            },
+          },
+          totalPriceByYear: {
+            $sum: "$totalPrice",
+          },
+        },
+      },
+      {
+        $set: {
+          purchaseYear: "$_id.yearPrice",
+          totalPriceByYear: {
+            $round: ["$totalPriceByYear", 0],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          purchaseYear: -1,
+        },
+      },
+    ]);
+    return res
+      .status(200)
+      .json({ allPurchasePrice, history: purchasePriceHistory });
   } catch (e) {
     const [status, jsonRes] = handleServerError(e);
     return res.status(status).json(jsonRes);

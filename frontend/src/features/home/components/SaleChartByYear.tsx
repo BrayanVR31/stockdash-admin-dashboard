@@ -10,9 +10,12 @@ import {
 } from "recharts";
 import { useSaleChartByYear } from "@/hooks/useAnalytic";
 import { Card } from "@chakra-ui/react";
+import SaleYearSelect from "./SaleYearSelect";
+import useSaleAnalyticStore from "@/store/saleAnalyticStore";
 
 const SaleChartByYear = () => {
-  const { data } = useSaleChartByYear(2024);
+  const saleYear = useSaleAnalyticStore((state) => state.saleYear);
+  const { data } = useSaleChartByYear(saleYear);
   const chart = useChart({
     data,
     series: [
@@ -24,6 +27,10 @@ const SaleChartByYear = () => {
 
   return (
     <Card.Root variant="subtle">
+      <Card.Header>
+        <Card.Title mb="5">Resumen de ventas anuales</Card.Title>
+        <SaleYearSelect />
+      </Card.Header>
       <Card.Body>
         <Chart.Root maxH="sm" chart={chart}>
           <AreaChart data={chart.data}>

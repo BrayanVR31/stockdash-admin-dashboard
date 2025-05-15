@@ -12,7 +12,7 @@ const AccountPreview = () => {
   const { data } = useProfileSession();
   const { path = "" } = data?.profile?.avatar || {};
   return (
-    <Avatar.Root css={ringCss} colorPalette="purple" size="sm">
+    <Avatar.Root css={ringCss} colorPalette="blue" size="sm">
       <Avatar.Fallback name={data.username || "User"} />
       <Avatar.Image src={path} />
     </Avatar.Root>

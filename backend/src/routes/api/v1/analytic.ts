@@ -4,6 +4,10 @@ import {
   statusProducts,
   productGroupByCategories,
   saleChartByYear,
+  getSalesYear,
+  getCategoriesByProduct,
+  getProductBarGroupByCategories,
+  getAnnualPurchases,
 } from "@/controllers/analytic";
 
 const analyticRouter = Router();
@@ -12,15 +16,28 @@ const commonPath = "/analytics";
 analyticRouter.get(`${commonPath}/weekly-sales`, weeklySales as RequestHandler);
 analyticRouter.get(
   `${commonPath}/weekly-status-products`,
-  statusProducts as RequestHandler
+  statusProducts as RequestHandler,
 );
 analyticRouter.get(
   `${commonPath}/group-products-by-category`,
-  productGroupByCategories as RequestHandler
+  productGroupByCategories as RequestHandler,
 );
 analyticRouter.get(
   `${commonPath}/sale-chart-by-year`,
-  saleChartByYear as RequestHandler
+  saleChartByYear as RequestHandler,
+);
+analyticRouter.get(`${commonPath}/sale-years`, getSalesYear as RequestHandler);
+analyticRouter.get(
+  `${commonPath}/product-categories`,
+  getCategoriesByProduct as RequestHandler,
+);
+analyticRouter.get(
+  `${commonPath}/all-products-group-category`,
+  getProductBarGroupByCategories as RequestHandler,
+);
+analyticRouter.get(
+  `${commonPath}/annual-purchases`,
+  getAnnualPurchases as RequestHandler,
 );
 
 export { analyticRouter };

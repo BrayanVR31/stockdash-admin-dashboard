@@ -43,3 +43,19 @@ export type SaleChart = {
   statusCounts: StatusCount[];
   month: number;
 };
+
+export type GroupProductByCategory = {
+  _id: string;
+  totalProducts: number;
+  average: number;
+};
+
+type PriceHistory = {
+  totalPriceByYear: number;
+  purchaseYear: number;
+};
+
+export type PurchasePriceHistory = {
+  allPurchasePrice: number;
+  history: PriceHistory[];
+};

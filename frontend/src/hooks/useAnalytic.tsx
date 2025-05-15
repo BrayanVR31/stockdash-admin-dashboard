@@ -1,12 +1,15 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   getWeeklySale,
   getWeeklyStatusProducts,
   getGroupedProductsByCategory,
   getSaleChartByYear,
+  getSalesYear,
+  getGroupProductsByCategory,
+  getPurchasePriceHistory,
 } from "@/services/analytic";
 import _ from "lodash";
-import { TypeStatus, ChartStatus } from "@/types/analytic";
+import { ChartStatus } from "@/types/analytic";
 
 export const useWeeklySales = () => {
   return useSuspenseQuery({
@@ -57,8 +60,8 @@ const getMonth = {
 
 export const useSaleChartByYear = (year: number) => {
   return useSuspenseQuery({
-    queryKey: ["chart-sale-year"],
-    queryFn: () => getSaleChartByYear(year.toString()),
+    queryKey: ["chart-sale-year", year],
+    queryFn: () => getSaleChartByYear(`${year}`),
     select: (query) => {
       return query.map(({ month, statusCounts }) => {
         const statusArray = statusCounts.map(({ count, status }) => [
@@ -75,5 +78,31 @@ export const useSaleChartByYear = (year: number) => {
         } as ChartStatus;
       });
     },
+  });
+};
+
+export const useSaleYears = () => {
+  return useQuery({
+    queryKey: ["sale-years"],
+    queryFn: getSalesYear,
+  });
+};
+
+export const useGroupProductsByCategory = () => {
+  return useSuspenseQuery({
+    queryKey: ["bar-group-products-by-category"],
+    queryFn: getGroupProductsByCategory,
+    select: (query) =>
+      query.map((results) => ({
+        type: results._id,
+        allocation: results.average * 10,
+      })),
+  });
+};
+
+export const useAnnualPurchasePrice = () => {
+  return useSuspenseQuery({
+    queryKey: ["annual-purchase-price"],
+    queryFn: getPurchasePriceHistory,
   });
 };

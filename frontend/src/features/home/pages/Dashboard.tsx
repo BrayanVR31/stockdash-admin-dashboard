@@ -1,4 +1,4 @@
-import { Grid, GridItem, VStack } from "@chakra-ui/react";
+import { Grid, GridItem, VStack, Flex } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
 import { SkeletonOverview } from "../components/overview";
 
@@ -35,6 +35,12 @@ const OverviewUsers = lazy(() =>
   })),
 );
 const SaleChartByYear = lazy(() => import("../components/SaleChartByYear"));
+const ProductGroupByCategories = lazy(
+  () => import("../components/ProductGroupByCategories"),
+);
+const PurchasePricesDonut = lazy(
+  () => import("../components/PurchasePricesDonut"),
+);
 
 const Dashboard = () => {
   return (
@@ -62,14 +68,22 @@ const Dashboard = () => {
           <SaleChartByYear />
         </Suspense>
       </GridItem>
-      <Grid gap={4}>
+      <Flex direction="column" gap={4} h="100%">
         <Suspense fallback={<SkeletonOverview />}>
           <ActiveProducts />
         </Suspense>
         <Suspense fallback={<SkeletonOverview />}>
           <WeeklySales />
         </Suspense>
-      </Grid>
+        <Suspense fallback={<SkeletonOverview />}>
+          <PurchasePricesDonut />
+        </Suspense>
+      </Flex>
+      <GridItem colSpan={3}>
+        <Suspense fallback={<SkeletonOverview />}>
+          <ProductGroupByCategories />
+        </Suspense>
+      </GridItem>
     </Grid>
   );
 };

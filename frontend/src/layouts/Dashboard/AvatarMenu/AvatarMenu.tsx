@@ -1,9 +1,11 @@
 import { Menu, Button, Portal, defineStyle } from "@chakra-ui/react";
 import { Suspense, lazy } from "react";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import { ErrorBoundary } from "react-error-boundary";
 import delay from "@/utils/delay";
 import MenuOptions from "./MenuOptions";
 import { useSidebar } from "../context";
+import SkeletonMenu from "./SkeletonMenu";
 
 const UserPersona = lazy(() => delay(import("./UserPersona")));
 
@@ -23,12 +25,14 @@ const AvatarMenu = () => {
     <Menu.Root positioning={{ placement: "right-end" }}>
       <Menu.Trigger asChild>
         <Button {...menuTriggerStyle} data-menu="profile" colorPalette="blue">
-          <Suspense fallback={"loading"}>
-            <UserPersona />
-            {isCollapsed && (
-              <HiOutlineDotsHorizontal style={{ width: "18px" }} />
-            )}
-          </Suspense>
+          <ErrorBoundary fallback={<SkeletonMenu />}>
+            <Suspense fallback={<SkeletonMenu />}>
+              <UserPersona />
+              {isCollapsed && (
+                <HiOutlineDotsVertical style={{ width: "18px" }} />
+              )}
+            </Suspense>
+          </ErrorBoundary>
         </Button>
       </Menu.Trigger>
       <Portal>

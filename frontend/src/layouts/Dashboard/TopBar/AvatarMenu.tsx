@@ -10,13 +10,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { MdOutlineLogout } from "react-icons/md";
 import { useLogOut } from "@/hooks/useAuth";
 import { NavLink } from "react-router";
-
-const ringCss = defineStyle({
-  outlineWidth: "2px",
-  outlineColor: "colorPalette.600",
-  outlineOffset: "2px",
-  outlineStyle: "solid",
-});
+import { ErrorBoundary } from "react-error-boundary";
 
 const AccountPreview = lazy(() => import("./AccountPreview"));
 
@@ -25,9 +19,11 @@ const AvatarMenu = () => {
   return (
     <Menu.Root>
       <Menu.Trigger>
-        <Suspense fallback={<SkeletonCircle size="36px" />}>
-          <AccountPreview />
-        </Suspense>
+        <ErrorBoundary fallback={<SkeletonCircle size="36px" />}>
+          <Suspense fallback={<SkeletonCircle size="36px" />}>
+            <AccountPreview />
+          </Suspense>
+        </ErrorBoundary>
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
