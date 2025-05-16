@@ -1,4 +1,4 @@
-import { Table } from "@chakra-ui/react";
+import { Table, Flex } from "@chakra-ui/react";
 import { HeadCol } from "@/types/table";
 import { memo } from "react";
 
@@ -11,7 +11,11 @@ const HeaderList = memo(({ fields }: Props) => {
     <>
       {fields.map(({ path, title, type }) => {
         const keyPath = type === "avatar" ? path.join("_") : path;
-        return <Table.ColumnHeader key={keyPath}>{title}</Table.ColumnHeader>;
+        return (
+          <Table.ColumnHeader border="none" flex="1" key={keyPath!}>
+            {title}
+          </Table.ColumnHeader>
+        );
       })}
     </>
   );

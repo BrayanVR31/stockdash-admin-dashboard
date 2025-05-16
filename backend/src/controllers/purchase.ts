@@ -13,7 +13,10 @@ export const home: PurchaseController = async (request, response, next) => {
     const total = await Purchase.countDocuments();
     const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
-    const results = await Purchase.find().skip(skipDocument).limit(perPage);
+    const results = await Purchase.find()
+      .populate("supplier")
+      .skip(skipDocument)
+      .limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,

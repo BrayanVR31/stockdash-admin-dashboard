@@ -11,7 +11,7 @@ interface Props {
 
 const PickAll = ({ indeterminate, selectedSize, onSelectItems }: Props) => {
   return (
-    <Table.ColumnHeader>
+    <Table.ColumnHeader border="none">
       <Checkbox.Root
         size="sm"
         top="0.5"

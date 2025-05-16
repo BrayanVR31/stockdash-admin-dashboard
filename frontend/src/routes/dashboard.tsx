@@ -1,5 +1,4 @@
 import { RouteObject } from "react-router";
-import Layout from "@/layouts/Dashboard/Layout";
 import ProtectRoute from "./ProtectRoute";
 import RestrictRoute from "@/routes/RestrictRoute";
 import { AccountSettings } from "@/features/Account/pages";
@@ -12,13 +11,21 @@ import errorApp from "@/components/error/errorApp";
 import Dashboard from "@/features/home/pages/Dashboard";
 import { PurchaseList } from "@/features/Purchase/pages/PurchaseList";
 import { PurchaseForm } from "@/features/Purchase/pages/PurchaseForm";
+import { lazy, Suspense } from "react";
+import LoadingPage from "@/components/ui/LoadingPage";
+
+const Layout = lazy(() => import("@/layouts/Dashboard/Layout"));
 
 const dashboardRoute: RouteObject = {
   path: "/dashboard",
   element: <ProtectRoute />,
   children: [
     {
-      element: <Layout />,
+      element: (
+        <Suspense fallback={<LoadingPage />}>
+          <Layout />
+        </Suspense>
+      ),
       children: [
         {
           element: <RestrictRoute />,

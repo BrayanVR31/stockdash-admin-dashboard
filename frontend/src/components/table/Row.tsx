@@ -24,7 +24,7 @@ import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
 import { HeadCol } from "@/types/table";
 import { useNavigate } from "react-router";
-import { SaleStatus } from "./cells";
+import { SaleStatus, HumanDate } from "./cells";
 
 interface Props<T> {
   fields: HeadCol[];
@@ -272,6 +272,7 @@ const Row = memo(
       >
         <Table.Cell border="none">
           <Checkbox.Root
+            colorPalette="blue"
             size="sm"
             top="0.5"
             aria-label="Select row"
@@ -361,11 +362,19 @@ const Row = memo(
                 path={field.path}
               />
             );
+          else if (field.type === "human-date")
+            return (
+              <HumanDate
+                item={item}
+                key={`row-data-${field.path}`}
+                path={field.path}
+              />
+            );
         })}
         <Table.Cell border="none">
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button variant="outline" size="sm">
+              <Button colorPalette="blue" variant="outline" size="sm">
                 <SlOptions />
               </Button>
             </Menu.Trigger>

@@ -11,7 +11,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import _ from "lodash";
 import { SaleInputs } from "@/models/saleSchema";
 import { useProducts } from "@/hooks/useProduct";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const VirualizedItem =
   <T extends unknown[]>(data: T) =>
@@ -27,6 +27,7 @@ const VirualizedItem =
 
 const ProductSelect = () => {
   const { data, isPending, isSuccess, isError } = useProducts();
+  const [isOpen, setIsOpen] = useState(false);
   const {
     control,
     formState: { errors },
@@ -41,8 +42,8 @@ const ProductSelect = () => {
   return (
     <Field.Root
       position="relative"
-      required
       invalid={isError || !!errors?.products}
+      required
     >
       <Field.Label>
         Selecciona productos
@@ -53,10 +54,14 @@ const ProductSelect = () => {
         name="products"
         render={({ field }) => (
           <Select.Root
+            open={isOpen}
+            onOpenChange={() => setIsOpen(!isOpen)}
             multiple
             name={field.name}
             value={field.value}
-            onValueChange={({ value }) => field.onChange(value)}
+            onValueChange={({ value }) => {
+              field.onChange(value);
+            }}
             onInteractOutside={() => field.onBlur()}
             disabled={(data?.length || 0) <= 0}
             collection={collection}
@@ -95,7 +100,9 @@ const ProductSelect = () => {
           </Select.Root>
         )}
       />
-      <Field.ErrorText>{errors?.products?.message}</Field.ErrorText>
+      <Field.ErrorText>
+        {errors?.products && errors?.products?.message}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

@@ -57,7 +57,7 @@ export const useGetUser = (id: string) => {
 };
 
 export const useUsers = () => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["users"],
     queryFn: getUsers,
   });

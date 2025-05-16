@@ -16,7 +16,11 @@ export const saleSchema = z
       .array(z.string())
       .min(1, "Debes seleccionar al menos 1 elemento."),
     user: z.array(z.string()).min(1, "Debes seleccionar al menos 1 elemento."),
-    totalAmount: z.number().positive("El valor debe ser un número positivo."),
+    totalAmount: z
+      .number({
+        invalid_type_error: "La cantidad total es un campo requerido",
+      })
+      .positive("El valor debe ser un número positivo."),
     status: z.enum(["completed", "pending", "canceled"]),
   })
   .and(saleDateSchema);

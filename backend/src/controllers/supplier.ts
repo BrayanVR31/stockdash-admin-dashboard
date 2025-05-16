@@ -15,17 +15,7 @@ export const home: Controller = async (request, response, next) => {
     const total = await Supplier.countDocuments();
     const { per_page, page } = request.query;
     const { skipDocument, perPage } = paginateDocs(total, per_page, page);
-    const populatedImage: PopulateOptions = {
-      path: "image",
-      transform: (doc) => {
-        if (doc) doc.path = `public/images/${doc?.path}`;
-        return doc;
-      },
-    };
-    const results = await Supplier.find()
-      .populate(populatedImage)
-      .skip(skipDocument)
-      .limit(perPage);
+    const results = await Supplier.find().skip(skipDocument).limit(perPage);
     return response.status(HTTP_STATUS_CODES.OK).json({
       results,
       total,

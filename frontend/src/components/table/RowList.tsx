@@ -58,25 +58,3 @@ const RowList = <T extends Record<string, any>>(props: RowListProps<T>) => {
 };
 
 export default RowList;
-
-/**
- * 
- * 
- * 
- * 
- 
-<Box style={{ flex: "1 1 auto" }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <FixedSizeList
-              itemSize={35}
-              width={width}
-              height={height}
-              itemCount={props.data.length}
-            >
-              {VirtualizedRow(props)}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
-      </Box>
- */

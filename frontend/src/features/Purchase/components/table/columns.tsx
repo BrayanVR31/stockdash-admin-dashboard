@@ -24,6 +24,6 @@ export const cols: HeadCol[] = [
   {
     title: "Fecha de compra",
     path: "purchaseDate",
-    type: "text",
+    type: "human-date",
   },
 ];

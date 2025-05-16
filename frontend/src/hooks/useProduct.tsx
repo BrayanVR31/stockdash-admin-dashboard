@@ -27,7 +27,7 @@ export const useProductList = () => {
 };
 
 export const useProducts = () => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });

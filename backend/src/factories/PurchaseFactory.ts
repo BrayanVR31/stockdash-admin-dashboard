@@ -2,7 +2,8 @@ import { fakerES_MX as faker } from "@faker-js/faker";
 import { Purchase, IPurchase } from "@/models/purchase";
 import Factory from "@/factories/Factory";
 import { Types } from "mongoose";
-import { Product } from "@/models";
+import { Supplier } from "@/models/supplier";
+import { Product } from "@/models/product";
 import { IImage } from "@/models/image";
 import AvatarFactory from "./AvatarFactory";
 
@@ -18,7 +19,7 @@ class PurchaseFactory extends Factory<IPurchase> {
         {},
         {
           _id: 1,
-        },
+        }
       ).lean();
       this.products = productDocs.map((doc) => doc._id);
     }
@@ -27,7 +28,7 @@ class PurchaseFactory extends Factory<IPurchase> {
         {},
         {
           _id: 1,
-        },
+        }
       ).lean();
       this.user = userDoc._id;
     }
@@ -36,11 +37,11 @@ class PurchaseFactory extends Factory<IPurchase> {
       this.images = Array.from({ length: 30 }, () => imgs.making());
     }
     if (!this.supplier) {
-      const supplierDoc = await Product.findOne(
+      const supplierDoc = await Supplier.findOne(
         {},
         {
           _id: 1,
-        },
+        }
       ).lean();
       this.supplier = supplierDoc._id;
     }

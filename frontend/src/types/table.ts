@@ -51,6 +51,11 @@ type SaleStatusCell = HeaderCell & {
   type: "sale-status";
 };
 
+type HumanDateCell = HeaderCell & {
+  path: string;
+  type: "human-date";
+};
+
 export type HeadCol =
   | AvatarCell
   | TextCell
@@ -60,4 +65,5 @@ export type HeadCol =
   | StatusCell
   | ImageGroupCell
   | ImageStackCell
-  | SaleStatusCell;
+  | SaleStatusCell
+  | HumanDateCell;

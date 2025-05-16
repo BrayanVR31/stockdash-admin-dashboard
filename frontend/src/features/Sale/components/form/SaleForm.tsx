@@ -6,9 +6,10 @@ import { produce } from "immer";
 import { format } from "date-fns";
 import { defaultSale, saleSchema, SaleInputs } from "@/models/saleSchema";
 import LoadingOverlaySpinner from "@/components/ui/loading-overlay-spinner";
-import { ProductSelect, UserSelect, TotalAmount, SaleTime, Status } from "./";
+import { TotalAmount, SaleTime, Status } from "./";
 import { useCreateSale, useUpdateSale, useSaleItem } from "@/hooks/useSale";
-import { useEffect } from "react";
+import { ProductSelect } from "./product-select/ProductSelect";
+import { UserSelect } from "./user-select/UserSelect";
 
 interface SaleFormProps {
   mode: "create" | "edit";
@@ -28,15 +29,20 @@ const SaleForm = ({ mode }: SaleFormProps) => {
             status: saleData.status,
             totalAmount: saleData.totalAmount,
             hasSaleDate: !!saleData.saleDate,
-            ...(saleData.saleDate && { saleDate: new Date(saleData.saleDate) }),
+            ...(saleData.saleDate && {
+              saleDate: new Date(saleData.saleDate)
+                .toISOString()
+                .split("T")[0] as unknown as Date,
+            }),
           }
         : defaultSale,
     resolver: zodResolver(saleSchema),
-    mode: "all",
+    mode: "onBlur",
+    shouldUnregister: false,
   });
 
   const createSale = useCreateSale();
-  const updateSale = useUpdateSale();
+  const updateSale = useUpdateSale(id || "");
 
   const onSubmit: SubmitHandler<SaleInputs> = (data) => {
     const processedData = produce(data, (draft) => {
@@ -118,7 +124,7 @@ const SaleForm = ({ mode }: SaleFormProps) => {
             <Button asChild>
               <NavLink to="..">Cancelar</NavLink>
             </Button>
-            <Button colorPalette="purple" type="submit">
+            <Button colorPalette="blue" type="submit">
               {mode === "create" ? "Guardar" : "Actualizar"}
             </Button>
           </ButtonGroup>

@@ -25,7 +25,7 @@ export const refetchingToken = () => {
       } else {
         return Promise.reject(error);
       }
-    },
+    }
   );
 
   stockdashInstance.interceptors.request.use((request) => {

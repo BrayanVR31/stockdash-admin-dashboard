@@ -40,7 +40,29 @@ const TableLayout = <T extends Record<string, unknown>>({
   return (
     <>
       <Table.ScrollArea borderWidth="1px" h="md" rounded="md" mt={4}>
-        <Table.Root size="md" stickyHeader colorPalette="purple">
+        <Table.Root size="md" stickyHeader colorPalette="blue">
+          <Table.Header>
+            <Table.Row
+              w="97%"
+              mx="auto"
+              display="flex"
+              justifyContent="space-around"
+              alignItems="center"
+              bg={{ _light: "gray.50", _dark: "gray.900" }}
+            >
+              <PickAll
+                indeterminate={indeterminate}
+                selectedSize={selection.size}
+                onSelectItems={({ checked }) => {
+                  setSelection(checked ? ids : new Set());
+                }}
+              />
+              <HeaderList fields={headingCols} />
+              <Table.ColumnHeader flex="1" border="none">
+                Acciones
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
           <Table.Body>
             {/** Tabular data */}
             <RowList
@@ -64,8 +86,7 @@ export { TableLayout };
 
 /**
 
- <Table.Header>
-            <Table.Row bg={{ _light: "gray.50", _dark: "gray.900" }}>
+ <Table.Row bg={{ _light: "gray.50", _dark: "gray.900" }}>
               <PickAll
                 indeterminate={indeterminate}
                 selectedSize={selection.size}
@@ -76,5 +97,4 @@ export { TableLayout };
               <HeaderList fields={headingCols} />
               <Table.ColumnHeader>Acciones</Table.ColumnHeader>
             </Table.Row>
-          </Table.Header>
  */

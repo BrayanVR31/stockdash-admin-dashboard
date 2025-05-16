@@ -1,5 +1,6 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
 import { Sale, ISale } from "@/models/sale";
+import { User } from "@/models/user";
 import Factory from "@/factories/Factory";
 import { Types } from "mongoose";
 import { Product } from "@/models";
@@ -15,16 +16,18 @@ class SaleFactory extends Factory<ISale> {
         {
           _id: 1,
         }
-      ).lean();
+      )
+        .limit(15)
+        .lean();
       this.products = productDocs.map((doc) => doc._id);
     }
     if (!this.user) {
-      const userDoc = await Product.findOne(
+      const userDoc = await User.findOne(
         {},
         {
           _id: 1,
         }
-      ).lean();
+      );
       this.user = userDoc._id;
     }
   }

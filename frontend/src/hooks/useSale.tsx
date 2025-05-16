@@ -69,7 +69,7 @@ export const useDestroySale = () => {
   });
 };
 
-export const useUpdateSale = () => {
+export const useUpdateSale = (id: string) => {
   const { currentPage, perPage } = useTable();
   const navigate = useNavigate();
   return useMutation({
@@ -83,6 +83,9 @@ export const useUpdateSale = () => {
         description:
           "La información de la venta ha sido actualizada exitosamente.",
         type: "success",
+      });
+      client.invalidateQueries({
+        queryKey: ["sale", id],
       });
       navigate("..");
     },

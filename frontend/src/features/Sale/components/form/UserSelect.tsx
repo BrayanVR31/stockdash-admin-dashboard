@@ -11,7 +11,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import _ from "lodash";
 import { SaleInputs } from "@/models/saleSchema";
 import { useUsers } from "@/hooks/useUser";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const VirualizedItem =
   <T extends unknown[]>(data: T) =>
@@ -26,6 +26,7 @@ const VirualizedItem =
   };
 
 const UserSelect = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const { data, isPending, isSuccess, isError } = useUsers();
   const {
     control,
@@ -49,8 +50,10 @@ const UserSelect = () => {
         name="user"
         render={({ field }) => (
           <Select.Root
+            open={isOpen}
             name={field.name}
             value={field.value as unknown as string[]}
+            onOpenChange={() => setIsOpen(!isOpen)}
             onValueChange={({ value }) => {
               console.log(value);
               field.onChange(value);

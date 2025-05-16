@@ -28,7 +28,7 @@ export const TopBar = () => {
       justify="space-between"
       bg={{
         base: "white",
-        _dark: "gray.950/75",
+        _dark: "gray.950/65",
       }}
       borderBottomWidth="1.5px"
       data-container="top-bar"
