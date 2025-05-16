@@ -103,7 +103,7 @@ const Image = () => {
                 base: "full",
                 md: "auto",
               }}
-              colorPalette="purple"
+              colorPalette="blue"
               variant="surface"
             >
               <FiUpload />

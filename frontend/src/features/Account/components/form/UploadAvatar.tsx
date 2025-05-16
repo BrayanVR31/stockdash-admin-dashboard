@@ -134,7 +134,7 @@ const UploadAvatar = ({ defaultPath }: Props) => {
                 base: "full",
                 md: "auto",
               }}
-              colorPalette="purple"
+              colorPalette="blue"
               variant="surface"
             >
               <FiUpload />

@@ -31,7 +31,7 @@ const HeaderList = () => {
           fontSize="md"
         >
           Todas las ventas
-          <Badge ml="1" variant="surface" colorPalette="purple">
+          <Badge ml="1" variant="surface" colorPalette="blue">
             {totalItems}
           </Badge>
         </Text>
@@ -41,7 +41,7 @@ const HeaderList = () => {
           <InputGroup flex="1" startElement={<GoSearch />}>
             <Input placeholder="Busca productos" />
           </InputGroup>
-          <Button asChild>
+          <Button colorPalette="blue" asChild>
             <NavLink to="./create">
               <GoPlus />
               Agregar

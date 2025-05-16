@@ -3,13 +3,11 @@ import {
   HStack,
   RadioGroup,
   Field,
-  Input,
   Stack,
   NumberInput,
 } from "@chakra-ui/react";
 import { useFormContext, Controller } from "react-hook-form";
 import { ProductInputs } from "@/models/productSchema";
-import { useState } from "react";
 
 const items = [
   { label: "Activo", value: "1" },
@@ -66,7 +64,7 @@ const ProductStatus = () => {
           render={({ field }) => (
             <RadioGroup.Root
               name={field.name}
-              colorPalette="purple"
+              colorPalette="blue"
               variant="outline"
               value={matchValue[castBoolToStr(field.value)]}
               onValueChange={(e) => {

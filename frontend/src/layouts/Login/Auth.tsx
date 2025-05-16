@@ -110,7 +110,7 @@ export default function LoginPage() {
         <Button
           disabled={isPending}
           type="submit"
-          colorPalette="purple"
+          colorPalette="blue"
           w="full"
           mb={4}
         >

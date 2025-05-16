@@ -54,7 +54,7 @@ const Contact = () => {
             checked={field.value}
             onCheckedChange={(e) => field.onChange(!!e.checked)}
             variant="solid"
-            colorPalette="purple"
+            colorPalette="blue"
           >
             <Checkbox.HiddenInput />
             <Checkbox.Control />

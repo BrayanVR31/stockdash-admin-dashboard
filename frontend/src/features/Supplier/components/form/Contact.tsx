@@ -49,7 +49,7 @@ const Contact = () => {
             checked={field.value}
             onCheckedChange={(e) => field.onChange(!!e.checked)}
             variant="solid"
-            colorPalette="purple"
+            colorPalette="blue"
           >
             <Checkbox.HiddenInput />
             <Checkbox.Control />
@@ -67,7 +67,7 @@ const Contact = () => {
               Número de teléfono
               <Field.RequiredIndicator
                 fallback={
-                  <Badge colorPalette="purple" size="xs" variant="surface">
+                  <Badge colorPalette="blue" size="xs" variant="surface">
                     Opcional
                   </Badge>
                 }
@@ -88,7 +88,7 @@ const Contact = () => {
               Email
               <Field.RequiredIndicator
                 fallback={
-                  <Badge colorPalette="purple" size="xs" variant="surface">
+                  <Badge colorPalette="blue" size="xs" variant="surface">
                     Opcional
                   </Badge>
                 }

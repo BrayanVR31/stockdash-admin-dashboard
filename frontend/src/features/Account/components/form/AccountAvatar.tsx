@@ -16,7 +16,7 @@ interface Props {
 
 const AccountAvatar = ({ fallbackMessage, path = "" }: Props) => {
   return (
-    <Avatar.Root css={ringCss} colorPalette="purple" size="2xl">
+    <Avatar.Root css={ringCss} colorPalette="blue" size="2xl">
       <Avatar.Fallback name={fallbackMessage} />
       <Avatar.Image src={path} />
     </Avatar.Root>

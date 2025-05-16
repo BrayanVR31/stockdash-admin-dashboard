@@ -91,7 +91,7 @@ const ProductForm = () => {
             <Button asChild>
               <NavLink to="..">Cancelar</NavLink>
             </Button>
-            <Button colorPalette="purple" type="submit">
+            <Button colorPalette="blue" type="submit">
               Guardar
             </Button>
           </ButtonGroup>

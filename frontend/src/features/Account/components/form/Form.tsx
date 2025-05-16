@@ -89,7 +89,7 @@ const Form = () => {
               <Button
                 disabled={!(data?.rol === "admin")}
                 type="submit"
-                colorPalette="purple"
+                colorPalette="blue"
               >
                 Guardar
               </Button>

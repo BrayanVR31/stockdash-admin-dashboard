@@ -4,11 +4,9 @@ import {
   InputGroup,
   Flex,
   Checkbox,
-  Stack,
   VStack,
   HStack,
   IconButton,
-  Float,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import {
@@ -63,7 +61,7 @@ const SocialMedia = () => {
             checked={field.value}
             onCheckedChange={(e) => field.onChange(!!e.checked)}
             variant="solid"
-            colorPalette="purple"
+            colorPalette="blue"
           >
             <Checkbox.HiddenInput />
             <Checkbox.Control />

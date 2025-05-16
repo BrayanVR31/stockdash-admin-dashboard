@@ -32,12 +32,12 @@ const AvatarMenu = () => {
               css={{
                 "&.active": {
                   _dark: {
-                    background: "purple.700/60",
-                    color: "purple.300/90",
+                    background: "blue.700/60",
+                    color: "blue.300/90",
                   },
                   _light: {
-                    background: "purple.200/70",
-                    color: "purple.900/90",
+                    background: "blue.200/70",
+                    color: "blue.900/90",
                   },
                 },
               }}

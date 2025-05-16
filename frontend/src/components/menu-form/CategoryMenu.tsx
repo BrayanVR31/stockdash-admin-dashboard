@@ -84,7 +84,7 @@ const CategoryMenu = () => {
                 form="category-form"
                 type="submit"
                 variant="outline"
-                colorPalette="purple"
+                colorPalette="blue"
               >
                 Guardar
               </Button>

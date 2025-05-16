@@ -71,7 +71,7 @@ const ProductList = () => {
                 fontSize="md"
               >
                 Todos los productos
-                <Badge ml="1" variant="surface" colorPalette="purple">
+                <Badge ml="1" variant="surface" colorPalette="blue">
                   100
                 </Badge>
               </Text>
@@ -81,7 +81,7 @@ const ProductList = () => {
                 <InputGroup flex="1" startElement={<GoSearch />}>
                   <Input placeholder="Busca productos" />
                 </InputGroup>
-                <Button asChild>
+                <Button colorPalette="blue" asChild>
                   <NavLink to="./create">
                     <GoPlus />
                     Agregar

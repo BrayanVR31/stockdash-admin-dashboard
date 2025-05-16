@@ -24,7 +24,7 @@ const CategorySelect = () => {
     formState: { errors },
   } = useFormContext<ProductInputs>();
   return (
-    <Field.Root required invalid={!!errors?.categories}>
+    <Field.Root position="relative" required invalid={!!errors?.categories}>
       <Field.Label>
         Selecciona categorías <Field.RequiredIndicator />{" "}
       </Field.Label>
@@ -68,7 +68,9 @@ const CategorySelect = () => {
           </Select.Root>
         )}
       />
-      <Field.ErrorText>{errors?.categories?.message}</Field.ErrorText>
+      <Field.ErrorText bottom="-6" position="absolute">
+        {errors?.categories?.message}
+      </Field.ErrorText>
     </Field.Root>
   );
 };

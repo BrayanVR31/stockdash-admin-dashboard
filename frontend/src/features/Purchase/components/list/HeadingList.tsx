@@ -13,7 +13,7 @@ const HeadingList = () => {
       fontSize="md"
     >
       Todas las compras
-      <Badge ml="1" variant="surface" colorPalette="purple">
+      <Badge ml="1" variant="surface" colorPalette="blue">
         {totalItems}
       </Badge>
     </Text>
