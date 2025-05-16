@@ -67,3 +67,15 @@ export type HeadCol =
   | ImageStackCell
   | SaleStatusCell
   | HumanDateCell;
+
+export const colSizes = {
+  avatar: "0 0 20rem",
+  text: "0 0 170px",
+  badge: "0 0 14rem",
+  images: "0 0 14rem",
+  price: "0 0 125px",
+  status: "0 0 100px",
+  "stack-image": "0 0 16rem",
+  "human-date": "0 0 14rem",
+  "sale-status": "0 0 14rem",
+};

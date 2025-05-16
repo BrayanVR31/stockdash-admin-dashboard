@@ -43,10 +43,11 @@ const TableLayout = <T extends Record<string, unknown>>({
         <Table.Root size="md" stickyHeader colorPalette="blue">
           <Table.Header>
             <Table.Row
-              w="97%"
-              mx="auto"
+              w="full"
+              py="2"
+              justifyContent="space-between"
               display="flex"
-              justifyContent="space-around"
+              flexWrap="wrap"
               alignItems="center"
               bg={{ _light: "gray.50", _dark: "gray.900" }}
             >
@@ -58,7 +59,7 @@ const TableLayout = <T extends Record<string, unknown>>({
                 }}
               />
               <HeaderList fields={headingCols} />
-              <Table.ColumnHeader flex="1" border="none">
+              <Table.ColumnHeader flex="0 0 7rem" border="none">
                 Acciones
               </Table.ColumnHeader>
             </Table.Row>
@@ -83,18 +84,3 @@ const TableLayout = <T extends Record<string, unknown>>({
 };
 
 export { TableLayout };
-
-/**
-
- <Table.Row bg={{ _light: "gray.50", _dark: "gray.900" }}>
-              <PickAll
-                indeterminate={indeterminate}
-                selectedSize={selection.size}
-                onSelectItems={({ checked }) => {
-                  setSelection(checked ? ids : new Set());
-                }}
-              />
-              <HeaderList fields={headingCols} />
-              <Table.ColumnHeader>Acciones</Table.ColumnHeader>
-            </Table.Row>
- */

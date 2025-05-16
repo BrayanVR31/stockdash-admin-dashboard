@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Badge, Table } from "@chakra-ui/react";
-import { HeadCol } from "@/types/table";
+import { HeadCol, colSizes } from "@/types/table";
 
 type Props<T> = Omit<
   Extract<
@@ -24,13 +24,7 @@ const getColorStatus = {
 const SaleStatus = <T,>({ path, item }: Props<T>) => {
   const status = _.get(item, path, "pending") as Status;
   return (
-    <Table.Cell
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="100px"
-      border="none"
-      overflow="hidden"
-    >
+    <Table.Cell flex={colSizes["sale-status"]} border="none" overflow="hidden">
       <Badge colorPalette={getColorStatus[status]}>{status}</Badge>
     </Table.Cell>
   );

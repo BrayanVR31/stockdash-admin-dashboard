@@ -22,7 +22,7 @@ import _ from "lodash";
 import { useTable } from "./useTable";
 import { FaTrash } from "react-icons/fa";
 import { VscEdit } from "react-icons/vsc";
-import { HeadCol } from "@/types/table";
+import { HeadCol, colSizes } from "@/types/table";
 import { useNavigate } from "react-router";
 import { SaleStatus, HumanDate } from "./cells";
 
@@ -49,13 +49,7 @@ const AvatarCell = <T,>({ path, item }: AvatarCellProps<T>) => {
     outlineStyle: "solid",
   });
   return (
-    <Table.Cell
-      border="none"
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="xs"
-      overflow="hidden"
-    >
+    <Table.Cell border="none" flex={colSizes["avatar"]} overflow="hidden">
       <HStack gap="4">
         <Avatar.Root css={ringCss} colorPalette="blue" variant="subtle">
           <Avatar.Fallback name={textName} />
@@ -75,7 +69,7 @@ type BadgeCellProps<T> = Omit<
 const BadgeCell = <T,>({ path, item }: BadgeCellProps<T>) => {
   const text = _.get(item, path, "Sin definir") as string;
   return (
-    <Table.Cell border="none">
+    <Table.Cell flex={colSizes["badge"]} border="none">
       <Badge colorPalette="blue">{text}</Badge>
     </Table.Cell>
   );
@@ -92,13 +86,7 @@ const ImagesCell = <T,>({ path, item }: ImagesCellProps<T>) => {
   const imgSrc = _.get(item, image, null) as string[];
   const firstImg = ([...imgSrc]?.shift()?.path || null) as string;
   return (
-    <Table.Cell
-      border="none"
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="3xs"
-      overflow="hidden"
-    >
+    <Table.Cell border="none" flex={colSizes["images"]} overflow="hidden">
       <HStack gap="4">
         <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
           <Avatar.Fallback>
@@ -120,13 +108,7 @@ type PriceCellProps<T> = Omit<
 const PriceCell = <T,>({ path, item }: PriceCellProps<T>) => {
   const price = _.get(item, path, 0) as string;
   return (
-    <Table.Cell
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="100px"
-      border="none"
-      overflow="hidden"
-    >
+    <Table.Cell flex={colSizes["price"]} border="none" overflow="hidden">
       <Text truncate>$ {price}</Text>
     </Table.Cell>
   );
@@ -140,13 +122,7 @@ type StatusCellProps<T> = Omit<
 const StatusCell = <T,>({ path, item }: StatusCellProps<T>) => {
   const status = _.get(item, path, false) as boolean;
   return (
-    <Table.Cell
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="100px"
-      border="none"
-      overflow="hidden"
-    >
+    <Table.Cell flex={colSizes["status"]} border="none" overflow="hidden">
       <Badge colorPalette={status ? "green" : "red"}>
         {status ? "Activo" : "No activo"}
       </Badge>
@@ -168,13 +144,7 @@ const StackImageCell = <T,>({
   const [arrayPath, nestedPath] = path;
   const arrayResults = _.get(item, arrayPath, []) as [];
   return (
-    <Table.Cell
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="20%"
-      border="none"
-      overflow="hidden"
-    >
+    <Table.Cell flex={colSizes["stack-image"]} border="none" overflow="hidden">
       {arrayResults.length === 0 && (
         <Avatar.Root shape="rounded" colorPalette="blue" variant="outline">
           <Avatar.Fallback>
@@ -191,7 +161,7 @@ const StackImageCell = <T,>({
                   const altText = _.get(
                     result,
                     alternativePath,
-                    null
+                    null,
                   ) as unknown as string;
                   if (nestedType === "multiple")
                     return (
@@ -200,7 +170,7 @@ const StackImageCell = <T,>({
                           _.get(
                             result,
                             `${nestedPath}[${index}].path`,
-                            altText
+                            altText,
                           ) as string
                         }`}
                       >
@@ -213,7 +183,7 @@ const StackImageCell = <T,>({
                   const altText = _.get(
                     result,
                     alternativePath,
-                    null
+                    null,
                   ) as unknown as string;
                   if (nestedType === "multiple")
                     return (
@@ -222,7 +192,7 @@ const StackImageCell = <T,>({
                           _.get(
                             result,
                             `${nestedPath}[${index}].path`,
-                            altText
+                            altText,
                           ) as string
                         }`}
                       >
@@ -260,9 +230,10 @@ const Row = memo(
         style={{
           ...style,
         }}
+        w="full"
+        justifyContent="space-between"
         display="flex"
         alignItems="center"
-        justifyContent="space-around"
         data-selected={isSelected ? "" : undefined}
         flexWrap="wrap"
         borderBottomWidth="thin"
@@ -270,7 +241,7 @@ const Row = memo(
           borderBottom: "none",
         }}
       >
-        <Table.Cell border="none">
+        <Table.Cell flex="0 0 2.5rem" border="none">
           <Checkbox.Root
             colorPalette="blue"
             size="sm"
@@ -300,9 +271,7 @@ const Row = memo(
           else if (field.type === "text")
             return (
               <Table.Cell
-                flexShrink="0"
-                flexGrow="0"
-                flexBasis="170px"
+                flex={colSizes["text"]}
                 border="none"
                 overflow="hidden"
                 key={`row-data-${field.path}`}
@@ -371,7 +340,7 @@ const Row = memo(
               />
             );
         })}
-        <Table.Cell border="none">
+        <Table.Cell flex="0 0 7rem" border="none">
           <Menu.Root>
             <Menu.Trigger asChild>
               <Button colorPalette="blue" variant="outline" size="sm">
@@ -463,7 +432,7 @@ const Row = memo(
         </Table.Cell>
       </Table.Row>
     );
-  }
+  },
 );
 
 export default Row;

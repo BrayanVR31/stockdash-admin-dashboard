@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Text, Table } from "@chakra-ui/react";
-import { HeadCol } from "@/types/table";
+import { HeadCol, colSizes } from "@/types/table";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -23,13 +23,7 @@ const HumanDate = <T,>({ path, item }: Props<T>) => {
     locale: es,
   });
   return (
-    <Table.Cell
-      flexShrink="0"
-      flexGrow="0"
-      flexBasis="170px"
-      border="none"
-      overflow="hidden"
-    >
+    <Table.Cell flex={colSizes["images"]} border="none" overflow="hidden">
       <Text truncate>{result}</Text>
     </Table.Cell>
   );
