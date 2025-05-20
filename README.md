@@ -14,7 +14,18 @@ This a fullstack application used to manage product inventory. This includes cre
 
 | [![List demo](https://img.youtube.com/vi/34rn4rBS6j4/hqdefault.jpg)](https://www.youtube.com/watch?v=34rn4rBS6j4) | [![Login demo](https://img.youtube.com/vi/L3pErB93Wxw/hqdefault.jpg)](https://www.youtube.com/watch?v=L3pErB93Wxw)
 |--------------------|-------------------
-| List overview | Login overview       
+| List overview | Login overview      
+
+## ✅ Requirements
+
+Before you begin, ensure your development environment meets the following requirements:
+
+### 🧱 System Dependencies
+
+- **Node.js** v22.15.x
+- **npm** (comes with Node.js)
+- **Docker** and **Docker Compose** installed and running  
+  (required for both backend and frontend services)
 
 
 ## Installation
