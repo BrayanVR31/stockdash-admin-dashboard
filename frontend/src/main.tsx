@@ -12,13 +12,17 @@ import App from "./App.tsx";
 const queryClient = getQueryClient();
 refetchingToken();
 handlingResponses();
+const isVisibleReactQueryDevTools = false;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider>
       <QueryClientProvider client={queryClient}>
         <App />
-        <ReactQueryDevtools buttonPosition="bottom-right" />
+        {
+          isVisibleReactQueryDevTools &&
+          <ReactQueryDevtools buttonPosition="bottom-right" />
+        }
       </QueryClientProvider>
     </Provider>
   </StrictMode>,

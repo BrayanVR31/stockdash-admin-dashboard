@@ -11,7 +11,7 @@ const {
 export async function initDBConnection() {
   try {
     const url = `mongodb://${hostname}:${port}/${database}`;
-    const connection = await mongoose.connect(url, { user, pass });
+    const connection = await mongoose.connect(url, { user, pass, authSource: "admin" });
     console.log("CONNECTION TO DATABASE WAS SUCCESSFULLY STABLISHED");
     return connection;
   } catch (error) {
@@ -35,7 +35,7 @@ export class Database {
 
   public static async connect(): Promise<"success" | "failed"> {
     try {
-      await mongoose.connect(dbUri, { user, pass });
+      await mongoose.connect(dbUri, { user, pass, authSource: "admin" });
       return Promise.resolve("success");
     } catch (e) {
       return Promise.reject("failed");
@@ -44,8 +44,8 @@ export class Database {
 
   private static async adminConnect() {
     try {
-      return mongoose.createConnection(adminUri, { user, pass });
-    } catch (e) {}
+      return mongoose.createConnection(adminUri, { user, pass, authSource: "admin" });
+    } catch (e) { }
   }
 
   public static async refreshDB(dbName: string) {

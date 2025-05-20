@@ -14,7 +14,7 @@ WORKDIR /usr/src/app
 COPY package*.json .
 COPY nodemon.json .
 RUN npm install
-EXPOSE 5173
+EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 FROM base AS production
