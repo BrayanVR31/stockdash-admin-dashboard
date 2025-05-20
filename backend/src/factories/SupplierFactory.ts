@@ -3,7 +3,6 @@ import _ from "lodash";
 import { Supplier, ISupplier } from "@/models/supplier";
 import Factory from "@/factories/Factory";
 import AvatarFactory from "@/factories/AvatarFactory";
-import Base from "@/factories/Base";
 
 class SupplierFactory extends Factory<ISupplier> {
   making() {
@@ -17,7 +16,6 @@ class SupplierFactory extends Factory<ISupplier> {
         neighborhood: faker.location.direction(),
       },
       contact: {
-        phoneNumber: faker.number.int({ min: 10, max: 10 }).toString(),
         phoneNumber: faker.number.int({ min: 10, max: 10 }).toString(),
         email: faker.internet.email(),
       },
@@ -40,5 +38,4 @@ class SupplierFactory extends Factory<ISupplier> {
   }
 }
 
-export default SupplierFactory;
 export default SupplierFactory;

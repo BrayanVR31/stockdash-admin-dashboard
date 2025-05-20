@@ -15,7 +15,6 @@ export interface ISupplier extends SocialMedia {
     email?: string;
   };
   image?: IImage;
-  image?: IImage;
   deletedAt: Date;
 }
 
@@ -37,7 +36,7 @@ const LinkSchema = new Schema<Link>(
     versionKey: false,
     timestamps: false,
     _id: false,
-  }
+  },
 );
 
 const supplierSchema = new Schema<ISupplier>(
@@ -75,7 +74,6 @@ const supplierSchema = new Schema<ISupplier>(
     },
     image: {
       type: imageSchema,
-      type: imageSchema,
       required: false,
       default: null,
     },
@@ -88,7 +86,7 @@ const supplierSchema = new Schema<ISupplier>(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 // Field aliases

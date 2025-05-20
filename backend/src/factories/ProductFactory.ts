@@ -54,44 +54,43 @@ class ProductFactory extends Factory<IProduct> {
       max: 7,
     });
     const randCategories = faker.helpers.arrayElements(this.categories, {
-      const randCategories = faker.helpers.arrayElements(this.categories, {
-        min: 1,
-        max: 7,
-      });
+      min: 1,
+      max: 7,
+    });
 
-      return {
-        name: faker.commerce.productName(),
-        price: {
-          purchase: +faker.commerce.price({
-            min: 50,
-            max: 300,
-          }),
-          sale: +faker.commerce.price({
-            min: 301,
-            max: 500,
-          }),
-        },
-        description: faker.commerce.productDescription(),
-        quantity: faker.number.int({ min: 1, max: 200 }),
-        status: faker.datatype.boolean(0.75),
-        images: faker.helpers.arrayElements(this.images),
-        suppliers: randSuppliers,
-        categories: randCategories,
-        createdAt: faker.helpers.arrayElement([
-          faker.date.past(),
-          faker.date.recent(),
-          faker.date.future(),
-        ]),
-      };
-    }
+    return {
+      name: faker.commerce.productName(),
+      price: {
+        purchase: +faker.commerce.price({
+          min: 50,
+          max: 300,
+        }),
+        sale: +faker.commerce.price({
+          min: 301,
+          max: 500,
+        }),
+      },
+      description: faker.commerce.productDescription(),
+      quantity: faker.number.int({ min: 1, max: 200 }),
+      status: faker.datatype.boolean(0.75),
+      images: faker.helpers.arrayElements(this.images),
+      suppliers: randSuppliers,
+      categories: randCategories,
+      createdAt: faker.helpers.arrayElement([
+        faker.date.past(),
+        faker.date.recent(),
+        faker.date.future(),
+      ]),
+    };
+  }
 
-  protected async save(docs: IProduct[]): Promise < void> {
-      await Product.insertMany(docs, { ordered: false });
-    }
+  protected async save(docs: IProduct[]): Promise<void> {
+    await Product.insertMany(docs, { ordered: false });
+  }
 
-  protected async delete () {
-      await Product.deleteMany();
-    }
+  protected async delete() {
+    await Product.deleteMany();
+  }
 }
 
 export default ProductFactory;

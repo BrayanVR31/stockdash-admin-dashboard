@@ -5,5 +5,4 @@ export type CreateOptions = {
 export interface FactoryInt<T> {
   making: () => T | Omit<T, "_id" | "createdAt" | "updatedAt" | "deletedAt">;
   create: (opts: CreateOptions) => Promise<boolean>;
-  bulkDelete: () => Promise<boolean>;
 }

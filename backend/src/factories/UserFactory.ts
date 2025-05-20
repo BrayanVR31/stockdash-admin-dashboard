@@ -65,7 +65,6 @@ class UserFactory extends Factory<IUser> {
     return {
       email: faker.internet.email(),
       password: this.hashedPass,
-      password: this.hashedPass,
       status: faker.datatype.boolean(0.75),
       username: faker.internet.username(),
       profile: {
